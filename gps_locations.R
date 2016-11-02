@@ -10,6 +10,7 @@ library(leaflet)
 library(magrittr)
 library(RODBC)
 library(FRutils)
+library(dplyr)
 
 #save.image("W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Code_R/gps_locations.RData")
 #load("W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Code_R/gps_locations.RData") #contient maintenant le preleaflet2
@@ -70,7 +71,7 @@ region<-SpatialPolygons(list(Polygons(list(Polygon(region)),ID=1)),proj4string=C
 b<-bbox(region)
 
 
-s<-50000
+s<-10000
 #g<-GridTopology(c(b[1,1],b[2,1]),c(s,s),c(ceiling((b[1,2]-b[1,1])/s),ceiling((b[2,2]-b[2,1])/s)))
 g<-GridTopology(c(b[1,1],b[2,1]),c(s,s),c(ceiling((b[1,2]-b[1,1])/s),ceiling((b[2,2]-b[2,1])/s)))
 g<-SpatialGrid(g)
@@ -80,15 +81,16 @@ grid<-SpatialPolygonsDataFrame(grid,data=data.frame(id=1:length(grid)),match.ID=
 proj4string(grid)<-CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80")
 o<-over(grid,region)
 grid<-grid[!is.na(o),]
-plot(grid,add=TRUE)
-
-g1<-!apply(gContains(gUnaryUnion(na),grid,byid=TRUE),1,any)
 
 
+g1<-!apply(gIntersects(gUnaryUnion(na),grid,byid=TRUE),1,any)
+
+plot(grid)
+plot(grid[g1,],col="blue",add=TRUE)
 
 
 #################
-#g1<-!apply(gContains(gUnaryUnion(usa),grid,byid=TRUE),1,any)
+#g1<-!apply(gIntersects(gUnaryUnion(usa),grid,byid=TRUE),1,any)
 
 
 
@@ -186,12 +188,12 @@ d2015<-sqlFetch(db,"Donnees_2015",stringsAsFactors=FALSE)
 d2016<-sqlFetch(db,"Donnees_2016",stringsAsFactors=FALSE)
 odbcClose(db)
 names(d2015)[which(names(d2015)=="Longtitude")]<-"Longitude"
-x<-join(d2015,d2016,type="full")
+x<-full_join(d2015,d2016)
 #x<-read.csv("W:/PIU/DONNÉES DE RÉPARTITION DES OISEAUX/GPS2015.csv",stringsAsFactors=FALSE)
 x<-x[!is.na(x$Latitude),]
 x$x<-x$Longitude
 x$y<-x$Latitude
-x$id<-x$Logger.ID
+x$id<-x$LoggerID
 x$id2<-1
 coordinates(x)<-~x+y
 proj4string(x)<-CRS("+proj=longlat +datum=NAD83")
@@ -204,7 +206,41 @@ razo<-x
 
 
 
-x<-rtlo 
+
+
+
+
+### CHOOSE SPECIES
+
+x<-noga 
+
+
+
+### BUILD GRID
+
+n<-100
+region<-gConvexHull(x)
+b<-bbox(region)
+s<-round(abs(b[1,2]-b[1,1])/n,0)
+g<-GridTopology(c(b[1,1],b[2,1]),c(s,s),c(ceiling((b[1,2]-b[1,1])/s),ceiling((b[2,2]-b[2,1])/s)))
+g<-SpatialGrid(g)
+grid<-g
+grid<-as(grid,"SpatialPolygons")
+grid<-SpatialPolygonsDataFrame(grid,data=data.frame(id=1:length(grid)),match.ID=FALSE)
+proj4string(grid)<-CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80")
+o<-over(grid,region)
+grid<-grid[!is.na(o),]
+g1<-!apply(gContains(gUnaryUnion(na),grid,byid=TRUE),1,any)
+grid<-grid[g1,]
+plot(grid)
+
+
+
+
+
+
+### BUILD KERNESL
+
 kmaster<-kde(x=coordinates(x),compute.cont=TRUE)
 #r<-raster(kmaster)
 #plot(r)
@@ -242,7 +278,7 @@ par(mar=c(0,0,0,6))
 plot(x,col="white")
 plot(municip.shp.proj,add=TRUE,col=ifelse(is.na(municip.shp.proj$MUS_NM_MUN),"lightblue2","grey55"),border=NA)
 plot(grid[grid$p>0,],col=colo(grid$p[grid$p>0]),border=NA,add=TRUE)
-legend("topright",inset=c(-0.0,0.25),legend=paste(round(100*seq(0,max(grid$p),length.out=10),0),"%"),fill=colo(seq(0,max(grid$p),length.out=10)),border=NA,cex=1.5,bg="white",xpd=TRUE)
+legend("topright",inset=c(-0.0,0.25),legend=paste(round(100*seq(0,max(grid$p),length.out=6),0),"%"),fill=colo(seq(0,max(grid$p),length.out=6)),border=NA,cex=1.5,bg="white",xpd=TRUE)
 plot(municip.shp.proj,add=TRUE)
 
 

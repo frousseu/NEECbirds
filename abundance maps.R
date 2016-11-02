@@ -188,9 +188,9 @@ grid$dist<-g[match(grid$id,names(g))]
 
 extract_obs_dap<-function(
   
-  x=d,                                # données spatiales
-  grid                              # polygone fourni où trouver l'info                         
-                         # taille du buffer autour de la région sélectionnée pour créer le calendrier EPOQ                           
+  x=d,                                # donn?es spatiales
+  grid                              # polygone fourni o? trouver l'info                         
+                         # taille du buffer autour de la r?gion s?lectionn?e pour cr?er le calendrier EPOQ                           
   
   ){
 
@@ -442,7 +442,7 @@ for(i in seq_len(nrow(case))){
   d2 <- d[which(d$Nom_FR%in%sp),]
   d2 <- d2[which(d2$Month%in%case$month[i]),]
   d2 <- d2[!is.na(d2$Abundance),]#needed for later
-  w<-which(grid$dist>2000) #on met des zéros dans les cellules à plus de X km de la côte
+  w<-which(grid$dist>2000) #on met des z?ros dans les cellules ? plus de X km de la c?te
   Long<-c(coordinates(d2)[,1],coordinates(grid)[,1][w])
   Lat<-c(coordinates(d2)[,2],coordinates(grid)[,2][w])
   Abundance<-c(d2$Abundance,rep(0,length(w)))
