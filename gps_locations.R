@@ -11,6 +11,8 @@ library(magrittr)
 library(RODBC)
 library(FRutils)
 library(dplyr)
+library(hexbin)
+library(scales)
 
 #save.image("W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Code_R/gps_locations.RData")
 #load("W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Code_R/gps_locations.RData") #contient maintenant le preleaflet2
@@ -42,100 +44,15 @@ kde2pol<-function(k,perc="5%",proj=NULL){
   poly
 }
 
-projected<-"+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"
-mrc.shp <- readOGR(dsn = "W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Data_output/Quebec",layer = "mrc_s")
-municip.shp <- readOGR(dsn = "W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Data_output/Quebec",layer= "munic_s") 
-na <- readOGR(dsn = "W:/PIU/Projet_BanqueDeDonnees/SHAPEFILES/PoliticalBoundaries_Shapefiles/NA_PoliticalDivisions/data/bound_p",layer="boundary_p_v2")
-usa<-na[sort(unique(c((1:nrow(na))[na$NAME%in%c("Quebec / Québec","Nova Scotia / Nouvelle-????cosse","Nunavut","Newfoundland and Labrador / Terre-Neuve-et-Labrador","New Brunswick / Nouveau-Brunswick","Prince Edward Island / ?Zle-du-Prince-????douard","Vermont","New Hampshire","New York","Maine","Massachusetts","Rhode Island","Delaware")],grep("Scotia|Prince",na$NAME)))) ,]
-#usa<-na[sort(unique(c((1:nrow(na))[na$NAME%in%c("Nova Scotia / Nouvelle-????cosse","Nunavut","Newfoundland and Labrador / Terre-Neuve-et-Labrador","New Brunswick / Nouveau-Brunswick","Prince Edward Island / ?Zle-du-Prince-????douard","Vermont","New Hampshire","New York","Maine","Massachusetts","Rhode Island","Delaware")],grep("Scotia|Prince",na$NAME)))) ,]
 
-usa<-spTransform(usa,CRS(projected))
-municip.shp.proj<-spTransform(municip.shp,CRS(projected))
-mrc.shp.proj<-spTransform(mrc.shp,CRS(projected))
-east<-gUnaryUnion(municip.shp.proj[is.na(municip.shp.proj$MUS_NM_MUN),],id=rep(1,nrow(municip.shp.proj[is.na(municip.shp.proj$MUS_NM_MUN),])))
+projected<-"+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"
+
 
 na<-readOGR(dsn="C:/Users/User/Documents/SCF2016_FR/shapefiles",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
 na<-na[na$geonunit%in%c("Greenland","Canada"),]
 na<-gIntersection(na,bbox2pol(na,ex=-1),byid=TRUE)
 na<-spTransform(na,CRS(projected))
 
-
-### build region of interest
-
-windows()
-par(mar=c(0,0,0,0))
-plot(na)
-region <- getpoly()
-region<-region[c(1:nrow(region),1),]
-region<-SpatialPolygons(list(Polygons(list(Polygon(region)),ID=1)),proj4string=CRS(proj4string(municip.shp.proj)))
-b<-bbox(region)
-
-
-s<-10000
-#g<-GridTopology(c(b[1,1],b[2,1]),c(s,s),c(ceiling((b[1,2]-b[1,1])/s),ceiling((b[2,2]-b[2,1])/s)))
-g<-GridTopology(c(b[1,1],b[2,1]),c(s,s),c(ceiling((b[1,2]-b[1,1])/s),ceiling((b[2,2]-b[2,1])/s)))
-g<-SpatialGrid(g)
-grid<-g
-grid<-as(grid,"SpatialPolygons")
-grid<-SpatialPolygonsDataFrame(grid,data=data.frame(id=1:length(grid)),match.ID=FALSE)
-proj4string(grid)<-CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80")
-o<-over(grid,region)
-grid<-grid[!is.na(o),]
-
-
-g1<-!apply(gIntersects(gUnaryUnion(na),grid,byid=TRUE),1,any)
-
-plot(grid)
-plot(grid[g1,],col="blue",add=TRUE)
-
-
-#################
-#g1<-!apply(gIntersects(gUnaryUnion(usa),grid,byid=TRUE),1,any)
-
-
-
-#################
-
-#plot(grid,border="red")
-#o2<-apply(over(grid,usa),1,function(i){any(!is.na(i))})
-#grid<-grid[o2,]
-
-#plot(grid,border="blue")
-#o3<-over(grid,municip.shp.proj[is.na(municip.shp.proj$MUS_NM_MUN),])
-#plot(grid,border="green")
-
-#g<-gCrosses(usa,grid,byid=TRUE)
-#g<-gContains(gUnaryUnion(usa),grid,byid=TRUE)
-#grid<-grid[!apply(g,1,any),]
-
-
-
-#grid<-grid[!is.na(o),]
-
-#g<-gIntersection(grid,usa,unaryUnion_if_byid_false=FALSE)
-
-
-#plot(grid,border="white")
-#plot(usa,add=TRUE)
-#plot(municip.shp.proj,add=TRUE,border="blue")
-#plot(grid,border="red",add=TRUE)
-
-#o<-apply(over(grid,usa),1,function(i){any(!is.na(i))})
-#grid2<-grid[o,]
-#plot(grid2,add=TRUE,col="green")
-#g2<-gIntersection(grid2,usa)
-
-
-
-
-
-
-
-
-
-#fleuve<-municip.shp.proj[is.na(municip.shp.proj$MUS_NM_MUN),]
-#o<-!apply(over(grid,fleuve),1,function(i){all(is.na(i))})
-#g<-gIntersection(grid[o,],fleuve,byid=TRUE)
 
 
 ### FOUS
@@ -164,8 +81,7 @@ coordinates(x)<-~x+y
 proj4string(x)<-CRS("+proj=longlat +datum=NAD83")
 x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 noga<-x
-#o<-over(x,region)
-#x<-x[!is.na(o),]
+
 
 
 ### RTLO
@@ -177,8 +93,6 @@ x$id2<-1
 coordinates(x)<-~x+y
 proj4string(x)<-CRS("+proj=longlat +datum=NAD83")
 x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
-o<-over(x,region)
-x<-x[!is.na(o),]
 rtlo<-x
 #range(substr(strptime(rtlo$date,"%m/%d/%Y %H:%M:%S")),6,10)
 
@@ -189,7 +103,6 @@ d2016<-sqlFetch(db,"Donnees_2016",stringsAsFactors=FALSE)
 odbcClose(db)
 names(d2015)[which(names(d2015)=="Longtitude")]<-"Longitude"
 x<-full_join(d2015,d2016)
-#x<-read.csv("W:/PIU/DONNÉES DE RÉPARTITION DES OISEAUX/GPS2015.csv",stringsAsFactors=FALSE)
 x<-x[!is.na(x$Latitude),]
 x$x<-x$Longitude
 x$y<-x$Latitude
@@ -198,11 +111,18 @@ x$id2<-1
 coordinates(x)<-~x+y
 proj4string(x)<-CRS("+proj=longlat +datum=NAD83")
 x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
-o<-over(x,region)
-x<-x[!is.na(o),]
 x<-x[x$id%in%names(table(x$id)[table(x$id)>2]),]
 razo<-x
 
+### GSGO
+x<-read.table("C:/Users/User/Documents/OIES/Data/data2012_01_17.txt",header=TRUE,stringsAsFactors=FALSE)
+x<-x[x$typ=="gps" & x$xx%in%1:5,]
+x<-x[x$lat>45 & x$lat<50,]
+x<-x[x$lon>(-77),]
+coordinates(x)<-~lon+lat
+proj4string(x)<-CRS("+proj=longlat +datum=NAD83")
+x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
+gsgo<-x
 
 
 
@@ -212,13 +132,11 @@ razo<-x
 
 ### CHOOSE SPECIES
 
-x<-noga 
-
-
+x<-razo
 
 ### BUILD GRID
 
-n<-100
+n<-150 # number of divisions wished in the convex hull bbox
 region<-gConvexHull(x)
 b<-bbox(region)
 s<-round(abs(b[1,2]-b[1,1])/n,0)
@@ -226,17 +144,14 @@ g<-GridTopology(c(b[1,1],b[2,1]),c(s,s),c(ceiling((b[1,2]-b[1,1])/s),ceiling((b[
 g<-SpatialGrid(g)
 grid<-g
 grid<-as(grid,"SpatialPolygons")
+grid2<-spsample(grid,type="hexagonal",cellsize=s)
+grid<-HexPoints2SpatialPolygons(grid2)
 grid<-SpatialPolygonsDataFrame(grid,data=data.frame(id=1:length(grid)),match.ID=FALSE)
 proj4string(grid)<-CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80")
 o<-over(grid,region)
 grid<-grid[!is.na(o),]
 g1<-!apply(gContains(gUnaryUnion(na),grid,byid=TRUE),1,any)
 grid<-grid[g1,]
-plot(grid)
-
-
-
-
 
 
 ### BUILD KERNESL
@@ -244,7 +159,7 @@ plot(grid)
 kmaster<-kde(x=coordinates(x),compute.cont=TRUE)
 #r<-raster(kmaster)
 #plot(r)
-ind<-unique(x$id)
+ind<-names(table(x$id)[table(x$id)>10])  ### on subset ce qui a plus de 10 localisations
 hr<-vector(mode="list",length=length(ind))
 names(hr)<-ind
 for(i in seq_along(ind)){
@@ -274,14 +189,27 @@ for(i in seq_along(hr)){
 tab<-table(lo)
 grid$p<-tab[match(grid$id,names(tab))]/length(hr)
 grid$p<-ifelse(is.na(grid$p),0,grid$p)
-par(mar=c(0,0,0,6))
-plot(x,col="white")
-plot(municip.shp.proj,add=TRUE,col=ifelse(is.na(municip.shp.proj$MUS_NM_MUN),"lightblue2","grey55"),border=NA)
-plot(grid[grid$p>0,],col=colo(grid$p[grid$p>0]),border=NA,add=TRUE)
-legend("topright",inset=c(-0.0,0.25),legend=paste(round(100*seq(0,max(grid$p),length.out=6),0),"%"),fill=colo(seq(0,max(grid$p),length.out=6)),border=NA,cex=1.5,bg="white",xpd=TRUE)
-plot(municip.shp.proj,add=TRUE)
+#par(mar=c(0,0,0,6))
+#plot(x,col="white")
+#plot(municip.shp.proj,add=TRUE,col=ifelse(is.na(municip.shp.proj$MUS_NM_MUN),"lightblue2","grey55"),border=NA)
+#plot(grid[grid$p>0,],col=colo(grid$p[grid$p>0]),border=NA,add=TRUE)
+#legend("topright",inset=c(-0.0,0.25),legend=paste(round(100*seq(0,max(grid$p),length.out=6),0),"%"),fill=colo(seq(0,max(grid$p),length.out=6)),border=NA,cex=1.5,bg="white",xpd=TRUE)
+#plot(municip.shp.proj,add=TRUE)
 
 
+
+par(mar=c(0,0,0,0))
+plot(region,border="white")
+for(i in seq_along(hr)){
+	plot(hr[[i]],col=alpha("red",0.1),border=NA,add=TRUE)
+	progress(i,length(hr))
+}
+
+
+### relation between nb locations and home range surface
+nbloc<-sapply(ind,function(i){sum(i==x$id)})
+surf<-sapply(ind,function(i){gArea(hr[[i]])/(1000*1000)})
+plot(nbloc,surf)
 
 
 rtlo_shp<-grid[grid$p>0,]
@@ -290,11 +218,12 @@ rtlo_shp_ll<-spTransform(rtlo_shp,CRS("+proj=longlat +datum=WGS84"))
 
 #writeOGR(rtlo_shp_ll,dsn="W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Code_R/shiny/www",layer="RTLO_shp",driver="ESRI Shapefile",overwrite_layer=TRUE)
 
+r<-range(rtlo_shp_ll$p)
+se<-seq(r[1],r[2],length.out=6)
 leaflet() %>%
-  addProviderTiles("Stamen.TonerLite",options = providerTileOptions(noWrap = TRUE)) %>%
-	addTiles(group="Base") %>%
-  addPolygons(data=rtlo_shp_ll,stroke=FALSE,fillColor=colo(rtlo_shp_ll$p),popup=rtlo_shp_ll$p,weight=0,fillOpacity=0.6,opacity=0)
-  #colorNumeric("Reds",domain=c(0,1))
+  addProviderTiles("Esri.WorldImagery",options = providerTileOptions(noWrap = TRUE)) %>%
+  addPolygons(data=rtlo_shp_ll,stroke=FALSE,fillColor=colo(rtlo_shp_ll$p),popup=rtlo_shp_ll$p,weight=0,fillOpacity=0.4,opacity=0) %>%
+  addLegend(values=se,color=colo(se),labels=format(100*se,digits=1,nsmall=1),opacity=0.4,position="bottomright",title="% of individual kernel homeranges touching cell")
 
 
 

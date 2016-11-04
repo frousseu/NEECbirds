@@ -6,7 +6,7 @@ library(plyr)
 library(rgeos)
 library(splancs)
 library(dplyr)
-library(tidyr)
+library(tidyr)appartement
 library(rgeos)
 library(RColorBrewer)
 library(mapplots)
