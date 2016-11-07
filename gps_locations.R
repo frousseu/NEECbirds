@@ -116,7 +116,7 @@ razo<-x
 
 ### GSGO
 x<-read.table("C:/Users/User/Documents/OIES/Data/data2012_01_17.txt",header=TRUE,stringsAsFactors=FALSE)
-x<-x[x$typ=="gps" & x$xx%in%1:5,]
+x<-x[x$typ=="gps" & x$xx%in%0:5 & x$good,]
 x<-x[x$lat>45 & x$lat<50,]
 x<-x[x$lon>(-77),]
 coordinates(x)<-~lon+lat
