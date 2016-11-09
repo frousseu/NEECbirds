@@ -6,7 +6,7 @@ library(plyr)
 library(rgeos)
 library(splancs)
 library(dplyr)
-library(tidyr)appartement
+library(tidyr)
 library(rgeos)
 library(RColorBrewer)
 library(mapplots)
@@ -24,12 +24,12 @@ library(akima)
 library(spatstat)
 library(ks)
 
-load("W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Code_R/shiny/urgencesapp/www/urgencesapp.RData")
+load("M:/SCF2016_FR/UrgencesAviR/Dev/urgencesapp/www/urgencesapp.RData")
 d<-d[!is.na(d$Abundance),]
 rm(list=ls()[ls()!="d"])
 gc();gc();
 
-path<-"W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Code_R/NEEC"
+path<-"M:/SCF2016_FR/NEEC"
 
 kde2pol<-function(k,perc="5%",proj=NULL){
   co<-with(k,contourLines(x=eval.points[[1]],y=eval.points[[2]],z=estimate,levels=cont[perc]))
@@ -134,10 +134,10 @@ find.nearest<-function(x,y){
   })
 }
 
-mrc.shp <- readOGR(dsn = "W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Data_output/Quebec",
+mrc.shp <- readOGR(dsn = "R:/PIU/Projet_BanqueDeDonnees/PROJET_R/Data_output/Quebec",
                    layer = "mrc_s",encoding="UTF-8")
 
-municip.shp <- readOGR(dsn = "W:/PIU/Projet_BanqueDeDonnees/PROJET_R/Data_output/Quebec", 
+municip.shp <- readOGR(dsn = "R:/PIU/Projet_BanqueDeDonnees/PROJET_R/Data_output/Quebec", 
                        layer= "munic_s",encoding="UTF-8") 
 
 
@@ -297,7 +297,7 @@ dev.off()
 ### sp grid
 #######################################
 
-png("im1.png",width=12,height=8,units="in",res=300)
+png("M:/SCF2016_FR/NEEC/im1.png",width=12,height=8,units="in",res=300)
 #windows(width=18,height=12)
 sp_grid(x,grid,sp=sp,month=month,val=val)
 dev.off()
@@ -401,8 +401,8 @@ dev.off()
 #### GROUPS
 ############################################
 
-group<-c("Limicoles","Canards barboteurs")
-month<-formatC(1:12,width=2,flag=0)[8:9]
+group<-c("Pélagiques")
+month<-formatC(1:12,width=2,flag=0)[8]
 case<-expand.grid(group=group,month=month,stringsAsFactors=FALSE)
 val<-"q90"
 
@@ -434,8 +434,8 @@ writeOGR(res[sample(1:nrow(res),100),],dsn=path,"grid",driver="ESRI Shapefile",o
 #### GROUPS rqss
 ############################################
 
-png(paste0(path,"/gam_rqss.png"),width=12,height=8,units="in",res=300)
-par(mar=c(0,0,0,0),mfrow=c(2,2))
+png(paste0(path,"/gam_rqss2.png"),width=12,height=8,units="in",res=300)
+par(mar=c(0,0,0,0),mfrow=c(1,1))
 l<-vector(mode="list",nrow(case))
 for(i in seq_len(nrow(case))){
   sp<-unique(d$Nom_FR[d$Groupe_FR%in%case$group[i]])
