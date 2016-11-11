@@ -15,9 +15,9 @@ laea<-"+proj=laea +lat_0=50 +lon_0=-65"
 keep<-c("COMMON NAME","TAXONOMIC ORDER","STATE","LATITUDE","LONGITUDE","OBSERVATION DATE","OBSERVATION COUNT","CATEGORY")
 
 
-e<-fread("M:/SCF2016_FR/ebird/ebd_CA_relAug-2016/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",encoding = "UTF-8", na.strings = "",header = TRUE, sep = "\t", 
+e<-fread("C:/Users/User/Documents/SCF2016_FR/ebird/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",encoding = "UTF-8", na.strings = "",header = TRUE, sep = "\t", 
 									colClasses = rep("character", 44),  # For simplicity
-									verbose = TRUE,autostart=10,nrows=350000,select=keep)
+									verbose = TRUE,autostart=10,nrows=35000,select=keep)
 names(e)<-gsub(" ","_",keep[match(names(e),keep)])
 
 x<-e[!e$STATE%in%c("Alberta","Saskatchewan"),]
