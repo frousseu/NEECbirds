@@ -4,8 +4,37 @@ library(sp)
 library(rgdal)
 library(rgeos)
 library(quantreg)
-library(FRutils)
 library(scales)
+library(dplyr)
+library(RColorBrewer)
+library(tidyr)
+library(spatstat)
+library(raster)
+library(OpenStreetMap)
+library(ks)
+library(FRutils)
+
+kde2pol<-function(k,perc="5%",proj=NULL){
+	co<-with(k,contourLines(x=eval.points[[1]],y=eval.points[[2]],z=estimate,levels=cont[perc]))
+	poly<-lapply(co,function(i){
+		x<-data.frame(i$x,i$y)
+		x<-rbind(x,x[1,]) 
+		x<-SpatialPolygons(list(Polygons(list(Polygon(x)),ID=1)))
+	})
+	poly<-lapply(seq_along(poly),function(i){
+		spChFIDs(poly[[i]], as.character(i))
+	})
+	poly<-do.call("rbind",poly)
+	proj4string(poly)<-CRS(proj)
+	poly
+}
+
+load("D:/ebird/birdgroupings.rda")
+g<-birdgroupings
+rm(birdgroupings)
+g$wetland<-apply(g[,c("Habitat1","Habitat2","Habitat3","Habitat4")],1,function(i){any(i=="we")})
+g<-g[,c("English_Name","Species_gr2")]
+names(g)<-c("sp","group")
 
 #con<-file("M:/SCF2016_FR/ebird/ebd_CA_relAug-2016/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt")
 #open(con)
@@ -21,7 +50,41 @@ keep<-c("COMMON NAME","TAXONOMIC ORDER","STATE","LATITUDE","LONGITUDE","OBSERVAT
 keepn<-c("sp","taxo","state","lat","lon","date","nb","category","sample")
 
 # 29 409 415 rows in there
-#e<-fread("D:/ebird/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",encoding = "UTF-8", na.strings = "",header = TRUE, sep = "\t",colClasses = rep("character", 44),verbose = TRUE,select=keep)#,nrows=30000000) 
+#e<-fread("D:/ebird/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",encoding = "UTF-8", na.strings = "",header = TRUE, sep = "\t",colClasses = rep("character", 44),verbose = TRUE,select=keep)#,nrows=29409415) 
+names(e)<-keepn[match(names(e),keep)]
+
+
+e<-merge(e,g,all=TRUE)
+e<-e[e$category%in%c("species"),] #on perd des formes et qques taxons/formes
+e$month<-substr(e$date,6,7)
+#e<-as.data.table(e)
+
+
+month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
+names(month_comb)<-substr(names(month_comb),1,8)
+
+e$season<-names(month_comb)[match(e$month,month_comb)]
+
+res<-e[,.(nbobs=.N),by=.(group,state,season)]
+res<-res[!is.na(group)]
+res$state_season<-paste0(res$state,res$season)
+res<-res[res$group%in%c("Auks and allies","Cormorants","Dabbling","Diving","Geese","Gulls","Jaegers","Loons and Grebes","Petrels and allies","Shorebirds","Terns"),]
+#res<-res[grep("New|Edw|Scot",res$state),]
+res<-spread(res[,c("group","state_season","nbobs")],state_season,nbobs,fill=0)
+
+options(scipen=20)
+par(mar=c(18,7,6,2))
+barplot(apply(res[,-1],2,identity),border="white",las=2,col=brewer.pal(nrow(res), "Paired"))
+legend("topright",legend=rev(res$group),fill=rev(brewer.pal(nrow(res), "Paired")))
+mtext("Nb of records",2,line=5)
+mtext("Nb of ebird records per group and season",3,line=3)
+
+
+
+
+
+
+
 
 #fwrite(e[e$STATE=="Quebec",],"D:/ebird/ebd_CA_relAug-2016.txt/ebirdQC.csv",sep="\t")
 
@@ -29,108 +92,101 @@ e<-fread("D:/ebird/ebd_CA_relAug-2016.txt/ebirdQC.csv",encoding = "UTF-8", na.st
 
 names(e)<-keepn[match(names(e),keep)]
 
-x<-e[!e$state%in%c("Alberta","Saskatchewan"),]
+x<-e[!state%in%c("Alberta","Saskatchewan"),]
 x<-x[category%in%c("species"),]
+
 x$taxo<-as.numeric(x$taxo)
 temp<-unique(x[,c("sp","taxo")])
 temp<-temp[order(temp$taxo),]
-x<-x[x$taxo<=2324,]
 x$nb<-as.numeric(x$nb)
 x$nb<-ifelse(is.na(x$nb),1,x$nb)
 x$lon<-as.numeric(x$lon)
 x$lat<-as.numeric(x$lat)
+x<-x[lat<=53,] #on garde ce qui est en bas
 
 
-sp<-"Northern Shoveler"
-month<-"04"
+#################################
+### grouping
+#################################
+
+sp<-"Semipalmated Sandpiper"
+month<-"07"
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPoints(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll))
 nb<-x$nb[m]
 lat<-x$lat[m]
 lon<-x$lon[m]
-grid<-hexgrid(xs,width=20000,convex=FALSE)
+grid<-FRutils:::hexgrid(xs,width=NULL,n=100,convex=FALSE)
+#x<-x[x$taxo<=2324,]
+o<-over(xs,grid)
+boxplot(nb~o$id)
+xx<-x[m,]
 
-plot(xs,col="white")
-#plot(grid,add=TRUE,col=alpha("red",0.25))
-#g1<-!apply(gContains(gUnaryUnion(na),grid,byid=TRUE),1,any)
-#grid<-grid[g1,]
+
+
+
+devtools:::install_github("ndphillips/yarrr")
+library("yarrr")
+
+pirateplot(nb~o$id,data=xx
+
+)
+
+
+#windows()
+#par(mar=c(0,0,0,0))
+
+
+#####################################
+### RQSS
+#####################################
+
 fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.005),tau=0.90)
-#plot(fit,col="red",asp=1.5)
 
 g<-gBuffer(gConvexHull(xs),width=-0.001)
 o<-over(SpatialPoints(coordinates(grid),CRS(proj4string(grid))),g)
-k<-!is.na(o)
-X<-coordinates(grid)[k,1]
-Y<-coordinates(grid)[k,2]
-
+w<-!is.na(o)
+X<-coordinates(grid)[w,1]
+Y<-coordinates(grid)[w,2]
 p<-predict(fit,data.frame(lon=X,lat=Y,stringsAsFactors=FALSE))[,1]
 p<-ifelse(p<0,0,p)
-plot(grid[k,],col=colo.scale(p,c("red","white")),border="white",add=TRUE)
-plot(xs,add=TRUE,pch=1,col=alpha("black",0.005))
-plot(na,add=TRUE)
+
+cols<-rev(c("white","yellow","red","darkred"))
+#trans<-function(x,min=0.05){ans<-sqrt(x)/max(sqrt(x));ans<-ifelse(ans<min,min,ans);ans}
+plot(xs,col="white")
+plot(na,col="grey85",border="grey60",add=TRUE)
+plot(grid[w,],col=colo.scale(sqrt(p),cols),border=NA,add=TRUE)
+leg<-(seq(sqrt(1),sqrt(max(p)),length.out=12))^2
+col<-tail(colo.scale(sqrt(c(p,leg)),cols),length(leg))
+leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
+legend("topright",legend=rev(leg),fill=rev(col),cex=2)
+#plot(xs,add=TRUE,pch=1,col=alpha("black",0.005))
+#plot(na,add=TRUE)
 
 
-xfit<-x[x$sp%in%sp,]
-lon<-xfit$lon
-lat<-xfit$lat
-fit <- rqss(nb ~ qss(cbind(lon,lat),lambda=0.05),data=xfit,tau=0.90)
+######################################
+### KERNELS KDE
+######################################
 
-g<-gBuffer(gConvexHull(dfit),width=-1000)
-o<-over(SpatialPoints(coordinates(grid),CRS(proj4string(dfit))),g)
-k<-!is.na(o)
-X<-coordinates(grid)[k,1]
-Y<-coordinates(grid)[k,2]
-p<-predict(fit,data.frame(Long=X,Lat=Y,stringsAsFactors=FALSE))[,1]
-p<-ifelse(p<0,0,p)
+H<-Hpi.diag(coordinates(xs))
+H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic)
+#H1<-H*matrix(c(0.5,0,0,0.5),nrow=2) 
+H1<-H*matrix(c(0.25,0,0,0.25),nrow=2) 
+#H1<-matrix(c(50000000,0,0,50000000),nrow=2) 
 
-#windows(width=18,height=12)
-png("im2.png",width=12,height=8,units="in",res=300)
-par(mar=c(0,0,0,0))
-plot(map.osm,raster=TRUE)
-#plot(SpatialPoints(cbind(X,Y)),col=alpha(colo.scale(p/max(p))),pch=16,cex=3*(p/max(p)),add=TRUE)
-plot(spTransform(grid[k,],osm()),col=alpha(colo.scale(p/max(p)),0.5),border=NA,add=TRUE)
-#plot(spTransform(dfit,osm()),add=TRUE,pch=1)
-#plot(g,add=TRUE)
-leg<-exp(seq(log(2),log(max(p)),length.out=20))
-col<-tail(colo(c(p,leg)/max(p),0.5),length(p))
-nb<-round(leg,0)
-legend("left",col=rev(col),pch=15,pt.cex=2.5,legend=rev(nb),border=NA,bty="n",inset=c(0.05,0),title="No. of individuals\nat the 90% quantile")
-dev.off()
+k<-kde(x=coordinates(xs),compute.cont=TRUE,H=H1,w=nb)
+kp<-kde2pol(k,perc="75%",proj=proj4string(grid))
+plot(kp,add=TRUE,col=alpha("darkgreen",0.25),border="darkgreen")
 
 
 
-
-
-
-
-
-
-
-
-
-h<-readLines("M:/SCF2016_FR/ebird/ebd_CA_relAug-2016/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",n=1)
-h<-strsplit(h,"\t")
-h<-h[[1]]
-r<-readLines("C:/Users/User/Documents/SCF2016_FR/ebird/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",n=2)
-#writeLines(r,"M:/SCF2016_FR/ebird/ebd_CA_relAug-2016/ebd_CA_relAug-2016.txt/test.txt")
-
-
-r<-strsplit(r,"\t")
-r[[1]]<-gsub(" ","_",r[[1]])
-
-x<-as.data.frame(do.call("rbind",r[-1]),stringsAsFactors=FALSE)
-names(x)<-r[[1]]
-
-head(x)
-
-#scan("M:/SCF2016_FR/ebird/ebd_CA_relAug-2016/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",what=list(NULL),sep='\n',skip=1000000,nlines=20)
-
-x<-read.csv.ffdf(file="M:/SCF2016_FR/ebird/ebd_CA_relAug-2016/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",skip=100000,sep="\t",first.rows=30000,next.rows=30000,nrows=100000,VERBOSE=TRUE)
-
-
-
-x<-x[x[,"CATEGORY"]=="species",c("COMMON.NAME","TAXONOMIC.ORDER","STATE","LATITUDE","LONGITUDE","OBSERVATION.DATE","OBSERVATION.COUNT")]
-x<-as.data.frame(x)
+#
+#
+#
+#
+#
+#
+#
 
 
 
@@ -138,30 +194,70 @@ x<-as.data.frame(x)
 
 
 
+#####################################
+### KERNELS spatstat
+#####################################
+
+b<-bbox(xs)
+hppp<-ppp(lon,lat,xrange=c(b[1,1],b[1,2]),yrange=c(b[2,1],b[2,2]),marks=nb)
+spatstat.options(npixel=c(1000,1000))
+h<-density(hppp,sigma=0.005,weights=marks(hppp),positive=FALSE)
+m<-t(h$v)
+val<-quantile(m,0.997)
+m[]<-ifelse(m<val,NA,val)
+dat1=list()
+dat1$x=seq(h$xcol[1],by=h$xstep,len=h$dim[1])
+dat1$y=seq(h$yrow[1],by=h$ystep,len=h$dim[2])
+dat1$z=m
+r<-raster(dat1)
+#plot(map.osm) 
+#plot(r,bty="n",axes=FALSE,box=FALSE,xpd=FALSE,col="red")
+#plot(fleuve,add=TRUE)#,border=gray(0.5,0.3))
+#text(par("usr")[1]+4,par("usr")[4]-0,paste(c("nb mentions:",nrow(d2),"range:",range(d2$Abundance)),collapse=" "),xpd=TRUE,adj=c(0,1))
+pr<-rasterToPolygons(r,dissolve=TRUE)
+pr<-spChFIDs(pr,sp)
+res<-spTransform(pr,CRS(proj4string(grid)))
+plot(pr,add=TRUE,col=alpha("darkgreen",0.75),border=NA)
+#plot(spTransform(pr,osm()),col=alpha("red",0.5),border=NA)
 
 
 
 
-chunksize=1000
 
-con <- file("M:/SCF2016_FR/ebird/ebd_CA_relAug-2016/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt", "r", blocking = FALSE) #create file connection
-d=scan(con,what="character",nlines=1,sep="\t") #remove the header line
-se<-seq(1,3000,chunksize)
-l<-vector(mode="list",length=length(se))
-n<-1
-for(i in se){
-	
-	d=scan(con,what="character",nlines=chunksize,sep="\t",quiet=TRUE)
-	d=t(matrix(d,nrow=44))
-	d=data.frame(d)
-	l[[n]]<-d
-	n<-n+1
-	
-	
-	
-	#Do stuff with d....
-	
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
