@@ -13,6 +13,7 @@ library(raster)
 library(OpenStreetMap)
 library(ks)
 library(FRutils)
+library(yarrr)
 
 kde2pol<-function(k,perc="5%",proj=NULL){
 	co<-with(k,contourLines(x=eval.points[[1]],y=eval.points[[2]],z=estimate,levels=cont[perc]))
@@ -41,6 +42,26 @@ names(g)<-c("sp","group")
 #d<-read.table(con,skip=5000000,nrow=1,sep="\t")
 
 na<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
+na<-na[na$admin%in%c("Canada","United States of America"),]
+na<-na[na$name%in%c("Quebec","Nova Scotia","Vermont","New York","New Hampshire","QuÃ©bec","Prince Edward Island","New Brunswick","Newfoundland and Labrador","Maine"),]
+
+land<-spTransform(na,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
+
+
+g1<-gBuffer(gUnaryUnion(land),width=-20000)
+g2<-gBuffer(gUnaryUnion(land),width=5000)
+
+plot(land)
+plot(g1,border="green",add=TRUE)
+plot(g2,border="red",add=TRUE)
+o1<-over(grid,g1)
+o2<-over(grid,g2)
+plot(grid,add=TRUE,col=ifelse(is.na(o1) & !is.na(o2),alpha("red",0.5),"grey85"),border=NA)
+
+
+
+
+
 
 ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 prj<-"+proj=utm +zone=22 +datum=NAD83 +ellps=GRS80"
@@ -50,7 +71,7 @@ keep<-c("COMMON NAME","TAXONOMIC ORDER","STATE","LATITUDE","LONGITUDE","OBSERVAT
 keepn<-c("sp","taxo","state","lat","lon","date","nb","category","sample")
 
 # 29 409 415 rows in there
-#e<-fread("D:/ebird/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",encoding = "UTF-8", na.strings = "",header = TRUE, sep = "\t",colClasses = rep("character", 44),verbose = TRUE,select=keep)#,nrows=29409415) 
+e<-fread("D:/ebird/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",encoding = "UTF-8", na.strings = "",header = TRUE, sep = "\t",colClasses = rep("character", 44),verbose = TRUE,select=keep,nrows=29409415)
 names(e)<-keepn[match(names(e),keep)]
 
 
@@ -92,7 +113,7 @@ e<-fread("D:/ebird/ebd_CA_relAug-2016.txt/ebirdQC.csv",encoding = "UTF-8", na.st
 
 names(e)<-keepn[match(names(e),keep)]
 
-x<-e[!state%in%c("Alberta","Saskatchewan"),]
+x<-e[state%in%c("Quebec","Nova Scotia","New Brunswick","Prince Edward Island","Newfoundland and Labrador"),]
 x<-x[category%in%c("species"),]
 
 x$taxo<-as.numeric(x$taxo)
@@ -102,35 +123,31 @@ x$nb<-as.numeric(x$nb)
 x$nb<-ifelse(is.na(x$nb),1,x$nb)
 x$lon<-as.numeric(x$lon)
 x$lat<-as.numeric(x$lat)
-x<-x[lat<=53,] #on garde ce qui est en bas
+x<-x[lat<=52,] #on garde ce qui est en bas
 
 
 #################################
 ### grouping
 #################################
 
-sp<-"Semipalmated Sandpiper"
+sp<-"Herring Gull"
 month<-"07"
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPoints(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll))
 nb<-x$nb[m]
 lat<-x$lat[m]
 lon<-x$lon[m]
-grid<-FRutils:::hexgrid(xs,width=NULL,n=100,convex=FALSE)
+xs2<-spTransform(xs,CRS(proj4string(land)))
+xs2<-xs
+grid<-FRutils:::hexgrid(xs2,width=NULL,n=100,convex=TRUE)
 #x<-x[x$taxo<=2324,]
 o<-over(xs,grid)
-boxplot(nb~o$id)
+#boxplot(nb~o$id)
 xx<-x[m,]
-
-
-
-
-devtools:::install_github("ndphillips/yarrr")
-library("yarrr")
-
-pirateplot(nb~o$id,data=xx
-
-)
+xx$id<-o$id
+xx[,n:=.N,by=id] #pass by reference no assignment
+ids<-unique(xx$id[which(xx$nb>50 | xx$n>100)])
+#pirateplot(nb~id,data=xx[xx$id%in%ids,],quant=0.9)
 
 
 #windows()
@@ -151,6 +168,8 @@ Y<-coordinates(grid)[w,2]
 p<-predict(fit,data.frame(lon=X,lat=Y,stringsAsFactors=FALSE))[,1]
 p<-ifelse(p<0,0,p)
 
+#png(
+
 cols<-rev(c("white","yellow","red","darkred"))
 #trans<-function(x,min=0.05){ans<-sqrt(x)/max(sqrt(x));ans<-ifelse(ans<min,min,ans);ans}
 plot(xs,col="white")
@@ -160,7 +179,7 @@ leg<-(seq(sqrt(1),sqrt(max(p)),length.out=12))^2
 col<-tail(colo.scale(sqrt(c(p,leg)),cols),length(leg))
 leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
 legend("topright",legend=rev(leg),fill=rev(col),cex=2)
-#plot(xs,add=TRUE,pch=1,col=alpha("black",0.005))
+plot(xs,add=TRUE,pch=1,col=alpha("black",0.5),cex=10*nb/max(nb))
 #plot(na,add=TRUE)
 
 
@@ -175,7 +194,7 @@ H1<-H*matrix(c(0.25,0,0,0.25),nrow=2)
 #H1<-matrix(c(50000000,0,0,50000000),nrow=2) 
 
 k<-kde(x=coordinates(xs),compute.cont=TRUE,H=H1,w=nb)
-kp<-kde2pol(k,perc="75%",proj=proj4string(grid))
+kp<-kde2pol(k,perc="50%",proj=proj4string(grid))
 plot(kp,add=TRUE,col=alpha("darkgreen",0.25),border="darkgreen")
 
 
