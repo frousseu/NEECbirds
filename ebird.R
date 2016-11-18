@@ -48,7 +48,7 @@ na<-na[na$name%in%c("Quebec","Nova Scotia","Vermont","New York","New Hampshire",
 land<-spTransform(na,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 
 
-g1<-gBuffer(gUnaryUnion(land),width=-20000)
+g1<-gBuffer(gUnaryUnion(land),width=-10000)
 g2<-gBuffer(gUnaryUnion(land),width=5000)
 
 plot(land)
@@ -130,19 +130,21 @@ x<-x[lat<=52,] #on garde ce qui est en bas
 ### grouping
 #################################
 
-sp<-"Herring Gull"
-month<-"07"
+sp<-"Black Scoter"
+month<-"10"
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPoints(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll))
-nb<-x$nb[m]
-lat<-x$lat[m]
-lon<-x$lon[m]
-xs2<-spTransform(xs,CRS(proj4string(land)))
-xs2<-xs
-grid<-FRutils:::hexgrid(xs2,width=NULL,n=100,convex=TRUE)
+xs<-spTransform(xs,CRS(proj4string(land)))
+grid<-FRutils:::hexgrid(xs,width=NULL,n=100,convex=TRUE)
 #x<-x[x$taxo<=2324,]
 o<-over(xs,grid)
 #boxplot(nb~o$id)
+
+nb<-x$nb[m]
+lat<-coordinates(xs)[,2]
+lon<-coordinates(xs)[,1]
+
+
 xx<-x[m,]
 xx$id<-o$id
 xx[,n:=.N,by=id] #pass by reference no assignment
@@ -158,30 +160,31 @@ ids<-unique(xx$id[which(xx$nb>50 | xx$n>100)])
 ### RQSS
 #####################################
 
-fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.005),tau=0.90)
+fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.0005),tau=0.99)
 
-g<-gBuffer(gConvexHull(xs),width=-0.001)
-o<-over(SpatialPoints(coordinates(grid),CRS(proj4string(grid))),g)
-w<-!is.na(o)
+g<-gBuffer(gConvexHull(xs),width=-1000)
+o1<-over(SpatialPoints(coordinates(grid),CRS(proj4string(grid))),g)
+o2<-over(grid,xs)
+w<-!is.na(o1) & !is.na(o2) 
 X<-coordinates(grid)[w,1]
 Y<-coordinates(grid)[w,2]
 p<-predict(fit,data.frame(lon=X,lat=Y,stringsAsFactors=FALSE))[,1]
 p<-ifelse(p<0,0,p)
 
-#png(
+
 
 cols<-rev(c("white","yellow","red","darkred"))
 #trans<-function(x,min=0.05){ans<-sqrt(x)/max(sqrt(x));ans<-ifelse(ans<min,min,ans);ans}
 plot(xs,col="white")
-plot(na,col="grey85",border="grey60",add=TRUE)
+plot(land,col="grey90",border="grey70",add=TRUE)
 plot(grid[w,],col=colo.scale(sqrt(p),cols),border=NA,add=TRUE)
 leg<-(seq(sqrt(1),sqrt(max(p)),length.out=12))^2
 col<-tail(colo.scale(sqrt(c(p,leg)),cols),length(leg))
 leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
 legend("topright",legend=rev(leg),fill=rev(col),cex=2)
-plot(xs,add=TRUE,pch=1,col=alpha("black",0.5),cex=10*nb/max(nb))
-#plot(na,add=TRUE)
 
+#plot(g1,border="green",add=TRUE)
+#plot(g2,border="red",add=TRUE)
 
 ######################################
 ### KERNELS KDE
@@ -190,16 +193,17 @@ plot(xs,add=TRUE,pch=1,col=alpha("black",0.5),cex=10*nb/max(nb))
 H<-Hpi.diag(coordinates(xs))
 H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic)
 #H1<-H*matrix(c(0.5,0,0,0.5),nrow=2) 
-H1<-H*matrix(c(0.25,0,0,0.25),nrow=2) 
+H1<-H*matrix(c(0.2,0,0,0.2),nrow=2) 
 #H1<-matrix(c(50000000,0,0,50000000),nrow=2) 
 
 k<-kde(x=coordinates(xs),compute.cont=TRUE,H=H1,w=nb)
 kp<-kde2pol(k,perc="50%",proj=proj4string(grid))
-plot(kp,add=TRUE,col=alpha("darkgreen",0.25),border="darkgreen")
+plot(kp,add=TRUE,col=alpha("blue",0.10),border="blue")
 
 
+plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
 
-#
+
 #
 #
 #
