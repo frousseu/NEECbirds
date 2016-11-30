@@ -48,18 +48,12 @@ na<-na[na$name%in%c("Quebec","Nova Scotia","Vermont","New York","New Hampshire",
 land<-spTransform(na,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 
 
-g1<-gBuffer(gUnaryUnion(land),width=-10000)
+g1<-gBuffer(gUnaryUnion(land),width=-5000)
 g2<-gBuffer(gUnaryUnion(land),width=5000)
+coast<-gDifference(g2,g1)
 
 plot(land)
-plot(g1,border="green",add=TRUE)
-plot(g2,border="red",add=TRUE)
-o1<-over(grid,g1)
-o2<-over(grid,g2)
-plot(grid,add=TRUE,col=ifelse(is.na(o1) & !is.na(o2),alpha("red",0.5),"grey85"),border=NA)
-
-
-
+plot(coast,col=alpha("blue",0.5),border=alpha("blue",0.5),add=TRUE)
 
 
 
@@ -130,58 +124,72 @@ x<-x[lat<=52,] #on garde ce qui est en bas
 ### grouping
 #################################
 
-sp<-"Black Scoter"
-month<-"10"
+sp<-"Common Murre"
+group<-"Auks and allies"
+month<-"07"
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
-xs<-SpatialPoints(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll))
+xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
 xs<-spTransform(xs,CRS(proj4string(land)))
+o<-over(xs,coast)
+xs<-xs[!is.na(o),]
 grid<-FRutils:::hexgrid(xs,width=NULL,n=100,convex=TRUE)
-#x<-x[x$taxo<=2324,]
-o<-over(xs,grid)
 #boxplot(nb~o$id)
 
-nb<-x$nb[m]
+nb<-xs$nb
 lat<-coordinates(xs)[,2]
 lon<-coordinates(xs)[,1]
 
-
-xx<-x[m,]
+xx<-as.data.table(xs@data)
+o<-over(xs,grid)
 xx$id<-o$id
 xx[,n:=.N,by=id] #pass by reference no assignment
-ids<-unique(xx$id[which(xx$nb>50 | xx$n>100)])
+#ids<-unique(xx$id[which(xx$nb>50 | xx$n>100)])
 #pirateplot(nb~id,data=xx[xx$id%in%ids,],quant=0.9)
 
+### keep coastal part of grid
+o<-over(grid,coast)
+grid<-grid[!is.na(o),]
+
+### add zeros
+o<-apply(over(grid,xs),1,function(j){all(is.na(j))})
+addlat<-jitter(rep(coordinates(grid[o,])[,2],times=10),amount=5000)
+addlon<-jitter(rep(coordinates(grid[o,])[,1],times=10),amount=5000)
+addnb<-rep(0,length(addlat))
+lat<-c(lat,addlat)
+lon<-c(lon,addlon)
+nb<-c(nb,addnb)
 
 #windows()
-#par(mar=c(0,0,0,0))
 
 
 #####################################
 ### RQSS
 #####################################
 
-fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.0005),tau=0.99)
+fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.005),tau=0.80)
 
 g<-gBuffer(gConvexHull(xs),width=-1000)
 o1<-over(SpatialPoints(coordinates(grid),CRS(proj4string(grid))),g)
-o2<-over(grid,xs)
+o2<-apply(over(grid,xs),1,function(j){all(is.na(j))})
 w<-!is.na(o1) & !is.na(o2) 
 X<-coordinates(grid)[w,1]
 Y<-coordinates(grid)[w,2]
 p<-predict(fit,data.frame(lon=X,lat=Y,stringsAsFactors=FALSE))[,1]
 p<-ifelse(p<0,0,p)
 
-
-
 cols<-rev(c("white","yellow","red","darkred"))
 #trans<-function(x,min=0.05){ans<-sqrt(x)/max(sqrt(x));ans<-ifelse(ans<min,min,ans);ans}
+
+layout(matrix(c(1,2),ncol=1))
+par(mar=c(1,0,0,0))
 plot(xs,col="white")
-plot(land,col="grey90",border="grey70",add=TRUE)
+plot(land,col="grey95",border="grey75",add=TRUE)
 plot(grid[w,],col=colo.scale(sqrt(p),cols),border=NA,add=TRUE)
 leg<-(seq(sqrt(1),sqrt(max(p)),length.out=12))^2
 col<-tail(colo.scale(sqrt(c(p,leg)),cols),length(leg))
 leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
-legend("topright",legend=rev(leg),fill=rev(col),cex=2)
+legend("right",legend=rev(leg),fill=rev(col),cex=1.5,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0))
+plot(land,border="grey75",add=TRUE)
 
 #plot(g1,border="green",add=TRUE)
 #plot(g2,border="red",add=TRUE)
@@ -191,29 +199,60 @@ legend("topright",legend=rev(leg),fill=rev(col),cex=2)
 ######################################
 
 H<-Hpi.diag(coordinates(xs))
-H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic)
+H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
 #H1<-H*matrix(c(0.5,0,0,0.5),nrow=2) 
-H1<-H*matrix(c(0.2,0,0,0.2),nrow=2) 
+H1<-H*matrix(c(0.1,0,0,0.1),nrow=2) 
 #H1<-matrix(c(50000000,0,0,50000000),nrow=2) 
 
 k<-kde(x=coordinates(xs),compute.cont=TRUE,H=H1,w=nb)
-kp<-kde2pol(k,perc="50%",proj=proj4string(grid))
-plot(kp,add=TRUE,col=alpha("blue",0.10),border="blue")
+kp25<-kde2pol(k,perc="75%",proj=proj4string(grid))
+kp50<-kde2pol(k,perc="50%",proj=proj4string(grid))
+kp75<-kde2pol(k,perc="25%",proj=proj4string(grid))
+kp95<-kde2pol(k,perc="5%",proj=proj4string(grid))
 
+par(mar=c(1,0,0,0))
+plot(xs,col="white")
+plot(land,col="grey95",border="grey75",add=TRUE)
+plot(kp25,add=TRUE,col=alpha("red",0.50),border=NA)
+plot(kp50,add=TRUE,col=alpha("red",0.40),border=NA)
+plot(kp75,add=TRUE,col=alpha("red",0.30),border=NA)
+plot(kp95,add=TRUE,col=alpha("red",0.20),border=NA)
+#plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
 
-plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
-
-
+legend("right",fill=alpha("red",c(1,0.9,0.5,0.2)),legend=paste(c(25,50,75,95),"%"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0))
+#
+#
+par(mar=c(2,2,0,0),new=TRUE)
+h<-hist(xs$nb,breaks=seq(0,max(xs$nb),by=20),plot=FALSE)
+h<-hist(xs$nb,breaks=seq(0,max(xs$nb),by=20),col="red",border=ifelse(h$counts,"red",NA),xaxt="n",yaxt="n",)
+axis(1)
+axis(2)
 #
 #
 #
-#
-#
-#
 
 
+windows()
+par(mar=c(0,0,0,0))
+plot(xs,col="white")
+plot(land,col="grey95",border="grey75",add=TRUE)
+plot(gIntersection(bbox2pol(proj4string=proj4string(coast)),coast),col=alpha("blue",0.2),border=NA,add=TRUE)
+plot(kp25,col=alpha("darkred",0.65),border=NA,add=TRUE)
+plot(gSymdifference(kp50,kp25),col=alpha("red",0.75),border=NA,add=TRUE)
+plot(gSymdifference(kp75,kp50),col=alpha("orange",0.75),border=NA,add=TRUE)
+plot(gSymdifference(kp95,kp75),col=alpha("yellow",0.75),border=NA,add=TRUE)
+legend("right",fill=alpha(c("yellow","orange","red","darkred"),0.75),legend=paste(c("95","75","50","25"),"%"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0))
 
 
+par(mar=c(0,0,0,0))
+plot(xs,col="white")
+plot(land,col="grey95",border="grey75",add=TRUE)
+plot(gIntersection(bbox2pol(proj4string=proj4string(coast)),coast),col=alpha("blue",0.2),border=NA,add=TRUE)
+plot(gIntersection(coast,kp25),col=alpha("darkred",0.65),border=NA,add=TRUE)
+plot(gIntersection(coast,gSymdifference(kp50,kp25)),col=alpha("red",0.75),border=NA,add=TRUE)
+plot(gIntersection(coast,gSymdifference(kp75,kp50)),col=alpha("orange",0.75),border=NA,add=TRUE)
+plot(gIntersection(coast,gSymdifference(kp95,kp75)),col=alpha("yellow",0.75),border=NA,add=TRUE)
+legend("right",fill=alpha(c("yellow","orange","red","darkred"),0.75),legend=paste(c("95","75","50","25"),"%"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0))
 
 
 
