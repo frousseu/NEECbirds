@@ -41,6 +41,8 @@ names(g)<-c("sp","group")
 #open(con)
 #d<-read.table(con,skip=5000000,nrow=1,sep="\t")
 
+co<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
+
 na<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
 na<-na[na$admin%in%c("Canada","United States of America"),]
 na<-na[na$name%in%c("Quebec","Nova Scotia","Vermont","New York","New Hampshire","QuÃ©bec","Prince Edward Island","New Brunswick","Newfoundland and Labrador","Maine"),]
@@ -51,9 +53,10 @@ land<-spTransform(na,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 g1<-gBuffer(gUnaryUnion(land),width=-5000)
 g2<-gBuffer(gUnaryUnion(land),width=5000)
 coast<-gDifference(g2,g1)
-
+coastw<-gDifference(coast,land)
 plot(land)
-plot(coast,col=alpha("blue",0.5),border=alpha("blue",0.5),add=TRUE)
+plot(coastw,add=TRUE,col="blue",border=NA)
+
 
 
 
@@ -124,9 +127,9 @@ x<-x[lat<=52,] #on garde ce qui est en bas
 ### grouping
 #################################
 
-sp<-"Common Murre"
+sp<-"Semipalmated Sandpiper"
 group<-"Auks and allies"
-month<-"07"
+month<-c("07","08","09","10")
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
 xs<-spTransform(xs,CRS(proj4string(land)))
@@ -204,27 +207,35 @@ H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions 
 H1<-H*matrix(c(0.1,0,0,0.1),nrow=2) 
 #H1<-matrix(c(50000000,0,0,50000000),nrow=2) 
 
+### GET POLYGONS
 k<-kde(x=coordinates(xs),compute.cont=TRUE,H=H1,w=nb)
-kp25<-kde2pol(k,perc="75%",proj=proj4string(grid))
-kp50<-kde2pol(k,perc="50%",proj=proj4string(grid))
-kp75<-kde2pol(k,perc="25%",proj=proj4string(grid))
-kp95<-kde2pol(k,perc="5%",proj=proj4string(grid))
+kp<-list()
+perc<-c(25,50,75,95)
+trans<-c(0.8,0.6,0.4,0.2)
+cols<-c("darkred","red","orange","yellow")
+for(i in seq_along(perc)){
+  kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(grid)) # extract polygons
+}
+for(i in rev(seq_along(kp)[-1])){
+	kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]]) # keep non overlapping parts
+}
 
+### PLOT POLYGONS
 par(mar=c(1,0,0,0))
 plot(xs,col="white")
 plot(land,col="grey95",border="grey75",add=TRUE)
-plot(kp25,add=TRUE,col=alpha("red",0.50),border=NA)
-plot(kp50,add=TRUE,col=alpha("red",0.40),border=NA)
-plot(kp75,add=TRUE,col=alpha("red",0.30),border=NA)
-plot(kp95,add=TRUE,col=alpha("red",0.20),border=NA)
+for(i in rev(seq_along(perc))){
+	plot(kp[[i]],add=TRUE,col=alpha("red",trans[i]),border=NA)
+}
 #plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
+legend("right",fill=alpha("red",trans),legend=paste(perc,"%"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0))
+#
+#
 
-legend("right",fill=alpha("red",c(1,0.9,0.5,0.2)),legend=paste(c(25,50,75,95),"%"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0))
-#
-#
+### BARPLOT ABUNDANCE
 par(mar=c(2,2,0,0),new=TRUE)
 h<-hist(xs$nb,breaks=seq(0,max(xs$nb),by=20),plot=FALSE)
-h<-hist(xs$nb,breaks=seq(0,max(xs$nb),by=20),col="red",border=ifelse(h$counts,"red",NA),xaxt="n",yaxt="n",)
+h<-hist(xs$nb,breaks=seq(0,max(xs$nb),by=20),col=alpha("red",0.5),border=ifelse(h$counts,"red",NA),xaxt="n",yaxt="n",)
 axis(1)
 axis(2)
 #
@@ -232,27 +243,51 @@ axis(2)
 #
 
 
-windows()
-par(mar=c(0,0,0,0))
+####################################################################
+### FINAL KERNEL OUTPUT
+####################################################################
+
+### plot the look of the output
+par(mar=c(4,4,0,0),mfrow=c(1,1))
 plot(xs,col="white")
 plot(land,col="grey95",border="grey75",add=TRUE)
-plot(gIntersection(bbox2pol(proj4string=proj4string(coast)),coast),col=alpha("blue",0.2),border=NA,add=TRUE)
-plot(kp25,col=alpha("darkred",0.65),border=NA,add=TRUE)
-plot(gSymdifference(kp50,kp25),col=alpha("red",0.75),border=NA,add=TRUE)
-plot(gSymdifference(kp75,kp50),col=alpha("orange",0.75),border=NA,add=TRUE)
-plot(gSymdifference(kp95,kp75),col=alpha("yellow",0.75),border=NA,add=TRUE)
-legend("right",fill=alpha(c("yellow","orange","red","darkred"),0.75),legend=paste(c("95","75","50","25"),"%"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0))
+b<-bbox2pol(proj4string=proj4string(coastw))
+plot(gIntersection(coastw,b,byid=TRUE),col=alpha("blue",0.15),border=NA,add=TRUE)
+for(i in rev(seq_along(perc))){
+  plot(kp[[i]],add=TRUE,col=cols[i],border=NA)
+	 #plot(gIntersection(coastw,kp[[i]],byid=TRUE),add=TRUE,col=cols[i],border=NA)
+}
+#plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
+
+### get an histogram of the size of each record
+h<-lapply(kp,function(i){
+  o<-over(xs,i)
+  res<-xs$nb[!is.na(o)]
+  brks<-c(0,10,20,50,100,200,500,1000,2000,5000,10000,20000,50000,100000,200000,500000)
+  brks<-brks[brks<=max(xs$nb)]
+  res<-cut(res,breaks=brks)
+  table(res)
+})
+
+### add the histogram to the plot
+par(new=TRUE)
+barplot(do.call("rbind",h),col=alpha(cols,0.35),beside=TRUE,border=NA,xlab="Classe d'abondance",ylab="Nombre de mentions")
+
+### LEAFLET
+
+kpc<-lapply(kp,function(i){gIntersection(coastw,i,byid=TRUE)})
 
 
-par(mar=c(0,0,0,0))
-plot(xs,col="white")
-plot(land,col="grey95",border="grey75",add=TRUE)
-plot(gIntersection(bbox2pol(proj4string=proj4string(coast)),coast),col=alpha("blue",0.2),border=NA,add=TRUE)
-plot(gIntersection(coast,kp25),col=alpha("darkred",0.65),border=NA,add=TRUE)
-plot(gIntersection(coast,gSymdifference(kp50,kp25)),col=alpha("red",0.75),border=NA,add=TRUE)
-plot(gIntersection(coast,gSymdifference(kp75,kp50)),col=alpha("orange",0.75),border=NA,add=TRUE)
-plot(gIntersection(coast,gSymdifference(kp95,kp75)),col=alpha("yellow",0.75),border=NA,add=TRUE)
-legend("right",fill=alpha(c("yellow","orange","red","darkred"),0.75),legend=paste(c("95","75","50","25"),"%"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0))
+leaflet() %>%
+	addProviderTiles("Esri.WorldImagery",options = providerTileOptions(noWrap = TRUE)) %>%
+	#addPolygons(data=spTransform(kpc[[1]],ll),stroke=FALSE,fillColor=cols[1],weight=0,fillOpacity=0.7,opacity=0) %>% 
+ #addPolygons(data=spTransform(kpc[[2]],ll),stroke=FALSE,fillColor=cols[2],weight=0,fillOpacity=0.7,opacity=0) %>% 
+ #addPolygons(data=spTransform(kpc[[3]],ll),stroke=FALSE,fillColor=cols[3],weight=0,fillOpacity=0.7,opacity=0) %>% 
+ #addPolygons(data=spTransform(kpc[[4]],ll),stroke=FALSE,fillColor=cols[4],weight=0,fillOpacity=0.7,opacity=0) %>% 
+	#addPolygons(data=na,stroke=FALSE,fillColor="white",weight=0,fillOpacity=0.5,opacity=0) %>% 
+addPolylines(data=co)
+	#addCircleMarkers(data=spTransform(xs[1:1000,],ll),stroke=FALSE,fillColor=cols[4],weight=0,fillOpacity=0.7,opacity=0)
+
 
 
 
