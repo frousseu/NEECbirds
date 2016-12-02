@@ -42,8 +42,8 @@ names(g)<-c("sp","group")
 #open(con)
 #d<-read.table(con,skip=5000000,nrow=1,sep="\t")
 
-co<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
-co<-readOGR(dsn="D:/ebird",layer="coastlines_z1",encoding="UTF-8")
+#co<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
+#co<-readOGR(dsn="D:/ebird",layer="coastlines_z1",encoding="UTF-8")
 
 na<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
 na<-na[na$admin%in%c("Canada","United States of America"),]
@@ -55,8 +55,6 @@ g1<-gBuffer(gUnaryUnion(land),width=-5000)
 g2<-gBuffer(gUnaryUnion(land),width=5000)
 coast<-gDifference(g2,g1)
 coastw<-gDifference(coast,land)
-plot(land)
-plot(coastw,add=TRUE,col="blue",border=NA)
 
 
 
@@ -123,9 +121,9 @@ x<-x[lat<=52,] #on garde ce qui est en bas
 ### grouping
 #################################
 
-sp<-"Northern Pintail"
+sp<-"Northern Fulmar"
 #group<-"Auks and allies"
-month<-c("03","04","05")
+month<-c("07","08","09","10","11")
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
 xs<-spTransform(xs,CRS(proj4string(land)))
@@ -205,7 +203,6 @@ plot(land,border="grey75",add=TRUE)
 
 #H<-Hpi.diag(coordinates(xs))
 #H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
-#H1<-H*matrix(c(0.5,0,0,0.5),nrow=2) 
 #H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
 H1<-matrix(c(6000000,0,0,6000000),nrow=2) 
 
