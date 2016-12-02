@@ -42,13 +42,13 @@ names(g)<-c("sp","group")
 #d<-read.table(con,skip=5000000,nrow=1,sep="\t")
 
 co<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
+co<-readOGR(dsn="D:/ebird",layer="coastlines_z1",encoding="UTF-8")
 
 na<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
 na<-na[na$admin%in%c("Canada","United States of America"),]
 na<-na[na$name%in%c("Quebec","Nova Scotia","Vermont","New York","New Hampshire","QuÃ©bec","Prince Edward Island","New Brunswick","Newfoundland and Labrador","Maine"),]
 
 land<-spTransform(na,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
-
 
 g1<-gBuffer(gUnaryUnion(land),width=-5000)
 g2<-gBuffer(gUnaryUnion(land),width=5000)
@@ -127,7 +127,7 @@ x<-x[lat<=52,] #on garde ce qui est en bas
 ### grouping
 #################################
 
-sp<-"Semipalmated Sandpiper"
+sp<-"Bonaparte's Gull"
 group<-"Auks and allies"
 month<-c("07","08","09","10")
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
@@ -169,7 +169,8 @@ nb<-c(nb,addnb)
 ### RQSS
 #####################################
 
-fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.005),tau=0.80)
+tau<-0.80
+fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.05),tau=tau)
 
 g<-gBuffer(gConvexHull(xs),width=-1000)
 o1<-over(SpatialPoints(coordinates(grid),CRS(proj4string(grid))),g)
@@ -204,13 +205,14 @@ plot(land,border="grey75",add=TRUE)
 H<-Hpi.diag(coordinates(xs))
 H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
 #H1<-H*matrix(c(0.5,0,0,0.5),nrow=2) 
-H1<-H*matrix(c(0.1,0,0,0.1),nrow=2) 
+H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
 #H1<-matrix(c(50000000,0,0,50000000),nrow=2) 
 
 ### GET POLYGONS
-k<-kde(x=coordinates(xs),compute.cont=TRUE,H=H1,w=nb)
+k<-kde(x=coordinates(xs),gridsize=c(500,500),compute.cont=TRUE,H=H1,w=nb)
 kp<-list()
 perc<-c(25,50,75,95)
+percw<-c("very high","high","medium","low")
 trans<-c(0.8,0.6,0.4,0.2)
 cols<-c("darkred","red","orange","yellow")
 for(i in seq_along(perc)){
@@ -234,8 +236,8 @@ legend("right",fill=alpha("red",trans),legend=paste(perc,"%"),border=NA,cex=1.5,
 
 ### BARPLOT ABUNDANCE
 par(mar=c(2,2,0,0),new=TRUE)
-h<-hist(xs$nb,breaks=seq(0,max(xs$nb),by=20),plot=FALSE)
-h<-hist(xs$nb,breaks=seq(0,max(xs$nb),by=20),col=alpha("red",0.5),border=ifelse(h$counts,"red",NA),xaxt="n",yaxt="n",)
+h<-hist(xs$nb,breaks=seq(0,max(xs$nb)+20,by=20),plot=FALSE)
+h<-hist(xs$nb,breaks=seq(0,max(xs$nb)+20,by=20),col=alpha("red",0.5),border=ifelse(h$counts,"red",NA),xaxt="n",yaxt="n",)
 axis(1)
 axis(2)
 #
@@ -247,15 +249,17 @@ axis(2)
 ### FINAL KERNEL OUTPUT
 ####################################################################
 
+#png("D:/ebird/ksoutput.png",width=10,height=7,units="in",res=500)
+
 ### plot the look of the output
 par(mar=c(4,4,0,0),mfrow=c(1,1))
 plot(xs,col="white")
 plot(land,col="grey95",border="grey75",add=TRUE)
 b<-bbox2pol(proj4string=proj4string(coastw))
-plot(gIntersection(coastw,b,byid=TRUE),col=alpha("blue",0.15),border=NA,add=TRUE)
+plot(gIntersection(coast,b,byid=TRUE),col=alpha("green",0.15),border=NA,add=TRUE)
 for(i in rev(seq_along(perc))){
-  plot(kp[[i]],add=TRUE,col=cols[i],border=NA)
-	 #plot(gIntersection(coastw,kp[[i]],byid=TRUE),add=TRUE,col=cols[i],border=NA)
+  #plot(kp[[i]],add=TRUE,col=cols[i],border=NA)
+	 plot(gIntersection(coast,kp[[i]],byid=TRUE),add=TRUE,col=cols[i],border=NA)
 }
 #plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
 
@@ -269,53 +273,46 @@ h<-lapply(kp,function(i){
   table(res)
 })
 
+### GAMS
+cols_gam<-c("darkblue","blue","white")
+plot(grid[w,],border=NA,col=colo.scale(sqrt(p),cols_gam),add=TRUE,lwd=2)
+leg<-(seq(sqrt(1),sqrt(max(p)),length.out=12))^2
+col<-tail(colo.scale(sqrt(c(p,leg)),cols_gam),length(leg))
+leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
+legend("topright",title=paste0("GAM group size\n","quantile ",paste0(100*tau,"%")),legend=rev(leg),fill=rev(col),cex=1.5,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
+
+
 ### add the histogram to the plot
 par(new=TRUE)
-barplot(do.call("rbind",h),col=alpha(cols,0.35),beside=TRUE,border=NA,xlab="Classe d'abondance",ylab="Nombre de mentions")
+barplot(do.call("rbind",h),col=alpha(cols,0.35),beside=TRUE,border=NA,xlab="Abundance class",ylab="Number of records")
+legend("bottomright",title="Kernel Contours",fill=cols,legend=paste(perc,"%","(",percw,")"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0.2))
+
+#dev.off()
+
+
+
+
+
+
+
+
 
 ### LEAFLET
-
-kpc<-lapply(kp,function(i){gIntersection(coastw,i,byid=TRUE)})
-
-
+kpc<-lapply(kp,function(i){gIntersection(coast,i,byid=TRUE)})
 leaflet() %>%
 	addProviderTiles("Esri.WorldImagery",options = providerTileOptions(noWrap = TRUE)) %>%
-	#addPolygons(data=spTransform(kpc[[1]],ll),stroke=FALSE,fillColor=cols[1],weight=0,fillOpacity=0.7,opacity=0) %>% 
- #addPolygons(data=spTransform(kpc[[2]],ll),stroke=FALSE,fillColor=cols[2],weight=0,fillOpacity=0.7,opacity=0) %>% 
- #addPolygons(data=spTransform(kpc[[3]],ll),stroke=FALSE,fillColor=cols[3],weight=0,fillOpacity=0.7,opacity=0) %>% 
- #addPolygons(data=spTransform(kpc[[4]],ll),stroke=FALSE,fillColor=cols[4],weight=0,fillOpacity=0.7,opacity=0) %>% 
-	#addPolygons(data=na,stroke=FALSE,fillColor="white",weight=0,fillOpacity=0.5,opacity=0) %>% 
-addPolylines(data=co)
+	addPolygons(data=spTransform(kpc[[1]],ll),stroke=FALSE,fillColor=cols[1],weight=0,fillOpacity=0.7,opacity=0) %>% 
+ addPolygons(data=spTransform(kpc[[2]],ll),stroke=FALSE,fillColor=cols[2],weight=0,fillOpacity=0.7,opacity=0) %>% 
+ addPolygons(data=spTransform(kpc[[3]],ll),stroke=FALSE,fillColor=cols[3],weight=0,fillOpacity=0.7,opacity=0) %>% 
+ addPolygons(data=spTransform(kpc[[4]],ll),stroke=FALSE,fillColor=cols[4],weight=0,fillOpacity=0.7,opacity=0)
+	#addPolygons(data=na,stroke=FALSE,fillColor="white",weight=0,fillOpacity=0.5,opacity=0)
+ #addPolylines(data=co)
 	#addCircleMarkers(data=spTransform(xs[1:1000,],ll),stroke=FALSE,fillColor=cols[4],weight=0,fillOpacity=0.7,opacity=0)
 
 
 
 
-#####################################
-### KERNELS spatstat
-#####################################
 
-b<-bbox(xs)
-hppp<-ppp(lon,lat,xrange=c(b[1,1],b[1,2]),yrange=c(b[2,1],b[2,2]),marks=nb)
-spatstat.options(npixel=c(1000,1000))
-h<-density(hppp,sigma=0.005,weights=marks(hppp),positive=FALSE)
-m<-t(h$v)
-val<-quantile(m,0.997)
-m[]<-ifelse(m<val,NA,val)
-dat1=list()
-dat1$x=seq(h$xcol[1],by=h$xstep,len=h$dim[1])
-dat1$y=seq(h$yrow[1],by=h$ystep,len=h$dim[2])
-dat1$z=m
-r<-raster(dat1)
-#plot(map.osm) 
-#plot(r,bty="n",axes=FALSE,box=FALSE,xpd=FALSE,col="red")
-#plot(fleuve,add=TRUE)#,border=gray(0.5,0.3))
-#text(par("usr")[1]+4,par("usr")[4]-0,paste(c("nb mentions:",nrow(d2),"range:",range(d2$Abundance)),collapse=" "),xpd=TRUE,adj=c(0,1))
-pr<-rasterToPolygons(r,dissolve=TRUE)
-pr<-spChFIDs(pr,sp)
-res<-spTransform(pr,CRS(proj4string(grid)))
-plot(pr,add=TRUE,col=alpha("darkgreen",0.75),border=NA)
-#plot(spTransform(pr,osm()),col=alpha("red",0.5),border=NA)
 
 
 
