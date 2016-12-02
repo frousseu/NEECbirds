@@ -43,13 +43,13 @@
 
 - Not easy to interpret real meaning (group size, number of birds concerned?)
 
-- Strongly depends on the amount of observers and checklist (lightly mitigated by a weigthing method based on numbers)
+- Strongly depends on the amount of observers and checklists (lightly mitigated by a weigthing method based on numbers)
 
 - Sensible to bandwith value and different parameters
 
 ##NOTES and IDEAS
 
-- Use GAMs to predict quantrile group size in each kernel polygons
+- Use GAMs to predict quantile group size in each kernel polygons
 
 - Need to sum species by groups when doing GAMs
 
