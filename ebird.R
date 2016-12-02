@@ -30,6 +30,7 @@ kde2pol<-function(k,perc="5%",proj=NULL){
 	poly
 }
 
+
 load("D:/ebird/birdgroupings.rda")
 g<-birdgroupings
 rm(birdgroupings)
@@ -100,15 +101,10 @@ mtext("Nb of ebird records per group and season",3,line=3)
 
 
 
-
-
-
-
 #fwrite(e[e$STATE=="Quebec",],"D:/ebird/ebd_CA_relAug-2016.txt/ebirdQC.csv",sep="\t")
 
-e<-fread("D:/ebird/ebd_CA_relAug-2016.txt/ebirdQC.csv",encoding = "UTF-8", na.strings = "",header = TRUE, sep = "\t",verbose = TRUE)
-
-names(e)<-keepn[match(names(e),keep)]
+#e<-fread("D:/ebird/ebd_CA_relAug-2016.txt/ebirdQC.csv",encoding = "UTF-8", na.strings = "",header = TRUE, sep = "\t",verbose = TRUE)
+#names(e)<-keepn[match(names(e),keep)]
 
 x<-e[state%in%c("Quebec","Nova Scotia","New Brunswick","Prince Edward Island","Newfoundland and Labrador"),]
 x<-x[category%in%c("species"),]
@@ -219,7 +215,7 @@ for(i in seq_along(perc)){
   kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(grid)) # extract polygons
 }
 for(i in rev(seq_along(kp)[-1])){
-	kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]]) # keep non overlapping parts
+	kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=TRUE) # keep non overlapping parts
 }
 
 ### PLOT POLYGONS
