@@ -123,9 +123,9 @@ x<-x[lat<=52,] #on garde ce qui est en bas
 ### grouping
 #################################
 
-sp<-"Bonaparte's Gull"
-group<-"Auks and allies"
-month<-c("07","08","09","10")
+sp<-"Northern Pintail"
+#group<-"Auks and allies"
+month<-c("03","04","05")
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
 xs<-spTransform(xs,CRS(proj4string(land)))
@@ -164,6 +164,7 @@ nb<-c(nb,addnb)
 #####################################
 ### RQSS
 #####################################
+windows(w=16,h=12)
 
 tau<-0.80
 fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.05),tau=tau)
@@ -177,18 +178,22 @@ Y<-coordinates(grid)[w,2]
 p<-predict(fit,data.frame(lon=X,lat=Y,stringsAsFactors=FALSE))[,1]
 p<-ifelse(p<0,0,p)
 
-cols<-rev(c("white","yellow","red","darkred"))
+cols_gam<-rev(c("lightgreen","yellow","orange","red","darkred"))
 #trans<-function(x,min=0.05){ans<-sqrt(x)/max(sqrt(x));ans<-ifelse(ans<min,min,ans);ans}
+
+f<-function(x){log(x+5)} #transformation to better appreciate variation in group sizes
+finv<-function(x){exp(x)-5}
+
 
 layout(matrix(c(1,2),ncol=1))
 par(mar=c(1,0,0,0))
 plot(xs,col="white")
 plot(land,col="grey95",border="grey75",add=TRUE)
-plot(grid[w,],col=colo.scale(sqrt(p),cols),border=NA,add=TRUE)
-leg<-(seq(sqrt(1),sqrt(max(p)),length.out=12))^2
-col<-tail(colo.scale(sqrt(c(p,leg)),cols),length(leg))
+plot(grid[w,],col=colo.scale(f(p),cols_gam),border=NA,add=TRUE)
+leg<-finv((seq(f(1),f(max(p)),length.out=12)))
+col<-tail(colo.scale(f(c(p,leg)),cols_gam),length(leg))
 leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
-legend("right",legend=rev(leg),fill=rev(col),cex=1.5,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0))
+legend("bottomright",legend=rev(leg),fill=rev(col),cex=1,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title=paste("GAM group size","\n",100*tau,"%"))
 plot(land,border="grey75",add=TRUE)
 
 #plot(g1,border="green",add=TRUE)
@@ -198,11 +203,11 @@ plot(land,border="grey75",add=TRUE)
 ### KERNELS KDE
 ######################################
 
-H<-Hpi.diag(coordinates(xs))
-H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
+#H<-Hpi.diag(coordinates(xs))
+#H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
 #H1<-H*matrix(c(0.5,0,0,0.5),nrow=2) 
-H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
-#H1<-matrix(c(50000000,0,0,50000000),nrow=2) 
+#H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
+H1<-matrix(c(6000000,0,0,6000000),nrow=2) 
 
 ### GET POLYGONS
 k<-kde(x=coordinates(xs),gridsize=c(500,500),compute.cont=TRUE,H=H1,w=nb)
@@ -210,12 +215,12 @@ kp<-list()
 perc<-c(25,50,75,95)
 percw<-c("very high","high","medium","low")
 trans<-c(0.8,0.6,0.4,0.2)
-cols<-c("darkred","red","orange","yellow")
+cols_kern<-c("darkred","red","orange","yellow")
 for(i in seq_along(perc)){
   kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(grid)) # extract polygons
 }
 for(i in rev(seq_along(kp)[-1])){
-	kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=TRUE) # keep non overlapping parts
+	kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
 }
 
 ### PLOT POLYGONS
@@ -226,7 +231,7 @@ for(i in rev(seq_along(perc))){
 	plot(kp[[i]],add=TRUE,col=alpha("red",trans[i]),border=NA)
 }
 #plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
-legend("right",fill=alpha("red",trans),legend=paste(perc,"%"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0))
+legend("bottomright",fill=alpha("red",trans),legend=paste(perc,"%"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
 #
 #
 
@@ -248,14 +253,25 @@ axis(2)
 #png("D:/ebird/ksoutput.png",width=10,height=7,units="in",res=500)
 
 ### plot the look of the output
+windows(w=16,h=12)
 par(mar=c(4,4,0,0),mfrow=c(1,1))
 plot(xs,col="white")
 plot(land,col="grey95",border="grey75",add=TRUE)
+
+### GAMS
+#cols_gam<-c("darkblue","blue","white")
+#plot(grid[w,],border=NA,col=colo.scale(f(p),cols_gam),add=TRUE,lwd=2)
+#leg<-finv((seq(f(1),f(max(p)),length.out=12)))
+#col<-tail(colo.scale(f(c(p,leg)),cols_gam),length(leg))
+#leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
+#legend("topright",title=paste0("GAM group size\n","quantile ",paste0(100*tau#,"%")),legend=rev(leg),fill=rev(col),cex=1.5,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
+
+### kerns
 b<-bbox2pol(proj4string=proj4string(coastw))
-plot(gIntersection(coast,b,byid=TRUE),col=alpha("green",0.15),border=NA,add=TRUE)
+#plot(gIntersection(coast,b,byid=TRUE),col=alpha("green",0.15),border=NA,add=TRUE)
 for(i in rev(seq_along(perc))){
   #plot(kp[[i]],add=TRUE,col=cols[i],border=NA)
-	 plot(gIntersection(coast,kp[[i]],byid=TRUE),add=TRUE,col=cols[i],border=NA)
+	 plot(gIntersection(coast,kp[[i]],byid=TRUE),add=TRUE,col=cols_kern[i],border=NA)
 }
 #plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
 
@@ -269,23 +285,38 @@ h<-lapply(kp,function(i){
   table(res)
 })
 
-### GAMS
-cols_gam<-c("darkblue","blue","white")
-plot(grid[w,],border=NA,col=colo.scale(sqrt(p),cols_gam),add=TRUE,lwd=2)
-leg<-(seq(sqrt(1),sqrt(max(p)),length.out=12))^2
-col<-tail(colo.scale(sqrt(c(p,leg)),cols_gam),length(leg))
-leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
-legend("topright",title=paste0("GAM group size\n","quantile ",paste0(100*tau,"%")),legend=rev(leg),fill=rev(col),cex=1.5,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
-
-
 ### add the histogram to the plot
 par(new=TRUE)
-barplot(do.call("rbind",h),col=alpha(cols,0.35),beside=TRUE,border=NA,xlab="Abundance class",ylab="Number of records")
-legend("bottomright",title="Kernel Contours",fill=cols,legend=paste(perc,"%","(",percw,")"),border=NA,cex=1.5,,bg="grey90",box.lwd=NA,inset=c(0.05,0.2))
-
+barplot(do.call("rbind",h),col=alpha(cols_kern,0.35),beside=TRUE,border=NA,xlab="Abundance class",ylab="Number of records")
+legend("bottomright",title="Kernel Contours",fill=cols_kern,legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
 #dev.off()
 
 
+
+### kp tot disaggregated
+kpc<-lapply(kp,function(i){gIntersection(coast,i,byid=TRUE)})
+test<-sapply(seq_along(kpc),function(i){
+	res<-disaggregate(kpc[[i]])
+	res<-spChFIDs(res, as.character(paste(i,seq_along(res),sep="_")))
+})
+test<-do.call("rbind",test)
+testp<-SpatialPoints(coordinates(test),proj4string=CRS(proj4string(test)))
+o<-over(testp,g)
+test<-test[!is.na(o),]
+pk<-predict(fit,data.frame(lon=coordinates(test)[,1],lat=coordinates(test)[,2],stringsAsFactors=FALSE))[,1]
+pk<-ifelse(pk<0,0,pk)
+
+
+### GAMS predictions in KERNELS
+windows(w=16,h=12)
+par(mar=c(4,4,0,0),mfrow=c(1,1))
+plot(xs,col="white")
+plot(land,col="grey95",border="grey75",add=TRUE)
+plot(test,border=NA,col=colo.scale(f(pk),cols_gam),add=TRUE,lwd=2)
+leg<-finv((seq(f(1),f(max(pk)),length.out=12)))
+col<-tail(colo.scale(f(c(pk,leg)),cols_gam),length(leg))
+leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
+legend("bottomright",title=paste0("GAM group size\nin kernels\n","quantile ",paste0(100*tau,"%")),legend=rev(leg),fill=rev(col),cex=1,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
 
 
 
