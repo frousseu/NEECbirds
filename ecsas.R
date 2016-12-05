@@ -38,9 +38,9 @@ x$season<-names(month_comb)[match(x$month,month_comb)]
 ### grouping
 #################################
 
-sp<-"Northern Fulmar"
+sp<-"Northern Gannet"
 #group<-"Auks and allies"
-month<-c("04","05","06","07","08","09","10","11","12")
+month<-c("08","09","10","11")
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
 xs<-spTransform(xs,CRS(proj4string(land)))
@@ -93,8 +93,7 @@ axis(2)
 #
 
 
-####################################################################
-### FINAL KERN
+
 
 
 

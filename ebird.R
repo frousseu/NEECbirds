@@ -30,26 +30,21 @@ kde2pol<-function(k,perc="5%",proj=NULL){
 	poly
 }
 
+### GET BIRD GROUPS
+g<-fread("bird_groups.csv",sep=";",na.strings=c("","NA")) #ce fichier est sur mon github
+g<-g[!is.na(group),]
+g<-unique(g[,c("sp","group")])
 
-load("D:/ebird/birdgroupings.rda")
-g<-birdgroupings
-rm(birdgroupings)
-g$wetland<-apply(g[,c("Habitat1","Habitat2","Habitat3","Habitat4")],1,function(i){any(i=="we")})
-g<-g[,c("English_Name","Species_gr2")]
-names(g)<-c("sp","group")
-
-#con<-file("M:/SCF2016_FR/ebird/ebd_CA_relAug-2016/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt")
-#open(con)
-#d<-read.table(con,skip=5000000,nrow=1,sep="\t")
 
 #co<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
 #co<-readOGR(dsn="D:/ebird",layer="coastlines_z1",encoding="UTF-8")
 
 na<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
 na<-na[na$admin%in%c("Canada","United States of America"),]
-na<-na[na$name%in%c("Quebec","Nova Scotia","Vermont","New York","New Hampshire","QuÃ©bec","Prince Edward Island","New Brunswick","Newfoundland and Labrador","Maine"),]
+#na<-na[na$name%in%c("Quebec","Nova Scotia","Vermont","New York","New Hampshire","QuÃ©bec","Prince Edward Island","New Brunswick","Newfoundland and Labrador","Maine"),]
+na<-na[na$name%in%c("British Columbia"),]
 
-land<-spTransform(na,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
+land<-spTransform(na,CRS(prj))
 
 g1<-gBuffer(gUnaryUnion(land),width=-5000)
 g2<-gBuffer(gUnaryUnion(land),width=5000)
@@ -60,7 +55,7 @@ coastw<-gDifference(coast,land)
 
 
 ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-prj<-"+proj=utm +zone=22 +datum=NAD83 +ellps=GRS80"
+prj<-"+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"
 laea<-"+proj=laea +lat_0=50 +lon_0=-65"
 
 keep<-c("COMMON NAME","TAXONOMIC ORDER","STATE","LATITUDE","LONGITUDE","OBSERVATION DATE","OBSERVATION COUNT","CATEGORY","SAMPLING EVENT IDENTIFIER")
@@ -105,7 +100,8 @@ mtext("Nb of ebird records per group and season",3,line=3)
 #names(e)<-keepn[match(names(e),keep)]
 
 x<-e[state%in%c("Quebec","Nova Scotia","New Brunswick","Prince Edward Island","Newfoundland and Labrador"),]
-x<-x[category%in%c("species"),]
+x<-e[state%in%c("British Columbia"),]
+
 
 x$taxo<-as.numeric(x$taxo)
 temp<-unique(x[,c("sp","taxo")])
@@ -114,19 +110,63 @@ x$nb<-as.numeric(x$nb)
 x$nb<-ifelse(is.na(x$nb),1,x$nb)
 x$lon<-as.numeric(x$lon)
 x$lat<-as.numeric(x$lat)
-x<-x[lat<=52,] #on garde ce qui est en bas
+#x<-x[lat<=52,] #on garde ce qui est en bas
+#x<-x[lon>=(-74),] #on garde ce qui est à partir de mtl
+
+
+#################################
+### EFFORT
+#################################
+
+y<-unique(x[,c("sample","lat","lon")])
+ys<-SpatialPoints(matrix(as.numeric(c(y$lon,y$lat)),ncol=2),proj4string=CRS(ll))
+ys<-spTransform(ys,CRS(prj))
+o<-over(ys,coast)
+ys<-ys[!is.na(o),]
+
+H1<-matrix(c(6000000,0,0,6000000),nrow=2) 
+
+### GET POLYGONS
+k<-kde(x=coordinates(ys),gridsize=c(500,500),compute.cont=TRUE,H=H1)
+kp<-list()
+perc<-c(seq(5,95,by=5),99)
+trans<-rev(seq(0.15,1,length.out=length(perc)))
+for(i in seq_along(perc)){
+	kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(xs)) # extract polygons
+}
+for(i in rev(seq_along(kp)[-1])){
+	kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
+}
+
+### PLOT POLYGONS
+par(mar=c(1,0,0,0))
+plot(bbox2pol(kp[[length(kp)]]),col="white",border="white")
+plot(land,border="grey75",add=TRUE)
+for(i in seq_along(kp)){
+	plot(kp[[i]],add=TRUE,col=alpha("red",trans[i]),border=NA)
+}
+#plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
+#legend("bottomright",fill=alpha("red",trans),legend=paste(perc,"%"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
+#
+#
+
+
+
+
+
+
 
 
 #################################
 ### grouping
 #################################
 
-sp<-"Northern Fulmar"
-#group<-"Auks and allies"
-month<-c("07","08","09","10","11")
+sp<-"Glaucous-winged Gull"
+#sp<-unique(x$sp[x$group%in%"shorebirds_waders"])
+month<-c("08","09","10","11")
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
-xs<-spTransform(xs,CRS(proj4string(land)))
+xs<-spTransform(xs,CRS(prj))
 o<-over(xs,coast)
 xs<-xs[!is.na(o),]
 grid<-FRutils:::hexgrid(xs,width=NULL,n=100,convex=TRUE)
@@ -207,14 +247,14 @@ plot(land,border="grey75",add=TRUE)
 H1<-matrix(c(6000000,0,0,6000000),nrow=2) 
 
 ### GET POLYGONS
-k<-kde(x=coordinates(xs),gridsize=c(500,500),compute.cont=TRUE,H=H1,w=nb)
+k<-kde(x=coordinates(xs),gridsize=c(500,500),compute.cont=TRUE,H=H1,w=xs$nb)
 kp<-list()
 perc<-c(25,50,75,95)
 percw<-c("very high","high","medium","low")
 trans<-c(0.8,0.6,0.4,0.2)
 cols_kern<-c("darkred","red","orange","yellow")
 for(i in seq_along(perc)){
-  kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(grid)) # extract polygons
+  kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(xs)) # extract polygons
 }
 for(i in rev(seq_along(kp)[-1])){
 	kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
@@ -247,7 +287,7 @@ axis(2)
 ### FINAL KERNEL OUTPUT
 ####################################################################
 
-#png("D:/ebird/ksoutput.png",width=10,height=7,units="in",res=500)
+#png("D:/ebird/ksoutput.png",width=12,height=8,units="in",res=500)
 
 ### plot the look of the output
 windows(w=16,h=12)
@@ -268,7 +308,7 @@ b<-bbox2pol(proj4string=proj4string(coastw))
 #plot(gIntersection(coast,b,byid=TRUE),col=alpha("green",0.15),border=NA,add=TRUE)
 for(i in rev(seq_along(perc))){
   #plot(kp[[i]],add=TRUE,col=cols[i],border=NA)
-	 plot(gIntersection(coast,kp[[i]],byid=TRUE),add=TRUE,col=cols_kern[i],border=NA)
+	 plot(gIntersection(coast,kp[[i]],byid=TRUE),add=TRUE,col=alpha(cols_kern[i],0.7),border=NA)
 }
 #plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
 
@@ -283,9 +323,10 @@ h<-lapply(kp,function(i){
 })
 
 ### add the histogram to the plot
-par(new=TRUE)
-barplot(do.call("rbind",h),col=alpha(cols_kern,0.35),beside=TRUE,border=NA,xlab="Abundance class",ylab="Number of records")
-legend("bottomright",title="Kernel Contours",fill=cols_kern,legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
+par(new=TRUE,mar=c(8,6,0,0))
+
+barplot(do.call("rbind",h),col=alpha(cols_kern,0.25),beside=TRUE,border=NA,xlab="Abundance class",ylab="Number of records",las=2)
+legend("bottomright",title="Kernel Contours",fill=alpha(cols_kern,0.7),legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
 #dev.off()
 
 
