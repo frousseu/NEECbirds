@@ -1,0 +1,1576 @@
+sp;taxo;group
+Black-bellied Whistling-Duck;215;waterfowl_dabbling
+Black-bellied Whistling-Duck;215.3;waterfowl_dabbling
+Fulvous Whistling-Duck;217;waterfowl_dabbling
+whistling-duck sp.;223;waterfowl_dabbling
+Swan Goose;227;waterfowl_dabbling
+Swan Goose (Domestic type);227.3;waterfowl_dabbling
+Taiga Bean-Goose;228;waterfowl_dabbling
+Tundra Bean-Goose;232;waterfowl_dabbling
+Taiga/Tundra Bean-Goose;235;waterfowl_dabbling
+Pink-footed Goose;236;waterfowl_dabbling
+Greater White-fronted Goose;237;waterfowl_dabbling
+Greater White-fronted Goose;238;waterfowl_dabbling
+Greater White-fronted Goose;239;waterfowl_dabbling
+Greater White-fronted Goose;240;waterfowl_dabbling
+Greater White-fronted Goose;243;waterfowl_dabbling
+Graylag Goose;248;waterfowl_dabbling
+Graylag Goose;249;waterfowl_dabbling
+Graylag Goose (Domestic type);251;waterfowl_dabbling
+Swan x Graylag Goose (Domestic type) (hybrid);251.5;waterfowl_dabbling
+Bar-headed Goose;252;waterfowl_dabbling
+Domestic goose sp. (Domestic type);252.7;waterfowl_dabbling
+Anser sp.;252.9;waterfowl_dabbling
+Emperor Goose;253;waterfowl_dabbling
+Snow Goose;254;waterfowl_dabbling
+Greater White-fronted x Snow Goose (hybrid);256.5;waterfowl_dabbling
+Ross's Goose;259;waterfowl_dabbling
+Snow x Ross's Goose (hybrid);259.5;waterfowl_dabbling
+Snow/Ross's Goose;260;waterfowl_dabbling
+Brant;261;waterfowl_dabbling
+Brant;264;waterfowl_dabbling
+Brant;266;waterfowl_dabbling
+Brant;266.7;waterfowl_dabbling
+Barnacle Goose;268;waterfowl_dabbling
+Cackling Goose;271;waterfowl_dabbling
+Cackling Goose;272;waterfowl_dabbling
+Cackling Goose;273;waterfowl_dabbling
+Cackling Goose;274;waterfowl_dabbling
+Cackling Goose;276;waterfowl_dabbling
+Greater White-fronted x Cackling Goose (hybrid);276.3;waterfowl_dabbling
+Canada Goose;277;waterfowl_dabbling
+Canada Goose;278;waterfowl_dabbling
+Canada Goose;281;waterfowl_dabbling
+Canada Goose;284;waterfowl_dabbling
+Canada Goose;287;waterfowl_dabbling
+Swan Goose (Domestic type) x Canada Goose (hybrid);287.1;waterfowl_dabbling
+Greater White-fronted x Canada Goose (hybrid);287.4;waterfowl_dabbling
+Graylag x Canada Goose (hybrid);287.5;waterfowl_dabbling
+Graylag Goose (Domestic type) x Canada Goose (hybrid);287.6;waterfowl_dabbling
+Domestic goose sp. (Domestic type) x Canada Goose (hybrid);287.65;waterfowl_dabbling
+Snow x Canada Goose (hybrid);287.7;waterfowl_dabbling
+Barnacle x Canada Goose (hybrid);287.9;waterfowl_dabbling
+Cackling/Canada Goose;288;waterfowl_dabbling
+Snow/Ross's x Cackling/Canada Goose (hybrid);288.5;waterfowl_dabbling
+Red-breasted Goose;290;waterfowl_dabbling
+Branta sp.;291;waterfowl_dabbling
+goose sp.;292;waterfowl_dabbling
+Mute Swan;296;waterfowl_dabbling
+Black Swan;297;waterfowl_dabbling
+Trumpeter Swan;299;waterfowl_dabbling
+Mute x Trumpeter Swan (hybrid);300;waterfowl_dabbling
+Tundra Swan;302;waterfowl_dabbling
+Tundra Swan;303;waterfowl_dabbling
+Tundra Swan;304;waterfowl_dabbling
+Trumpeter/Tundra Swan;305;waterfowl_dabbling
+Whooper Swan;306;waterfowl_dabbling
+swan sp.;307;waterfowl_dabbling
+Egyptian Goose;325;waterfowl_dabbling
+Ruddy Shelduck;326;waterfowl_dabbling
+South African Shelduck;327;waterfowl_dabbling
+Common Shelduck;330;waterfowl_dabbling
+Crested Duck;343;waterfowl_dabbling
+Muscovy Duck;347;waterfowl_dabbling
+Muscovy Duck;347.5;waterfowl_dabbling
+Muscovy Duck (Domestic type);348;waterfowl_dabbling
+Ringed Teal;356;waterfowl_dabbling
+Wood Duck;357;waterfowl_dabbling
+Mandarin Duck;360;waterfowl_dabbling
+Gadwall;377;waterfowl_dabbling
+Gadwall;378;waterfowl_dabbling
+Falcated Duck;383;waterfowl_dabbling
+Eurasian Wigeon;384;waterfowl_dabbling
+American Wigeon;386;waterfowl_dabbling
+Gadwall x American Wigeon (hybrid);386.3;waterfowl_dabbling
+Eurasian x American Wigeon (hybrid);386.5;waterfowl_dabbling
+Eurasian/American Wigeon;388.7;waterfowl_dabbling
+Chiloe Wigeon;389;waterfowl_dabbling
+American Black Duck;390;waterfowl_dabbling
+Mallard;396;waterfowl_dabbling
+Mallard;397;waterfowl_dabbling
+Mallard;400;waterfowl_dabbling
+Mallard (Domestic type);402;waterfowl_dabbling
+Muscovy Duck x Mallard (hybrid);402.1;waterfowl_dabbling
+Gadwall x Mallard (hybrid);402.4;waterfowl_dabbling
+American Wigeon x Mallard (hybrid);402.8;waterfowl_dabbling
+American Black Duck x Mallard (hybrid);402.9;waterfowl_dabbling
+American Black Duck/Mallard;403;waterfowl_dabbling
+Mottled Duck;409;waterfowl_dabbling
+Mallard x Mottled Duck (hybrid);411.5;waterfowl_dabbling
+Blue-winged Teal;423;waterfowl_dabbling
+Cinnamon Teal;426;waterfowl_dabbling
+Blue-winged x Cinnamon Teal (hybrid);432;waterfowl_dabbling
+Blue-winged/Cinnamon Teal;433;waterfowl_dabbling
+Northern Shoveler;439;waterfowl_dabbling
+Mallard x Northern Shoveler (hybrid);439.4;waterfowl_dabbling
+Blue-winged Teal x Northern Shoveler (hybrid);439.6;waterfowl_dabbling
+Cinnamon Teal x Northern Shoveler (hybrid);439.8;waterfowl_dabbling
+White-cheeked Pintail;440;waterfowl_dabbling
+Northern Pintail;446;waterfowl_dabbling
+Gadwall x Northern Pintail (hybrid);446.3;waterfowl_dabbling
+American Wigeon x Northern Pintail (hybrid);446.6;waterfowl_dabbling
+Mallard x Northern Pintail (hybrid);446.8;waterfowl_dabbling
+Garganey;460;waterfowl_dabbling
+Baikal Teal;461;waterfowl_dabbling
+Green-winged Teal;462;waterfowl_dabbling
+Green-winged Teal;463;waterfowl_dabbling
+Green-winged Teal;467;waterfowl_dabbling
+Green-winged Teal;467.5;waterfowl_dabbling
+American Wigeon x Green-winged Teal (hybrid);467.6;waterfowl_dabbling
+Cinnamon x Green-winged Teal (hybrid);467.93;waterfowl_dabbling
+Northern Pintail x Green-winged Teal (hybrid);467.95;waterfowl_dabbling
+teal sp.;486;waterfowl_dabbling
+dabbling duck sp.;487;waterfowl_dabbling
+Marbled Teal;489;waterfowl_dabbling
+Red-crested Pochard;491;waterfowl_diving
+Canvasback;496;waterfowl_diving
+Redhead;497;waterfowl_diving
+Canvasback x Redhead (hybrid);497.3;waterfowl_diving
+Common Pochard;498;waterfowl_diving
+Ring-necked Duck;499;waterfowl_diving
+Redhead x Ring-necked Duck (hybrid);500;waterfowl_diving
+Tufted Duck;506;waterfowl_diving
+Ring-necked x Tufted Duck (hybrid);506.5;waterfowl_diving
+Greater Scaup;508;waterfowl_diving
+Redhead x Greater Scaup (hybrid);510.3;waterfowl_diving
+Ring-necked Duck x Greater Scaup (hybrid);510.4;waterfowl_diving
+Tufted Duck x Greater Scaup (hybrid);510.5;waterfowl_diving
+Lesser Scaup;511;waterfowl_diving
+Redhead x Lesser Scaup (hybrid);511.2;waterfowl_diving
+Ring-necked Duck x Lesser Scaup (hybrid);511.3;waterfowl_diving
+Tufted Duck x Lesser Scaup (hybrid);511.6;waterfowl_diving
+Greater/Lesser Scaup;512;waterfowl_diving
+Redhead x scaup sp. (hybrid);512.2;waterfowl_diving
+Ring-necked Duck x scaup sp. (hybrid);512.3;waterfowl_diving
+Tufted Duck x scaup sp. (hybrid);512.5;waterfowl_diving
+Aythya sp.;513;waterfowl_diving
+Steller's Eider;514;waterfowl_diving
+Spectacled Eider;515;waterfowl_diving
+King Eider;516;waterfowl_diving
+Common Eider;517;waterfowl_diving
+Common Eider;520;waterfowl_diving
+Common Eider;521;waterfowl_diving
+Common Eider;522;waterfowl_diving
+Common Eider;523;waterfowl_diving
+King/Common Eider;524;waterfowl_diving
+King x Common Eider (hybrid);524.5;waterfowl_diving
+eider sp.;525;waterfowl_diving
+Harlequin Duck;526;waterfowl_diving
+Surf Scoter;530;waterfowl_diving
+White-winged Scoter;531;waterfowl_diving
+White-winged Scoter;534;waterfowl_diving
+Common Scoter;536;waterfowl_diving
+Black Scoter;537;waterfowl_diving
+Common/Black Scoter;537.5;waterfowl_diving
+Surf/Black Scoter;538;waterfowl_diving
+scoter sp.;539;waterfowl_diving
+Long-tailed Duck;540;waterfowl_diving
+Bufflehead;541;waterfowl_diving
+Common Goldeneye;543;waterfowl_diving
+Bufflehead x Common Goldeneye (hybrid);546;waterfowl_diving
+Barrow's Goldeneye;548;waterfowl_diving
+Common x Barrow's Goldeneye (hybrid);549;waterfowl_diving
+Common/Barrow's Goldeneye;551;waterfowl_diving
+Smew;552;waterfowl_diving
+Hooded Merganser;553;waterfowl_diving
+Bufflehead x Hooded Merganser (hybrid);553.4;waterfowl_diving
+Common Goldeneye x Hooded Merganser (hybrid);553.6;waterfowl_diving
+goldeneye sp. x Hooded Merganser (hybrid);553.9;waterfowl_diving
+Common Merganser;555;waterfowl_diving
+Common Merganser;556;waterfowl_diving
+Common Merganser;559;waterfowl_diving
+Red-breasted Merganser;561;waterfowl_diving
+Common/Red-breasted Merganser;562;waterfowl_diving
+merganser sp.;564;waterfowl_diving
+Ruddy Duck;567;waterfowl_diving
+Ruddy Duck;568;waterfowl_diving
+duck sp.;578;
+waterfowl sp.;579;
+Helmeted Guineafowl;737;
+Helmeted Guineafowl (Domestic type);738.9;
+Mountain Quail;768;
+California Quail;786;
+Northern Bobwhite;805;
+Northern Bobwhite;806;
+Indian Peafowl;1008;
+Indian Peafowl (Domestic type);1011;
+Bronze-tailed Peacock-Pheasant;1042;
+Japanese Quail;1051;
+Rock Partridge;1063;
+Chukar;1066;
+Red-legged Partridge;1069;
+Red Junglefowl (Domestic type);1200.2;
+Golden Pheasant;1318;
+Lady Amherst's Pheasant;1318.5;
+Ring-necked Pheasant;1323;
+Ring-necked Pheasant;1324;
+Ring-necked Pheasant;1325;
+Silver Pheasant;1339;
+pheasant sp.;1394;
+Gray Partridge;1397;
+Ruffed Grouse;1443;
+Greater Sage-Grouse;1458;
+Spruce Grouse;1461;
+Spruce Grouse;1462;
+Spruce Grouse;1468;
+Ruffed/Spruce Grouse;1468.5;
+Willow Ptarmigan;1469;
+Willow Ptarmigan;1470;
+Willow Ptarmigan;1471;
+Rock Ptarmigan;1490;
+White-tailed Ptarmigan;1522;
+ptarmigan sp.;1528;
+Dusky Grouse;1529;
+Sooty Grouse;1534;
+Dusky/Sooty Grouse;1539;
+Sharp-tailed Grouse;1541;
+Greater Prairie-Chicken;1548;
+Sharp-tailed Grouse x Greater Prairie-Chicken (hybrid);1551.5;
+grouse sp.;1552.7;
+Wild Turkey;1553;
+Wild Turkey (Domestic type);1559.5;
+Red-throated Loon;1561;waterfowl_diving
+Arctic Loon;1562;waterfowl_diving
+Pacific Loon;1565;waterfowl_diving
+Arctic/Pacific Loon;1566;waterfowl_diving
+Common Loon;1567;waterfowl_diving
+Yellow-billed Loon;1568;waterfowl_diving
+Common/Yellow-billed Loon;1569;waterfowl_diving
+loon sp.;1570;waterfowl_diving
+Pied-billed Grebe;1601;waterfowl_diving
+Horned Grebe;1611;waterfowl_diving
+Red-necked Grebe;1614;waterfowl_diving
+Eared Grebe;1621;waterfowl_diving
+Horned/Eared Grebe;1625;waterfowl_diving
+Podiceps sp.;1632;waterfowl_diving
+Western Grebe;1633;waterfowl_diving
+Clark's Grebe;1637;waterfowl_diving
+Western x Clark's Grebe (hybrid);1639.5;waterfowl_diving
+Western/Clark's Grebe;1640;waterfowl_diving
+grebe sp.;1641;waterfowl_diving
+American Flamingo;1642;shorebirds_waders
+Greater Flamingo;1643;shorebirds_waders
+flamingo sp.;1649;shorebirds_waders
+Yellow-nosed Albatross;1682;seabirds_pelagics
+Black-browed Albatross;1692;seabirds_pelagics
+Laysan Albatross;1709;seabirds_pelagics
+Black-footed Albatross;1711;seabirds_pelagics
+Short-tailed Albatross;1712;seabirds_pelagics
+Northern Fulmar;1716;seabirds_pelagics
+Northern Fulmar;1717;seabirds_pelagics
+Northern Fulmar;1719;seabirds_pelagics
+Murphy's Petrel;1739;seabirds_pelagics
+Fea's Petrel;1743;seabirds_pelagics
+Mottled Petrel;1755;seabirds_pelagics
+Bermuda Petrel;1756;seabirds_pelagics
+Black-capped Petrel;1757;seabirds_pelagics
+Black-capped Petrel;1758;seabirds_pelagics
+Hawaiian Petrel;1763;seabirds_pelagics
+Cook's Petrel;1769;seabirds_pelagics
+Pterodroma sp.;1780;seabirds_pelagics
+Cory's Shearwater;1806;seabirds_pelagics
+Cory's Shearwater;1807;seabirds_pelagics
+Cory's Shearwater;1808;seabirds_pelagics
+Pink-footed Shearwater;1810;seabirds_pelagics
+Flesh-footed Shearwater;1811;seabirds_pelagics
+Great Shearwater;1812;seabirds_pelagics
+Cory's/Great Shearwater;1813;seabirds_pelagics
+Buller's Shearwater;1815;seabirds_pelagics
+Sooty Shearwater;1816;seabirds_pelagics
+Short-tailed Shearwater;1817;seabirds_pelagics
+Sooty/Short-tailed Shearwater;1818;seabirds_pelagics
+Manx Shearwater;1821;seabirds_pelagics
+Barolo Shearwater;1838;seabirds_pelagics
+Audubon's Shearwater;1840;seabirds_pelagics
+black-and-white shearwater sp.;1854;seabirds_pelagics
+shearwater sp.;1855;seabirds_pelagics
+Procellariid sp.;1856.75;seabirds_pelagics
+Wilson's Storm-Petrel;1857;seabirds_pelagics
+Wilson's Storm-Petrel;1857.5;seabirds_pelagics
+Oceanites sp.;1864;seabirds_pelagics
+White-faced Storm-Petrel;1867;seabirds_pelagics
+Fork-tailed Storm-Petrel;1886;seabirds_pelagics
+Leach's Storm-Petrel;1890;seabirds_pelagics
+Leach's Storm-Petrel;1891;seabirds_pelagics
+Band-rumped Storm-Petrel;1898;seabirds_pelagics
+Oceanodroma sp.;1911;seabirds_pelagics
+storm-petrel sp. (white-rumped);1912.6;seabirds_pelagics
+storm-petrel sp.;1916;seabirds_pelagics
+White-tailed Tropicbird;1924;
+Red-tailed Tropicbird;1935;
+Wood Stork;1941.56;shorebirds_waders
+Magnificent Frigatebird;1941.76;seabirds_pelagics
+frigatebird sp.;1941.86;seabirds_pelagics
+Brown Booby;1954;seabirds_pelagics
+Brown Booby;1956;seabirds_pelagics
+Northern Gannet;1964;seabirds_pelagics
+sulid sp.;1967;seabirds_pelagics
+Brandt's Cormorant;1984;waterfowl_diving
+Red-faced Cormorant;1984.01;waterfowl_diving
+Pelagic Cormorant;1984.02;waterfowl_diving
+Great Cormorant;1984.04;waterfowl_diving
+Great Cormorant;1984.05;waterfowl_diving
+Neotropic Cormorant;1985;waterfowl_diving
+Double-crested Cormorant;1988;waterfowl_diving
+Great/Double-crested Cormorant;1991;waterfowl_diving
+Neotropic/Double-crested Cormorant;1992.4;waterfowl_diving
+cormorant sp.;2055;waterfowl_diving
+Anhinga;2056;
+American White Pelican;2069;seabirds_pelagics
+Brown Pelican;2070;seabirds_pelagics
+Brown Pelican;2072;seabirds_pelagics
+Brown Pelican;2073;seabirds_pelagics
+Great White Pelican;2074.2;seabirds_pelagics
+pelican sp.;2074.9;seabirds_pelagics
+American Bittern;2081;shorebirds_waders
+Least Bittern;2101;shorebirds_waders
+Great Blue Heron;2118;shorebirds_waders
+Great Blue Heron;2119;shorebirds_waders
+Great Blue Heron;2124;shorebirds_waders
+Gray Heron;2126;shorebirds_waders
+Gray Heron;2128;shorebirds_waders
+Great Egret;2144;shorebirds_waders
+Great Egret;2147;shorebirds_waders
+Ardea sp.;2149;shorebirds_waders
+Little Egret;2158;shorebirds_waders
+Little Egret;2160;shorebirds_waders
+Western Reef-Heron;2163;shorebirds_waders
+Western Reef-Heron;2164;shorebirds_waders
+Snowy Egret;2169;shorebirds_waders
+Little Blue Heron;2173;shorebirds_waders
+Tricolored Heron;2174;shorebirds_waders
+Reddish Egret;2177;shorebirds_waders
+Cattle Egret;2183;shorebirds_waders
+Cattle Egret;2184;shorebirds_waders
+white egret sp.;2187;shorebirds_waders
+Green Heron;2196;shorebirds_waders
+Green Heron;2197;shorebirds_waders
+Green Heron;2198;shorebirds_waders
+Black-crowned Night-Heron;2233;shorebirds_waders
+Black-crowned Night-Heron;2235;shorebirds_waders
+Yellow-crowned Night-Heron;2244;shorebirds_waders
+Yellow-crowned Night-Heron;2244.5;shorebirds_waders
+Black-crowned/Yellow-crowned Night-Heron;2251;shorebirds_waders
+heron sp.;2264;shorebirds_waders
+White Ibis;2265;shorebirds_waders
+Glossy Ibis;2268;shorebirds_waders
+White-faced Ibis;2270;shorebirds_waders
+Glossy/White-faced Ibis;2271;shorebirds_waders
+ibis sp.;2315.5;shorebirds_waders
+Roseate Spoonbill;2324;shorebirds_waders
+Black Vulture;2358;raptors
+Turkey Vulture;2362;raptors
+Turkey Vulture;2363;raptors
+Cathartes sp.;2371.5;raptors
+new world vulture sp.;2375;raptors
+Osprey;2376;raptors
+Osprey;2377;raptors
+Osprey;2378;raptors
+White-tailed Kite;2391;raptors
+Scissor-tailed Kite;2395;raptors
+Swallow-tailed Kite;2431;raptors
+Golden Eagle;2588;raptors
+Mississippi Kite;2634;raptors
+Northern Harrier;2655;raptors
+Northern Harrier;2657;raptors
+Sharp-shinned Hawk;2807;raptors
+Sharp-shinned Hawk;2812;raptors
+Cooper's Hawk;2821;raptors
+Sharp-shinned/Cooper's Hawk;2822;raptors
+Northern Goshawk;2827.2;raptors
+Northern Goshawk;2829;raptors
+Cooper's Hawk/Northern Goshawk;2830.5;raptors
+Accipiter sp.;2832;raptors
+Bald Eagle;2881;raptors
+Golden/Bald Eagle;2883.3;raptors
+Harris's Hawk;2934;raptors
+Red-shouldered Hawk;2959;raptors
+Red-shouldered Hawk;2959.2;raptors
+Broad-winged Hawk;2966;raptors
+Broad-winged Hawk;2967;raptors
+Red-shouldered/Broad-winged Hawk;2973.5;raptors
+Swainson's Hawk;2984;raptors
+Zone-tailed Hawk;2986;raptors
+Red-tailed Hawk;2989;raptors
+Red-tailed Hawk;2990;raptors
+Red-tailed Hawk;2992;raptors
+Red-tailed Hawk;2993;raptors
+Red-tailed Hawk;2994;raptors
+Red-tailed Hawk;2995;raptors
+Rough-legged Hawk;3007;raptors
+Ferruginous Hawk;3010;raptors
+Buteo sp.;3038;raptors
+Buteo/eagle sp.;3040;raptors
+hawk sp.;3041;raptors
+eagle sp.;3042;raptors
+Yellow Rail;3257;shorebirds_waders
+Yellow Rail;3258;shorebirds_waders
+Black Rail;3299;shorebirds_waders
+Corn Crake;3367;shorebirds_waders
+King Rail;3394.5;shorebirds_waders
+King Rail;3394.6;shorebirds_waders
+Clapper Rail;3395;shorebirds_waders
+King/Clapper Rail;3399;shorebirds_waders
+Virginia Rail;3401;shorebirds_waders
+Virginia Rail;3401.5;shorebirds_waders
+Rallus sp.;3417;shorebirds_waders
+Sora;3495;shorebirds_waders
+rail/crake sp.;3551;shorebirds_waders
+Purple Gallinule;3554;waterfowl_dabbling
+Common Gallinule;3583.5;waterfowl_dabbling
+Common Gallinule;3584;waterfowl_dabbling
+Eurasian Moorhen/Common Gallinule;3591.5;waterfowl_dabbling
+American Coot;3614.5;waterfowl_dabbling
+American Coot;3615;waterfowl_dabbling
+coot sp.;3623;waterfowl_dabbling
+gallinule/moorhen/coot sp.;3624;waterfowl_dabbling
+Sandhill Crane;3717;shorebirds_waders
+Sandhill Crane;3718;shorebirds_waders
+Sandhill Crane;3718.5;shorebirds_waders
+Common Crane;3730;shorebirds_waders
+Sandhill x Common Crane (hybrid);3730.5;shorebirds_waders
+Whooping Crane;3732;shorebirds_waders
+Black-winged Stilt;3769;shorebirds_waders
+Black-necked Stilt;3773;shorebirds_waders
+Black-necked Stilt;3774;shorebirds_waders
+American Avocet;3782;shorebirds_waders
+Eurasian Oystercatcher;3785;shorebirds_waders
+American Oystercatcher;3796;shorebirds_waders
+Black Oystercatcher;3803;shorebirds_waders
+Black-bellied Plover;3805.1;shorebirds_waders
+European Golden-Plover;3805.2;shorebirds_waders
+American Golden-Plover;3805.5;shorebirds_waders
+Pacific Golden-Plover;3805.6;shorebirds_waders
+American/Pacific Golden-Plover (Lesser Golden-Plover);3805.7;shorebirds_waders
+golden-plover sp.;3805.8;shorebirds_waders
+Black-bellied Plover/golden-plover sp.;3805.9;shorebirds_waders
+Northern Lapwing;3807;shorebirds_waders
+Lesser Sand-Plover;3861;shorebirds_waders
+Lesser Sand-Plover;3866;shorebirds_waders
+Snowy Plover;3887;shorebirds_waders
+Snowy Plover;3888;shorebirds_waders
+Wilson's Plover;3892;shorebirds_waders
+Common Ringed Plover;3896;shorebirds_waders
+Semipalmated Plover;3899;shorebirds_waders
+Common Ringed/Semipalmated Plover;3899.2;shorebirds_waders
+Piping Plover;3901;shorebirds_waders
+Killdeer;3921;shorebirds_waders
+Mountain Plover;3924.5;shorebirds_waders
+Eurasian Dotterel;3926;shorebirds_waders
+small plover sp.;3930;shorebirds_waders
+plover sp.;3938;shorebirds_waders
+Northern Jacana;3949;shorebirds_waders
+Upland Sandpiper;3991;shorebirds_waders
+Little Curlew;3992;shorebirds_waders
+Eskimo Curlew;3993;shorebirds_waders
+Whimbrel;3994;shorebirds_waders
+Whimbrel;3995;shorebirds_waders
+Whimbrel;3999;shorebirds_waders
+Bristle-thighed Curlew;4000;shorebirds_waders
+Far Eastern Curlew;4001;shorebirds_waders
+Slender-billed Curlew;4002;shorebirds_waders
+Eurasian Curlew;4003;shorebirds_waders
+Whimbrel/Eurasian Curlew;4005.5;shorebirds_waders
+Long-billed Curlew;4006;shorebirds_waders
+Black-tailed Godwit;4010;shorebirds_waders
+Black-tailed Godwit;4011;shorebirds_waders
+Black-tailed Godwit;4012;shorebirds_waders
+Hudsonian Godwit;4014;shorebirds_waders
+Bar-tailed Godwit;4015;shorebirds_waders
+Bar-tailed Godwit;4016;shorebirds_waders
+Bar-tailed Godwit;4018;shorebirds_waders
+Marbled Godwit;4019;shorebirds_waders
+godwit sp.;4022;shorebirds_waders
+Ruddy Turnstone;4023;shorebirds_waders
+Black Turnstone;4026;shorebirds_waders
+Red Knot;4029;shorebirds_waders
+Surfbird;4035.2;shorebirds_waders
+Ruff;4036;shorebirds_waders
+Broad-billed Sandpiper;4037;shorebirds_waders
+Sharp-tailed Sandpiper;4052;shorebirds_waders
+Stilt Sandpiper;4053;shorebirds_waders
+Curlew Sandpiper;4054;shorebirds_waders
+Temminck's Stint;4055;shorebirds_waders
+Spoon-billed Sandpiper;4057;shorebirds_waders
+Red-necked Stint;4058;shorebirds_waders
+Sanderling;4059;shorebirds_waders
+Dunlin;4060;shorebirds_waders
+Dunlin;4061;shorebirds_waders
+Dunlin;4064;shorebirds_waders
+Dunlin;4065;shorebirds_waders
+Dunlin;4066;shorebirds_waders
+Rock Sandpiper;4071;shorebirds_waders
+Rock Sandpiper;4071.2;shorebirds_waders
+Purple Sandpiper;4072;shorebirds_waders
+Baird's Sandpiper;4073;shorebirds_waders
+Little Stint;4074;shorebirds_waders
+Least Sandpiper;4076;shorebirds_waders
+White-rumped Sandpiper;4077;shorebirds_waders
+Dunlin x White-rumped Sandpiper (hybrid);4077.1;shorebirds_waders
+Buff-breasted Sandpiper;4078;shorebirds_waders
+White-rumped x Buff-breasted Sandpiper (hybrid);4078.01;shorebirds_waders
+Pectoral Sandpiper;4078.02;shorebirds_waders
+Sharp-tailed/Pectoral Sandpiper;4078.03;shorebirds_waders
+Semipalmated Sandpiper;4078.05;shorebirds_waders
+Western Sandpiper;4078.06;shorebirds_waders
+Semipalmated/Western Sandpiper;4078.07;shorebirds_waders
+peep sp.;4078.08;shorebirds_waders
+Calidris sp.;4078.09;shorebirds_waders
+Short-billed Dowitcher;4080;shorebirds_waders
+Short-billed Dowitcher;4081;shorebirds_waders
+Short-billed Dowitcher;4082;shorebirds_waders
+Short-billed Dowitcher;4083;shorebirds_waders
+Long-billed Dowitcher;4084;shorebirds_waders
+Short-billed/Long-billed Dowitcher;4085;shorebirds_waders
+Jack Snipe;4096;shorebirds_waders
+Wilson's Snipe;4103;shorebirds_waders
+Common Snipe;4104;shorebirds_waders
+Wilson's/Common Snipe;4107;shorebirds_waders
+snipe sp.;4126;shorebirds_waders
+American Woodcock;4135;shorebirds_waders
+Terek Sandpiper;4135.5;shorebirds_waders
+Wilson's Phalarope;4136;shorebirds_waders
+Red-necked Phalarope;4137;shorebirds_waders
+Red Phalarope;4138;shorebirds_waders
+Red-necked/Red Phalarope;4138.5;shorebirds_waders
+phalarope sp.;4139;shorebirds_waders
+Spotted Sandpiper;4139.02;shorebirds_waders
+Common/Spotted Sandpiper;4139.03;shorebirds_waders
+Solitary Sandpiper;4139.05;shorebirds_waders
+Solitary Sandpiper;4139.06;shorebirds_waders
+Solitary Sandpiper;4139.07;shorebirds_waders
+Wandering Tattler;4139.09;shorebirds_waders
+Spotted Redshank;4139.11;shorebirds_waders
+Greater Yellowlegs;4139.12;shorebirds_waders
+Common Greenshank;4139.13;shorebirds_waders
+Willet;4139.16;shorebirds_waders
+Willet;4139.17;shorebirds_waders
+Willet;4139.18;shorebirds_waders
+Lesser Yellowlegs;4139.19;shorebirds_waders
+Greater/Lesser Yellowlegs;4139.2;shorebirds_waders
+Wood Sandpiper;4139.22;shorebirds_waders
+Common Redshank;4139.23;shorebirds_waders
+Tringa sp.;4139.24;shorebirds_waders
+Scolopacidae sp.;4139.3;shorebirds_waders
+large shorebird sp.;4139.6;shorebirds_waders
+shorebird sp.;4262;shorebirds_waders
+Great Skua;4262.01;seabirds_larids
+South Polar Skua;4262.03;seabirds_larids
+skua sp.;4262.08;seabirds_larids
+Pomarine Jaeger;4262.09;seabirds_larids
+Parasitic Jaeger;4262.1;seabirds_larids
+Pomarine/Parasitic Jaeger;4262.11;seabirds_larids
+Long-tailed Jaeger;4262.12;seabirds_larids
+Parasitic/Long-tailed Jaeger;4262.16;seabirds_larids
+jaeger sp.;4262.17;seabirds_larids
+jaeger/skua sp.;4262.18;seabirds_larids
+Dovekie;4262.19;seabirds_alcids
+Common Murre;4262.22;seabirds_alcids
+Thick-billed Murre;4262.27;seabirds_alcids
+Common/Thick-billed Murre;4262.32;seabirds_alcids
+Razorbill;4262.33;seabirds_alcids
+large alcid sp.;4262.36;seabirds_alcids
+Black Guillemot;4262.38;seabirds_alcids
+Black Guillemot;4262.395;seabirds_alcids
+Pigeon Guillemot;4262.44;seabirds_alcids
+Pigeon Guillemot;4262.46;seabirds_alcids
+Long-billed Murrelet;4262.53;seabirds_alcids
+Marbled Murrelet;4262.54;seabirds_alcids
+Kittlitz's Murrelet;4262.55;seabirds_alcids
+Scripps's Murrelet;4262.56;seabirds_alcids
+Scripps's/Guadalupe Murrelet (Xantus's Murrelet);4262.58;seabirds_alcids
+Ancient Murrelet;4262.61;seabirds_alcids
+murrelet sp.;4262.65;seabirds_alcids
+Cassin's Auklet;4262.66;seabirds_alcids
+Parakeet Auklet;4262.69;seabirds_alcids
+Crested Auklet;4262.72;seabirds_alcids
+Rhinoceros Auklet;4262.73;seabirds_alcids
+auklet sp.;4262.74;seabirds_alcids
+Atlantic Puffin;4262.75;seabirds_alcids
+Horned Puffin;4262.79;seabirds_alcids
+Tufted Puffin;4262.8;seabirds_alcids
+alcid sp.;4262.82;seabirds_alcids
+Black-legged Kittiwake;4264;seabirds_larids
+Black-legged Kittiwake;4265;seabirds_larids
+Red-legged Kittiwake;4267;seabirds_larids
+Ivory Gull;4268;seabirds_larids
+Sabine's Gull;4269;seabirds_larids
+Bonaparte's Gull;4276;seabirds_larids
+Red-billed Gull;4280;seabirds_larids
+Black-headed Gull;4288;seabirds_larids
+Little Gull;4291;seabirds_larids
+Ross's Gull;4292;seabirds_larids
+Laughing Gull;4295;seabirds_larids
+Franklin's Gull;4299;seabirds_larids
+Laughing/Franklin's Gull;4299.5;seabirds_larids
+Black-tailed Gull;4309;seabirds_larids
+Heermann's Gull;4313;seabirds_larids
+Mew Gull;4314;seabirds_larids
+Mew Gull;4315;seabirds_larids
+Mew Gull;4316;seabirds_larids
+Mew Gull;4317;seabirds_larids
+Mew Gull;4318;seabirds_larids
+Ring-billed Gull;4319;seabirds_larids
+Black-headed x Ring-billed Gull (hybrid);4319.3;seabirds_larids
+Western Gull;4320;seabirds_larids
+California Gull;4325;seabirds_larids
+California Gull;4326;seabirds_larids
+California Gull;4327;seabirds_larids
+Herring Gull;4328;seabirds_larids
+Herring Gull;4329;seabirds_larids
+Herring Gull;4330;seabirds_larids
+Herring Gull;4331;seabirds_larids
+California x Herring Gull (hybrid);4331.4;seabirds_larids
+Yellow-legged Gull;4341;seabirds_larids
+Yellow-legged Gull;4342;seabirds_larids
+Thayer's Gull;4349;seabirds_larids
+Herring/Thayer's Gull;4350.5;seabirds_larids
+Iceland Gull;4351;seabirds_larids
+Iceland Gull;4352;seabirds_larids
+Iceland Gull;4353;seabirds_larids
+Thayer's x Iceland Gull (hybrid);4353.5;seabirds_larids
+Thayer's/Iceland Gull;4354;seabirds_larids
+Lesser Black-backed Gull;4355;seabirds_larids
+Lesser Black-backed Gull;4356;seabirds_larids
+Lesser Black-backed Gull;4358;seabirds_larids
+Herring x Lesser Black-backed Gull (hybrid);4359.7;seabirds_larids
+Herring/Lesser Black-backed Gull;4359.8;seabirds_larids
+Slaty-backed Gull;4360;seabirds_larids
+Glaucous-winged Gull;4363;seabirds_larids
+Western x Glaucous-winged Gull (hybrid);4363.3;seabirds_larids
+Herring x Glaucous-winged Gull (hybrid);4363.6;seabirds_larids
+Slaty-backed x Glaucous-winged Gull (hybrid);4363.8;seabirds_larids
+Western/Glaucous-winged Gull;4364;seabirds_larids
+Glaucous Gull;4365;seabirds_larids
+Herring x Glaucous Gull (hybrid);4369.3;seabirds_larids
+Glaucous-winged x Glaucous Gull (hybrid);4369.8;seabirds_larids
+white-winged gull sp.;4369.9;seabirds_larids
+Great Black-backed Gull;4371;seabirds_larids
+Herring x Great Black-backed Gull (hybrid);4371.3;seabirds_larids
+Glaucous x Great Black-backed Gull (hybrid);4371.6;seabirds_larids
+Larus sp.;4378;seabirds_larids
+gull sp.;4379;seabirds_larids
+Sooty Tern;4414;seabirds_larids
+Least Tern;4440;seabirds_larids
+Gull-billed Tern;4456;seabirds_larids
+Caspian Tern;4463;seabirds_larids
+Black Tern;4465;seabirds_larids
+Black Tern;4467;seabirds_larids
+White-winged Tern;4468;seabirds_larids
+Roseate Tern;4479;seabirds_larids
+Common Tern;4492;seabirds_larids
+Common Tern;4493;seabirds_larids
+Arctic Tern;4497;seabirds_larids
+Common/Arctic Tern;4498;seabirds_larids
+Forster's Tern;4508;seabirds_larids
+Common/Forster's Tern;4508.5;seabirds_larids
+Sterna sp.;4514;seabirds_larids
+Royal Tern;4515;seabirds_larids
+Royal Tern;4517;seabirds_larids
+Sandwich Tern;4525;seabirds_larids
+Sandwich Tern;4526;seabirds_larids
+Sandwich Tern;4527;seabirds_larids
+Elegant Tern;4530;seabirds_larids
+large tern sp.;4537;seabirds_larids
+tern sp.;4538;seabirds_larids
+Black Skimmer;4539;seabirds_larids
+Black Skimmer;4540;seabirds_larids
+gull/tern sp.;4544.5;seabirds_larids
+Rock Pigeon;4673;
+Rock Pigeon;4673.5;
+Rock Pigeon;4686.5;
+Columba sp.;4752;
+Band-tailed Pigeon;4778;
+Band-tailed Pigeon;4779;
+Passenger Pigeon;4809.5;
+Oriental Turtle-Dove;4818;
+Eurasian Collared-Dove;4828;
+African Collared-Dove;4831;
+African Collared-Dove (Domestic type or Ringed Turtle-Dove);4833.5;
+Eurasian/African Collared-Dove;4833.9;
+Ring-necked Dove;4843;
+Streptopelia sp.;4870;
+Inca Dove;4990.015;
+Common Ground-Dove;4990.02;
+Ruddy Ground-Dove;4990.14;
+White-winged Dove;4992;
+Mourning Dove;5015;
+Mourning Dove;5017;
+pigeon/dove sp.;5596;
+Gray Go-away-bird;6585;
+Groove-billed Ani;6600;
+Yellow-billed Cuckoo;6907;
+Black-billed Cuckoo;6911;
+Yellow-billed/Black-billed Cuckoo;6912;
+Coccyzus sp.;6925;
+Common Cuckoo;6942.2;
+cuckoo sp. (Cuculidae sp.);6952.2;
+Barn Owl;6982;
+Barn Owl;7003;
+Flammulated Owl;7149.5;
+Western Screech-Owl;7150;
+Eastern Screech-Owl;7160;
+Eastern Screech-Owl;7161;
+Great Horned Owl;7254;
+Great Horned Owl;7255;
+Snowy Owl;7314;raptors
+Bubo sp.;7314.2;
+Northern Hawk Owl;7334;
+Northern Hawk Owl;7334.2;
+Northern Pygmy-Owl;7349;
+Northern Pygmy-Owl;7351;
+Northern Pygmy-Owl;7355;
+Burrowing Owl;7429;
+Burrowing Owl;7430;
+Spotted Owl;7521;
+Spotted Owl;7522;
+Barred Owl;7526;
+Barred Owl;7526.5;
+Great Gray Owl;7547;
+Great Gray Owl;7548;
+Long-eared Owl;7555;
+Long-eared Owl;7555.5;
+Long-eared Owl;7557.5;
+Short-eared Owl;7571;raptors
+Short-eared Owl;7572;raptors
+Long-eared/Short-eared Owl;7583.5;
+Asio sp.;7587.5;
+Boreal Owl;7595;
+Boreal Owl;7595.5;
+Boreal Owl;7601;
+Northern Saw-whet Owl;7602;
+owl sp.;7695;
+Lesser Nighthawk;7767;
+Common Nighthawk;7775;
+nighthawk sp.;7787;
+Common Poorwill;7862;
+Chuck-will's-widow;7867.5;
+Eastern Whip-poor-will;7912;
+Eastern/Mexican Whip-poor-will;7919;
+nightjar sp.;8024;
+Black Swift;8043;
+Black Swift;8044;
+White-collared Swift;8060;
+Chimney Swift;8096;
+Vaux's Swift;8097;
+Vaux's Swift;8098;
+Chimney/Vaux's Swift;8105;
+Chaetura sp.;8132;
+Pacific Swift;8321;
+White-throated Swift;8345;
+large swift sp.;8382;
+swift sp.;8384;
+Mexican Violetear;8504;
+Amethyst-throated Hummingbird;8834;
+Ruby-throated Hummingbird;8896;
+Black-chinned Hummingbird;8898;
+Ruby-throated/Black-chinned Hummingbird;8900;
+Anna's Hummingbird;8906;
+Costa's Hummingbird;8914;
+Broad-tailed Hummingbird;8922;
+Rufous Hummingbird;8924;
+Anna's x Rufous Hummingbird (hybrid);8924.5;
+Rufous/Allen's Hummingbird;8932;
+Calliope Hummingbird;8946;
+Selasphorus sp.;8948;
+Broad-billed Hummingbird;8992;
+Xantus's Hummingbird;9240;
+hummingbird sp.;9298;
+Belted Kingfisher;9932;
+Lewis's Woodpecker;10870;
+Red-headed Woodpecker;10873;
+Acorn Woodpecker;10874;
+Acorn Woodpecker;10875;
+Red-bellied Woodpecker;10925;
+Melanerpes sp.;10932;
+Williamson's Sapsucker;10933;
+Yellow-bellied Sapsucker;10936;
+Red-naped Sapsucker;10938;
+Yellow-bellied x Red-naped Sapsucker (hybrid);10938.5;
+Yellow-bellied/Red-naped Sapsucker;10939;
+Red-breasted Sapsucker;10941;
+Red-naped x Red-breasted Sapsucker (hybrid);10943.5;
+Red-naped/Red-breasted Sapsucker;10943.7;
+sapsucker sp.;10944;
+Downy Woodpecker;11148;
+Downy Woodpecker;11149;
+Downy Woodpecker;11152;
+Downy Woodpecker;11155;
+Hairy Woodpecker;11164;
+Hairy Woodpecker;11165;
+Hairy Woodpecker;11170;
+Hairy Woodpecker;11174;
+Downy/Hairy Woodpecker;11179;
+White-headed Woodpecker;11185;
+American Three-toed Woodpecker;11194;
+American Three-toed Woodpecker;11195;
+American Three-toed Woodpecker;11196;
+American Three-toed Woodpecker;11197;
+Black-backed Woodpecker;11198;
+American Three-toed/Black-backed Woodpecker;11199;
+Picoides sp.;11200;
+Northern Flicker;11308;
+Northern Flicker;11311;
+Northern Flicker;11315;
+Northern Flicker;11319.5;
+Pileated Woodpecker;11396;
+woodpecker sp.;11579.6;
+Crested Caracara;11581.24;
+Eurasian Kestrel;11581.56;
+Eurasian Kestrel;11581.57;
+American Kestrel;11581.83;
+American Kestrel;11581.84;
+Merlin;11582.15;raptors
+Merlin;11582.23;raptors
+Merlin;11582.24;raptors
+Merlin;11582.25;raptors
+Gyrfalcon;11582.6;raptors
+Peregrine Falcon;11582.61;raptors
+Peregrine Falcon;11582.62;raptors
+Peregrine Falcon;11582.63;raptors
+Peregrine Falcon;11582.66;raptors
+Prairie Falcon;11582.83;
+large falcon sp.;11582.86;
+small falcon sp.;11582.87;
+falcon sp.;11582.88;
+diurnal raptor sp.;11582.89;
+Sulphur-crested Cockatoo;11583.44;
+Cockatiel;11583.52;
+Cockatiel (Domestic type);11583.525;
+Rose-ringed Parakeet;11587.47;
+Red-rumped Parrot;11587.775605;
+Budgerigar;11587.77581;
+Budgerigar (Domestic type);11587.775813;
+Rosy-faced Lovebird;11588.16;
+Fischer's Lovebird;11588.19;
+Gray Parrot;11588.33;
+Monk Parakeet;11588.88;
+Green-cheeked Parakeet;11590.81;
+Hyacinth Macaw;11591.45;
+Blue-and-yellow Macaw;11591.94;
+Mitred Parakeet;11592.4;
+parakeet sp.;11592.55;
+Olive-sided Flycatcher;14516;
+Western Wood-Pewee;14529;
+Eastern Wood-Pewee;14534;
+Western/Eastern Wood-Pewee;14535;
+pewee sp.;14564;
+Yellow-bellied Flycatcher;14573;
+Acadian Flycatcher;14574;
+Alder Flycatcher;14575;
+Willow Flycatcher;14576;
+Willow Flycatcher;14577;
+Willow Flycatcher;14579;
+Alder/Willow Flycatcher (Traill's Flycatcher);14583;
+Least Flycatcher;14588;
+Hammond's Flycatcher;14589;
+Gray Flycatcher;14590;
+Dusky Flycatcher;14591;
+Hammond's/Dusky Flycatcher;14593;
+Pacific-slope Flycatcher;14600;
+Cordilleran Flycatcher;14604;
+Pacific-slope/Cordilleran Flycatcher (Western Flycatcher);14607;
+Empidonax sp.;14620;
+Black Phoebe;14621;
+Eastern Phoebe;14632;
+Say's Phoebe;14633;
+Vermilion Flycatcher;14637;
+Vermilion Flycatcher;14649;
+Dusky-capped Flycatcher;14887;
+Ash-throated Flycatcher;14921;
+Great Crested Flycatcher;14928;
+Myiarchus sp.;14953;
+Sulphur-bellied Flycatcher;15024;
+Variegated Flycatcher;15029;
+Tropical Kingbird;15038;
+Tropical/Couch's Kingbird;15043;
+Cassin's Kingbird;15045;
+Thick-billed Kingbird;15048;
+Western Kingbird;15051;
+Cassin's/Western Kingbird;15052;
+Eastern Kingbird;15055;
+Western x Eastern Kingbird (hybrid);15055.5;
+Gray Kingbird;15056;
+Scissor-tailed Flycatcher;15068;
+Fork-tailed Flycatcher;15069;
+flycatcher sp. (Tyrannidae sp.);15074;
+Yellow Chat;15783;
+Brown Shrike;17640;
+Loggerhead Shrike;17672;
+Northern Shrike;17684;
+Northern Shrike;17691.5;
+Loggerhead/Northern Shrike;17694;
+shrike sp.;17735;
+Black-capped Vireo;17749.993;
+White-eyed Vireo;17750;
+White-eyed Vireo;17751;
+Bell's Vireo;17778;
+Bell's Vireo;17779;
+Hutton's Vireo;17786.5;
+Hutton's Vireo;17787;
+Yellow-throated Vireo;17788;
+Cassin's Vireo;17797;
+Cassin's Vireo;17798;
+Blue-headed Vireo;17801;
+Cassin's/Blue-headed Vireo;17804;
+Plumbeous Vireo;17804.2;
+solitary vireo sp.;17805;
+Philadelphia Vireo;17827.8;
+Warbling Vireo;17828;
+Warbling Vireo;17829;
+Warbling Vireo;17830;
+Philadelphia/Warbling Vireo;17833;
+Red-eyed Vireo;17850;
+Red-eyed Vireo;17851;
+Philadelphia/Red-eyed Vireo;17862.5;
+Yellow-green Vireo;17864;
+vireo sp.;17878;
+Gray Jay;18722;
+Gray Jay;18723;
+Gray Jay;18728;
+Gray Jay;18731;
+Steller's Jay;18816;
+Steller's Jay;18820;
+Steller's Jay;18824;
+Blue Jay;18831;
+California Scrub-Jay;18840;
+jay sp.;18919.5;
+Black-billed Magpie;19000;
+Clark's Nutcracker;19007;
+Eurasian Jackdaw;19032;
+American Crow;19073;passerines
+Northwestern Crow;19078;passerines
+American/Northwestern Crow;19079;passerines
+Fish Crow;19087;passerines
+Chihuahuan Raven;19089;passerines
+Carrion Crow;19090;passerines
+crow sp.;19119;passerines
+Common Raven;19134;passerines
+raven sp.;19143;passerines
+crow/raven sp.;19143.5;passerines
+Horned Lark;19870;passerines
+Horned Lark;19886;passerines
+Horned Lark;19891;passerines
+Eurasian Skylark;19916.868;passerines
+Eurasian Skylark;19916.87;passerines
+Black-capped Swallow;19934;
+Northern Rough-winged Swallow;19940;
+Northern Rough-winged Swallow;19941;
+Purple Martin;19953;
+Purple Martin;19954;
+Tree Swallow;19972;
+Violet-green Swallow;19981;
+Tree/Violet-green Swallow;19983.7;
+Tachycineta sp.;19984.5;
+Bank Swallow;19996;
+Barn Swallow;20037;
+Barn Swallow;20039;
+Barn Swallow;20043;
+Barn Swallow;20045;
+Cliff Swallow;20122;
+Cliff Swallow;20123;
+Cave Swallow;20128;
+Cave Swallow;20129;
+Cave Swallow;20134;
+Cliff/Cave Swallow;20136;
+swallow sp.;20176;
+Carolina Chickadee;20240;
+Black-capped Chickadee;20246;
+Carolina x Black-capped Chickadee (hybrid);20256;
+Carolina/Black-capped Chickadee;20256.5;
+Mountain Chickadee;20258;
+Mountain Chickadee;20259;
+Mountain Chickadee;20263;
+Black-capped x Mountain Chickadee (hybrid);20267;
+Chestnut-backed Chickadee;20275;
+Boreal Chickadee;20279;
+Gray-headed Chickadee;20285;
+chickadee sp.;20290;
+Eurasian Blue Tit;20429;
+Tufted Titmouse;20484;
+Tufted/Black-crested Titmouse;20490;
+Great Tit;20500.004;
+Bushtit;20708;
+Bushtit;20709;
+Red-breasted Nuthatch;20757;
+White-breasted Nuthatch;20761;
+White-breasted Nuthatch;20762;
+White-breasted Nuthatch;20763;
+White-breasted Nuthatch;20768;
+Pygmy Nuthatch;20773;
+nuthatch sp.;20827;
+Brown Creeper;20846;
+Brown Creeper;20847;
+Brown Creeper;20855;
+Rock Wren;20884.1;
+Rock Wren;20884.2;
+Canyon Wren;20904;
+House Wren;21138;
+House Wren;21139;
+Pacific Wren;21229;
+Pacific Wren;21239;
+Winter Wren;21245;
+Pacific/Winter Wren;21247.1;
+Sedge Wren;21248;passerines
+Sedge Wren;21249;passerines
+Marsh Wren;21276;passerines
+Marsh Wren;21277;passerines
+Marsh Wren;21282;passerines
+Marsh Wren;21286;passerines
+Carolina Wren;21319;
+Carolina Wren;21320;
+Bewick's Wren;21330;
+Bewick's Wren;21330.2;
+Bewick's Wren;21331;
+wren sp.;21374.73;
+Blue-gray Gnatcatcher;21403;
+Blue-gray Gnatcatcher;21404;
+American Dipper;21475;
+American Dipper;21476;
+Golden-crowned Kinglet;21932;
+Ruby-crowned Kinglet;21939;
+kinglet sp.;21963;
+Wood Warbler;22015;
+Bluethroat;23403.0592;
+Siberian Rubythroat;23403.0645;
+Red-flanked Bluetail;23403.0662;
+Northern Wheatear;23403.097;
+Northern Wheatear;23403.0971;
+Eastern Bluebird;24482;
+Eastern Bluebird;24483;
+Western Bluebird;24491;
+Mountain Bluebird;24499;
+Eastern x Mountain Bluebird (hybrid);24499.3;
+bluebird sp.;24500;
+Townsend's Solitaire;24501;
+Veery;24592;
+Gray-cheeked Thrush;24597;
+Bicknell's Thrush;24600;
+Gray-cheeked/Bicknell's Thrush;24601;
+Swainson's Thrush;24602;
+Swainson's Thrush;24603;
+Swainson's Thrush;24607;
+Hermit Thrush;24608;
+Hermit Thrush;24609;
+Hermit Thrush;24614;
+Hermit Thrush;24618;
+Catharus sp.;24621;
+Wood Thrush;24622;
+Eurasian Blackbird;24687;
+Dusky Thrush;24770;
+Fieldfare;24773;
+Redwing;24774;
+Redwing;24776;
+American Robin;24903;passerines
+American Robin;24904;passerines
+American Robin;24905;passerines
+Turdus sp.;24932;
+Varied Thrush;24933;
+American Robin/Varied Thrush;24936.5;
+thrush sp.;24993;
+Gray Catbird;26358;
+Curve-billed Thrasher;26380;
+Brown Thrasher;26393;
+Sage Thrasher;26423;
+Northern Mockingbird;26464;
+Common Hill Myna;26568;
+European Starling;26621;
+White-cheeked Starling;26647;
+Common Myna;26648;
+Crested Myna;26667.5;
+Siberian Accentor;27451;
+Western Yellow Wagtail;27480;
+Eastern Yellow Wagtail;27495;
+Citrine Wagtail;27501;
+White Wagtail;27518;
+White Wagtail;27522;
+Red-throated Pipit;27660;
+American Pipit;27669;passerines
+American Pipit;27671;passerines
+Sprague's Pipit;27675;
+pipit sp.;27712;
+Bohemian Waxwing;27734;
+Cedar Waxwing;27738;
+Bohemian/Cedar Waxwing;27739;
+Phainopepla;27755;
+Lapland Longspur;27763.5;passerines
+Chestnut-collared Longspur;27764;
+Smith's Longspur;27765;
+McCown's Longspur;27766;
+longspur sp.;27766.3;
+Snow Bunting;27766.4;passerines
+McKay's Bunting;27768;
+Snow x McKay's Bunting (hybrid);27768.5;
+Snow/McKay's Bunting;27768.7;
+Ovenbird;27769;
+Worm-eating Warbler;27772;
+Louisiana Waterthrush;27773;
+Northern Waterthrush;27774;
+Louisiana/Northern Waterthrush;27775;
+Golden-winged Warbler;27776.5;
+Blue-winged Warbler;27777;
+Golden-winged x Blue-winged Warbler (hybrid);27781.1;
+Brewster's Warbler (hybrid);27781.2;
+Lawrence's Warbler (hybrid);27781.4;
+Golden-winged/Blue-winged Warbler;27781.5;
+Black-and-white Warbler;27782;
+Prothonotary Warbler;27783;
+Swainson's Warbler;27784;
+Tennessee Warbler;27792;
+Orange-crowned Warbler;27793;
+Orange-crowned Warbler;27793.5;
+Orange-crowned Warbler;27794;
+Orange-crowned Warbler;27795;
+Orange-crowned Warbler;27796;
+Lucy's Warbler;27800;
+Nashville Warbler;27801;
+Nashville Warbler;27802;
+Nashville Warbler;27803;
+Virginia's Warbler;27804;
+Oreothlypis sp.;27805;
+Connecticut Warbler;27807;
+MacGillivray's Warbler;27822;
+Mourning Warbler;27824;
+MacGillivray's/Mourning Warbler;27824.4;
+Kentucky Warbler;27825;
+Common Yellowthroat;27838;
+Common Yellowthroat;27838.5;
+Common Yellowthroat;27842;
+Common Yellowthroat;27848;
+Mourning Warbler x Common Yellowthroat (hybrid);27851.4;
+Hooded Warbler;27860;
+American Redstart;27861;
+Kirtland's Warbler;27862;
+Cape May Warbler;27863;
+Cerulean Warbler;27864;
+Northern Parula;27865;
+Magnolia Warbler;27882;
+Nashville x Magnolia Warbler (hybrid);27882.2;
+Bay-breasted Warbler;27883;
+Blackburnian Warbler;27884;
+Yellow Warbler;27885;
+Yellow Warbler;27886;
+Chestnut-sided Warbler;27923;
+Magnolia x Chestnut-sided Warbler (hybrid);27923.5;
+Blackpoll Warbler;27924;
+Bay-breasted/Blackpoll Warbler;27925;
+Black-throated Blue Warbler;27926;
+Palm Warbler;27929;
+Palm Warbler;27930;
+Palm Warbler;27931;
+Pine Warbler;27933;
+Yellow-rumped Warbler;27938;
+Yellow-rumped Warbler;27939;
+Yellow-rumped Warbler;27941;
+Yellow-rumped Warbler;27941.5;
+Magnolia x Yellow-rumped Warbler (hybrid);27943.3;
+Palm x Yellow-rumped Warbler (hybrid);27943.5;
+Yellow-throated Warbler;27946;
+Yellow-throated Warbler;27947;
+Yellow-throated Warbler;27948;
+Prairie Warbler;27956;
+Grace's Warbler;27962;
+Black-throated Gray Warbler;27968;
+Townsend's Warbler;27971;
+Hermit Warbler;27973;
+Townsend's x Hermit Warbler (hybrid);27973.5;
+Townsend's/Hermit Warbler;27975;
+Black-throated Green Warbler;27977;
+Townsend's x Black-throated Green Warbler (hybrid);27977.5;
+Setophaga sp.;27978;
+Canada Warbler;28090;
+Wilson's Warbler;28091;
+Wilson's Warbler;28092;
+Wilson's Warbler;28093;
+Wilson's Warbler;28094;
+Painted Redstart;28101;
+Yellow-breasted Chat;28138;
+Yellow-breasted Chat;28139;
+Yellow-breasted Chat;28140;
+warbler sp. (Parulidae sp.);28149;
+Red-crested Cardinal;28193.1;
+Cassin's Sparrow;29493;
+Bachman's Sparrow;29498;
+Grasshopper Sparrow;29499;
+Grasshopper Sparrow;29500;
+Grasshopper Sparrow;29501;
+Baird's Sparrow;29505;
+Henslow's Sparrow;29506;
+Le Conte's Sparrow;29507;passerines
+Nelson's Sparrow;29508;passerines
+Nelson's Sparrow;29509;passerines
+Nelson's Sparrow;29510;passerines
+Saltmarsh Sparrow;29511;passerines
+Nelson's/Saltmarsh Sparrow (Sharp-tailed Sparrow);29513;passerines
+Seaside Sparrow;29514;passerines
+Ammodramus sp.;29519;passerines
+American Tree Sparrow;29553;
+Chipping Sparrow;29554;
+Clay-colored Sparrow;29719;
+Chipping x Clay-colored Sparrow (hybrid);29720;
+Field Sparrow;29726;
+Brewer's Sparrow;29728;
+Brewer's Sparrow;29729;
+Brewer's Sparrow;29730;
+Spizella sp.;29735;
+American Tree Sparrow/Spizella sp.;29735.2;
+Black-throated Sparrow;29743;
+Lark Sparrow;29745;
+Lark Bunting;29761;
+Fox Sparrow;29840;
+Fox Sparrow;29841;
+Fox Sparrow;29855;
+Fox Sparrow;29861;
+Dark-eyed Junco;29958;
+Dark-eyed Junco;29958.5;
+Dark-eyed Junco;29959;
+Dark-eyed Junco;29962;
+Dark-eyed Junco;29963;
+Dark-eyed Junco;29972;
+Dark-eyed Junco;29975;
+Dark-eyed Junco;29976;
+Dark-eyed/Yellow-eyed Junco;29984.02;
+White-crowned Sparrow;29984.05;
+White-crowned Sparrow;29984.06;
+White-crowned Sparrow;29984.07;
+White-crowned Sparrow;29984.08;
+White-crowned Sparrow;29984.09;
+White-crowned Sparrow;29984.12;
+Golden-crowned Sparrow;29984.13;
+White-crowned x Golden-crowned Sparrow (hybrid);29984.14;
+Harris's Sparrow;29984.15;
+White-throated Sparrow;29984.17;
+White-crowned/White-throated Sparrow;29984.19;
+Golden-crowned x White-throated Sparrow (hybrid);29984.2;
+Zonotrichia sp.;29984.21;
+Dark-eyed Junco x White-throated Sparrow (hybrid);29984.22;
+Sagebrush Sparrow;29984.23;
+Vesper Sparrow;29984.31;
+Savannah Sparrow;29984.32;passerines
+Savannah Sparrow;29984.33;passerines
+Savannah Sparrow;29984.34;passerines
+Song Sparrow;29984.39;
+Song Sparrow;29984.4;
+Song Sparrow;29984.41;
+Song Sparrow;29984.42;
+Lincoln's Sparrow;29984.49;
+Swamp Sparrow;29984.5;passerines
+Lincoln's/Swamp Sparrow;29984.52;
+Green-tailed Towhee;29984.68;
+Spotted Towhee;29984.69;
+Spotted Towhee;29984.7;
+Spotted Towhee;29984.71;
+Spotted Towhee;29984.72;
+Eastern Towhee;29984.76;
+Eastern Towhee;29984.77;
+Spotted x Eastern Towhee (hybrid);29984.79;
+Spotted/Eastern Towhee (Rufous-sided Towhee);29984.8;
+towhee sp.;29984.83;
+sparrow sp.;29986;
+Rustic Bunting;30075;
+Hepatic Tanager;30141;
+Summer Tanager;30160;
+Scarlet Tanager;30163;
+Western Tanager;30164;
+tanager sp. (Piranga sp.);30180;
+Northern Cardinal;30233;
+Northern Cardinal;30234;
+Pyrrhuloxia;30253;
+Black-backed Grosbeak;30266;
+Rose-breasted Grosbeak;30273;
+Black-headed Grosbeak;30275;
+Rose-breasted x Black-headed Grosbeak (hybrid);30277.5;
+Rose-breasted/Black-headed Grosbeak;30278;
+Blue Grosbeak;30312;
+Lazuli Bunting;30320;
+Indigo Bunting;30322;
+Lazuli x Indigo Bunting (hybrid);30322.5;
+Lazuli/Indigo Bunting;30323;
+Varied Bunting;30328;
+Painted Bunting;30333;
+Passerina sp.;30336;
+Dickcissel;30337;
+Bobolink;30338;
+Red-winged Blackbird;30339;passerines
+Red-winged Blackbird;30340;passerines
+Western Meadowlark;30377;
+Eastern Meadowlark;30387;
+Eastern Meadowlark;30389;
+Eastern Meadowlark;30404.5;
+Western/Eastern Meadowlark;30409;
+Yellow-headed Blackbird;30410;passerines
+Rusty Blackbird;30416;passerines
+Brewer's Blackbird;30419;
+Rusty/Brewer's Blackbird;30420;
+Common Grackle;30421;
+Common Grackle;30422;
+Common Grackle;30425;
+Great-tailed Grackle;30432;
+Boat-tailed/Great-tailed Grackle;30441;
+grackle sp.;30461;
+Bronzed Cowbird;30515;
+Brown-headed Cowbird;30521;
+Orchard Oriole;30546;
+Orchard Oriole;30547;
+Hooded Oriole;30549;
+Hooded Oriole;30550;
+Bullock's Oriole;30600;
+Baltimore Oriole;30632;
+Bullock's x Baltimore Oriole (hybrid);30632.5;
+Bullock's/Baltimore Oriole;30633;
+Bullock's/Black-backed Oriole;30635;
+Scott's Oriole;30636;
+new world oriole sp.;30637;
+blackbird sp.;30693;
+Common Chaffinch;30694;
+Common Chaffinch;30695;
+Brambling;30714;
+Gray-crowned Rosy-Finch;30825;
+Gray-crowned Rosy-Finch;30828;
+Gray-crowned Rosy-Finch;30829;
+Gold-naped Finch;30837;
+Pine Grosbeak;30849;
+House Finch;30866;
+House Finch;30867;
+Purple Finch;30878.4;
+Purple Finch;30878.6;
+Purple Finch;30878.7;
+House/Purple Finch;30878.8;
+Cassin's Finch;30878.9;
+Haemorhous sp.;30880.5;
+rosefinch sp.;30942;
+European Greenfinch;30954;
+Oriental Greenfinch;30961;
+Red Crossbill;30973;
+Red Crossbill;30985.1;
+Red Crossbill;30985.2;
+Red Crossbill;30995;
+Red Crossbill;30996;
+Red Crossbill;30997;
+Red Crossbill;30998;
+Red Crossbill;30999;
+Red Crossbill;31001;
+Red Crossbill;31002;
+Red Crossbill;31003;
+White-winged Crossbill;31005;
+White-winged Crossbill;31007;
+crossbill sp.;31008;
+Common Redpoll;31009;
+Common Redpoll;31010;
+Common Redpoll;31011;
+Hoary Redpoll;31016;
+Hoary Redpoll;31017;
+Hoary Redpoll;31018;
+Common/Hoary Redpoll;31019;
+redpoll sp.;31019.5;
+Eurasian Siskin;31020;
+Pine Siskin;31021;
+Pine Siskin;31022;
+Pine Siskin;31025.2;
+Lesser Goldfinch;31032;
+American Goldfinch;31039;
+Spinus sp.;31073;
+Acanthis/Spinus sp.;31074;
+European Goldfinch;31075;
+Carduelis sp.;31108.5;
+Yellow-fronted Canary;31142;
+Evening Grosbeak;31273;
+Evening Grosbeak;31276.1;
+finch sp.;31340;
+House Sparrow;31345;
+Eurasian Tree Sparrow;31403;
+House x Eurasian Tree Sparrow (hybrid);31412;
+Northern Red Bishop;31681;
+Southern Red Bishop;31682;
+Common Waxbill;31809;
+Red-cheeked Cordonbleu;31856;
+Red-headed Finch;31926;
+Zebra Finch;31975.5;
+Double-barred Finch;31978;
+White-rumped Munia;32043;
+Scaly-breasted Munia;32057;
+Java Sparrow;32143;
+passerine sp.;32181;
+bird sp.;34000;
+Aleutian Tern;;seabirds_larids
+American Green-winged Teal;;waterfowl_dabbling
+American/Pacific Golden Plover;;shorebirds_waders
+Baltimore Oriole, Northern Oriole;;
+Black & White Warbler;;
+Black Storm-petrel;;seabirds_pelagics
+Black-crowned Night Heron;;shorebirds_waders
+Black-vented Shearwater;;seabirds_pelagics
+Bonin Petrel;;seabirds_pelagics
+Bridled Tern;;seabirds_larids
+Christmas Shearwater;;seabirds_pelagics
+European Storm-Petrel;;seabirds_pelagics
+Family: Albatrosses;;seabirds_pelagics
+Family: Auks;;seabirds_alcids
+Family: Blackbirds;;
+Family: Cardinals And Buntings;;
+Family: Cormorants and Shags;;waterfowl_diving
+Family: Crows and Jays;;
+Family: Cuckoos;;
+Family: Doves and Pigeons;;
+Family: Ducks, Geese and Swans;;waterfowl_dabbling
+Family: Falcons;;
+Family: Finches;;
+Family: Gannets, Boobies;;seabirds_pelagics
+Family: Grebes;;waterfowl_diving
+Family: Grouse and Ptarmigan;;
+Family: Gulls, Terns, Noddies and Skimmers;;seabirds_larids
+Family: Hawks (Accipiter);;raptors
+Family: Herons;;shorebirds_waders
+Family: Hummingbirds;;
+Family: Hydrobatid Storm-Petrels;;seabirds_pelagics
+Family: Jaegers and Skuas;;seabirds_larids
+Family: Kingfishers;;passerines
+Family: Kinglets;;
+Family: Larks;;
+Family: Loons;;waterfowl_diving
+Family: Mimic Thrushes;;
+Family: Nuthatches;;
+Family: Oystercatchers;;shorebirds_waders
+Family: Pelicans;;seabirds_pelagics
+Family: Pipits;;passerines
+Family: Plovers;;shorebirds_waders
+Family: Rails;;shorebirds_waders
+Family: Sandpipers, Snipes, Phalaropes, etc.;;shorebirds_waders
+Family: Shearwaters, Petrels;;seabirds_pelagics
+Family: Sparrows;;
+Family: Starlings;;
+Family: Swallows;;
+Family: Tanagers;;
+Family: Terns and Noddies;;seabirds_larids
+Family: Thrushes;;
+Family: Tyrannidae;;
+Family: Unknown Shorebird;;shorebirds_waders
+Family: Vireos;;
+Family: Warblers;;
+Family: Waxwings;;
+Family: Weaver Finches;;
+Family: Woodpeckers;;
+Family: Wren;;
+Flesh-footed Shearwater, Pale-footed;;seabirds_pelagics
+Genus: Boobies;;seabirds_pelagics
+Genus: Cormorants;;waterfowl_diving
+Genus: Cuckoos (Coccyzus);;
+Genus: Doves (Columba);;
+Genus: Doves (Zenaida);;
+Genus: Dowitchers;;shorebirds_waders
+Genus: Ducks;;waterfowl_dabbling
+Genus: Eiders;;waterfowl_diving
+Genus: Eiders or Scoters;;waterfowl_diving
+Genus: Empidonax flycatchers;;
+Genus: Frigatebirds;;seabirds_pelagics
+Genus: Fulmars;;seabirds_pelagics
+Genus: Geese;;waterfowl_dabbling
+Genus: Godwits;;shorebirds_waders
+Genus: Goldeneye and Bufflehead;;waterfowl_diving
+Genus: Guillemots;;seabirds_alcids
+Genus: Gulls (Larus);;seabirds_larids
+Genus: Gulls (Larus, Xema, Rissa, Pagophila, Rhodostethia);;seabirds_larids
+Genus: Gulls white-winged (Iceland or Glaucous);;seabirds_larids
+Genus: Hawks (Buteos);;
+Genus: Jaegers;;seabirds_larids
+Genus: Kingfishers;;
+Genus: Kittiwakes;;seabirds_larids
+Genus: Mergansers;;waterfowl_diving
+Genus: Murrelets (Synthliboramphus and Brachyramphus );;seabirds_alcids
+Genus: Murres;;seabirds_alcids
+Genus: Noddies;;seabirds_pelagics
+Genus: Oystercatchers;;shorebirds_waders
+Genus: Petrels (Pterodroma);;seabirds_pelagics
+Genus: Phalaropes;;shorebirds_waders
+Genus: Plovers (Charadrius);;shorebirds_waders
+Genus: Plovers (Pluvialis);;shorebirds_waders
+Genus: Puffins;;seabirds_alcids
+Genus: Redpoll (Common or Hoary);;
+Genus: Redpolls, Goldfinches, Siskins;;
+Genus: Sandpipers (Calidris);;shorebirds_waders
+Genus: Sandpipers or Phalaropes;;shorebirds_waders
+Genus: Scaup;;waterfowl_diving
+Genus: Scoters;;waterfowl_diving
+Genus: Shearwaters (Calonectris);;seabirds_pelagics
+Genus: Shearwaters (Puffinus or Calonectris);;seabirds_pelagics
+Genus: Shearwaters (Puffinus);;seabirds_pelagics
+Genus: Shorebirds (Tringa) Yellowlegs;;shorebirds_waders
+Genus: Shorebirds (Whimbrel and Curlews);;shorebirds_waders
+Genus: Skuas;;seabirds_larids
+Genus: Small gull (includes BLKI, RBGU, LAGU, BOGU, BHGU +);;seabirds_larids
+Genus: Snipes;;shorebirds_waders
+Genus: Storm-Petrels (Fregetta);;seabirds_pelagics
+Genus: Storm-Petrels (Oceanites);;seabirds_pelagics
+Genus: Storm-Petrels (Oceanodroma);;seabirds_pelagics
+Genus: Terns (Childonias);;seabirds_larids
+Genus: Terns (Common or Arctic);;seabirds_larids
+Genus: Terns (Sterna);;seabirds_larids
+Genus: Terns (all genera);;seabirds_larids
+Genus: Tropicbirds;;
+Great Frigatebird;;seabirds_pelagics
+Harcourt's Petrel, Madeira Petrel;;seabirds_pelagics
+Hawaiian Petrel or Galapagos Petrel;;seabirds_pelagics
+Herald Petrel;;seabirds_pelagics
+Herald Petrel, Trinidade;;seabirds_pelagics
+Herald Petrel, Trinidade (heraldica ssp.);;seabirds_pelagics
+Iceland Gull - glaucoides ssp.;;seabirds_larids
+Iceland Gull/Kumlien's  Gull - kumlieni ssp.;;seabirds_larids
+Ipswich Sparrow;;
+Juan Fernandez Petrel;;seabirds_pelagics
+Least Auklet;;seabirds_alcids
+Least Storm-petrel;;seabirds_pelagics
+Lesser Noddy;;seabirds_larids
+Lincolns Sparrow;;
+Little Shearwater, Dusky, Allied;;seabirds_pelagics
+Magnificent Frigatebird, Man-o'-war;;seabirds_pelagics
+Masked Booby;;seabirds_pelagics
+Mew Gull, Common Gull;;seabirds_larids
+Murre or Razorbill;;seabirds_alcids
+Myrtle Warbler;;
+Nashville warbler;;
+Orage-crowned Warbler;;
+Order: Albatrosses, Petrels, Shearwaters, Storm-Petrels;;seabirds_pelagics
+Order: Birds of Prey;;
+Order: Cuckoos and Anis;;
+Order: Doves and Pigeon;;
+Order: Herons, Ibises, Storks and allies;;shorebirds_waders
+Order: Kingfishers, Todies, Motmots;;
+Order: Loons;;waterfowl_diving
+Order: Owls;;
+Order: Passerines;;
+Order: Pelicans, Gannets, Boobies, Cormorants;;
+Order: Pheasants, Grouse;;
+Order: Rails and Cranes;;shorebirds_waders
+Order: Shorebirds, Gulls, Auks;;
+Order: Waterfowl;;
+Polynesian Storm-Petrel;;seabirds_pelagics
+Red-billed Tropicbird;;
+Red-footed Booby;;seabirds_pelagics
+Rufous-sided Towhee;;
+Shag;;
+Slate-colored Junco;;
+Solander's Petrel;;seabirds_pelagics
+Sooty Gull, Aden, Hemprich's;;seabirds_larids
+Sooty Tern, Wideawake;;seabirds_larids
+Spectacled Guillemot, Sooty;;seabirds_alcids
+Streaked Shearwater;;seabirds_pelagics
+Swainsons Thrush;;
+Tahiti Petrel;;seabirds_pelagics
+Townsend's Shearwater;;seabirds_pelagics
+Unknown Bird;;
+Unknown Songbird;;
+Vega Gull;;seabirds_larids
+Wedge-rumped Storm-petrel;;seabirds_pelagics
+Wedge-tailed Shearwater;;seabirds_pelagics
+Western-Glaucous-winged Gull (Hybrid);;seabirds_larids
+Whiskered Auklet;;seabirds_alcids
+White Tern, Fairy Tern;;seabirds_larids
+White-bellied Storm-petrel;;seabirds_pelagics
+White-cheeked Tern;;seabirds_larids
+White-tailed Eagle;;
+White-winged  Tern;;seabirds_larids
+Wilson's Storm Petrel;;seabirds_pelagics
+Wilsons Snipe;;shorebirds_waders
+Xantus's Murrelet;;seabirds_alcids
+Yelkouan Shearwater;;seabirds_pelagics
+Yellow Wagtail;;
