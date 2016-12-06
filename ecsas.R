@@ -1,4 +1,5 @@
 
+### NEED TO GET OBJECTS FROM EBIRD!
 
 library(RODBC)
 
@@ -34,17 +35,26 @@ month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05"
 names(month_comb)<-substr(names(month_comb),1,8)
 x$season<-names(month_comb)[match(x$month,month_comb)]
 
+
+### GET BIRD GROUPS
+g<-fread("bird_groups.csv",sep=";",na.strings=c("","NA")) #ce fichier est sur mon github
+g<-g[!is.na(group),]
+g<-unique(g[,c("sp","group")])
+x$group<-g$group[match(x$sp,g$sp)]
+
+
+
 #################################
 ### grouping
 #################################
 
-sp<-"Northern Gannet"
-#group<-"Auks and allies"
-month<-c("08","09","10","11")
+group<-"seabirds_alcids"
+sp<-unique(x$sp[x$group%in%group])
+#sp<-"Dovekie"
+month<-c("04","05","06","07")
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
-xs<-spTransform(xs,CRS(proj4string(land)))
-
+xs<-spTransform(xs,CRS(prj))
 
 
 ######################################
@@ -54,9 +64,9 @@ xs<-spTransform(xs,CRS(proj4string(land)))
 #H<-Hpi.diag(coordinates(xs))
 #H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
 #H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
-H1<-matrix(c(300000000,0,0,300000000),nrow=2) 
+H1<-matrix(c(200000000,0,0,200000000),nrow=2) 
 
-### GET POLYGONS
+### GET KERNELS POLYGONS
 k<-kde(x=coordinates(xs),gridsize=c(500,500),compute.cont=TRUE,H=H1,w=xs$nb)
 kp<-list()
 perc<-c(25,50,75,95)
@@ -66,31 +76,30 @@ cols_kern<-c("darkred","red","orange","yellow")
 for(i in seq_along(perc)){
 	kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(xs)) # extract polygons
 }
-for(i in rev(seq_along(kp)[-1])){
-	kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
+for(i in rev(seq_along(kp))){
+	if(i==1){ #make sure a single polygon for each contour
+		 kp[[i]]<-gUnaryUnion(kp[[i]])
+	}else{	
+	  kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
+	}
+	id<-paste0("k",perc[i])
+	season<-paste(month,collapse="")
+	res<-SpatialPolygonsDataFrame(kp[[i]],data=data.frame(id=id,group=group,season=season,stringsAsFactors=FALSE),match.ID=FALSE)
+	kp[[i]]<-spChFIDs(res,id) # give unique ID
 }
+kp<-do.call("rbind",kp)
 
 ### PLOT POLYGONS
 par(mar=c(1,0,0,0))
 plot(xs,col="white")
+plot(kp,add=TRUE,col=alpha(cols_kern,0.6),border=NA)
 plot(land,col="grey95",border="grey75",add=TRUE)
-for(i in rev(seq_along(perc))){
-	plot(kp[[i]],add=TRUE,col=alpha("red",trans[i]),border=NA)
-}
-#plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
-legend("bottomright",fill=alpha("red",trans),legend=paste(perc,"%"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
-#
-#
+legend("bottomright",fill=alpha(cols_kern,0.6),legend=paste(perc,"%"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
 
-### BARPLOT ABUNDANCE
-par(mar=c(2,2,0,0),new=TRUE)
-h<-hist(xs$nb,breaks=seq(0,max(xs$nb)+20,by=20),plot=FALSE)
-h<-hist(xs$nb,breaks=seq(0,max(xs$nb)+20,by=20),col=alpha("red",0.5),border=ifelse(h$counts,"red",NA),xaxt="n",yaxt="n",)
-axis(1)
-axis(2)
-#
-#
-#
+### write shapefile
+writeOGR(kp,dsn="D:/ebird/kernels",layer=paste(group,season,"ecsas",sep="_"),driver="ESRI Shapefile",overwrite_layer=TRUE)
+
+
 
 
 

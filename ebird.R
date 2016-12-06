@@ -30,6 +30,10 @@ kde2pol<-function(k,perc="5%",proj=NULL){
 	poly
 }
 
+ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+prj<-"+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"
+laea<-"+proj=laea +lat_0=50 +lon_0=-65"
+
 ### GET BIRD GROUPS
 g<-fread("bird_groups.csv",sep=";",na.strings=c("","NA")) #ce fichier est sur mon github
 g<-g[!is.na(group),]
@@ -40,23 +44,17 @@ g<-unique(g[,c("sp","group")])
 #co<-readOGR(dsn="D:/ebird",layer="coastlines_z1",encoding="UTF-8")
 
 na<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
-na<-na[na$admin%in%c("Canada","United States of America"),]
-#na<-na[na$name%in%c("Quebec","Nova Scotia","Vermont","New York","New Hampshire","QuÃ©bec","Prince Edward Island","New Brunswick","Newfoundland and Labrador","Maine"),]
-na<-na[na$name%in%c("British Columbia"),]
+land<-na[na$admin%in%c("Canada","United States of America","Greenland"),]
+land<-land[land$name%in%c("Manitoba","Virginia","Delaware","Ontario","Nunavut","Quebec","Nova Scotia","Vermont","New York","New Hampshire","QuÃ©bec","Prince Edward Island","New Brunswick","Newfoundland and Labrador","Maine","Massachusetts","Maryland","Pennsylvania","Connecticut","New Jersey","Rhode Island","Ohio","Kentuchy","West Virginia","Greenland") | land$admin%in%"Greenland",]
+#na<-na[na$name%in%c("British Columbia"),]
 
-land<-spTransform(na,CRS(prj))
+land<-spTransform(land,CRS(prj))
 
 g1<-gBuffer(gUnaryUnion(land),width=-5000)
 g2<-gBuffer(gUnaryUnion(land),width=5000)
 coast<-gDifference(g2,g1)
 coastw<-gDifference(coast,land)
 
-
-
-
-ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-prj<-"+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"
-laea<-"+proj=laea +lat_0=50 +lon_0=-65"
 
 keep<-c("COMMON NAME","TAXONOMIC ORDER","STATE","LATITUDE","LONGITUDE","OBSERVATION DATE","OBSERVATION COUNT","CATEGORY","SAMPLING EVENT IDENTIFIER")
 keepn<-c("sp","taxo","state","lat","lon","date","nb","category","sample")
@@ -100,7 +98,7 @@ mtext("Nb of ebird records per group and season",3,line=3)
 #names(e)<-keepn[match(names(e),keep)]
 
 x<-e[state%in%c("Quebec","Nova Scotia","New Brunswick","Prince Edward Island","Newfoundland and Labrador"),]
-x<-e[state%in%c("British Columbia"),]
+#x<-e[state%in%c("British Columbia"),]
 
 
 x$taxo<-as.numeric(x$taxo)
@@ -110,8 +108,8 @@ x$nb<-as.numeric(x$nb)
 x$nb<-ifelse(is.na(x$nb),1,x$nb)
 x$lon<-as.numeric(x$lon)
 x$lat<-as.numeric(x$lat)
-#x<-x[lat<=52,] #on garde ce qui est en bas
-#x<-x[lon>=(-74),] #on garde ce qui est à partir de mtl
+x<-x[lat<=52,] #on garde ce qui est en bas
+x<-x[lon>=(-74),] #on garde ce qui est à partir de mtl
 
 
 #################################
@@ -129,8 +127,9 @@ H1<-matrix(c(6000000,0,0,6000000),nrow=2)
 ### GET POLYGONS
 k<-kde(x=coordinates(ys),gridsize=c(500,500),compute.cont=TRUE,H=H1)
 kp<-list()
-perc<-c(seq(5,95,by=5),99)
+perc<-c(seq(5,95,by=10),99)
 trans<-rev(seq(0.15,1,length.out=length(perc)))
+col_eff<-c(colo.scale(perc[-length(perc)],c("blue","violet","magenta","yellow")),alpha("blue",0.5))
 for(i in seq_along(perc)){
 	kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(xs)) # extract polygons
 }
@@ -143,17 +142,10 @@ par(mar=c(1,0,0,0))
 plot(bbox2pol(kp[[length(kp)]]),col="white",border="white")
 plot(land,border="grey75",add=TRUE)
 for(i in seq_along(kp)){
-	plot(kp[[i]],add=TRUE,col=alpha("red",trans[i]),border=NA)
+	#plot(kp[[i]],add=TRUE,col=alpha("red",trans[i]),border=NA)
+	plot(gIntersection(coast,kp[[i]]),add=TRUE,col=col_eff[i],border=NA)
 }
-#plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
-#legend("bottomright",fill=alpha("red",trans),legend=paste(perc,"%"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
-#
-#
-
-
-
-
-
+legend("bottomright",fill=col_eff,legend=paste(perc,"%"),border=NA,cex=1,box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
 
 
 
@@ -161,9 +153,11 @@ for(i in seq_along(kp)){
 ### grouping
 #################################
 
-sp<-"Glaucous-winged Gull"
-#sp<-unique(x$sp[x$group%in%"shorebirds_waders"])
-month<-c("08","09","10","11")
+group<-"seabirds_alcids"
+#sp<-"Glaucous-winged Gull"
+sp<-unique(x$sp[x$group%in%group])
+month<-c("04","05","06","07")
+season<-paste(month,collapse="")
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
 xs<-spTransform(xs,CRS(prj))
@@ -204,7 +198,7 @@ nb<-c(nb,addnb)
 #####################################
 windows(w=16,h=12)
 
-tau<-0.80
+tau<-0.90
 fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.05),tau=tau)
 
 g<-gBuffer(gConvexHull(xs),width=-1000)
@@ -251,22 +245,31 @@ k<-kde(x=coordinates(xs),gridsize=c(500,500),compute.cont=TRUE,H=H1,w=xs$nb)
 kp<-list()
 perc<-c(25,50,75,95)
 percw<-c("very high","high","medium","low")
-trans<-c(0.8,0.6,0.4,0.2)
+trans<-c(0.9,0.7,0.5,0.3)
 cols_kern<-c("darkred","red","orange","yellow")
 for(i in seq_along(perc)){
-  kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(xs)) # extract polygons
+	kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(xs)) # extract polygons
 }
-for(i in rev(seq_along(kp)[-1])){
-	kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
+for(i in rev(seq_along(kp))){
+	if(i==1){ #make sure a single polygon for each contour
+		kp[[i]]<-gUnaryUnion(kp[[i]])
+	}else{	
+		kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
+	}
+	id<-paste0("k",perc[i])
+	season<-paste(month,collapse="")
+	res<-SpatialPolygonsDataFrame(kp[[i]],data=data.frame(id=id,group=group,season=season,stringsAsFactors=FALSE),match.ID=FALSE)
+	kp[[i]]<-spChFIDs(res,id) # give unique ID
 }
+kp<-do.call("rbind",kp)
+
 
 ### PLOT POLYGONS
 par(mar=c(1,0,0,0))
 plot(xs,col="white")
 plot(land,col="grey95",border="grey75",add=TRUE)
-for(i in rev(seq_along(perc))){
-	plot(kp[[i]],add=TRUE,col=alpha("red",trans[i]),border=NA)
-}
+plot(kp,add=TRUE,col=alpha("red",trans),border=NA)
+mtext(paste(group,paste(month,collapse="_")),3,line=-2,font=2,adj=0.9)
 #plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
 legend("bottomright",fill=alpha("red",trans),legend=paste(perc,"%"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
 #
@@ -289,54 +292,47 @@ axis(2)
 
 #png("D:/ebird/ksoutput.png",width=12,height=8,units="in",res=500)
 
-### plot the look of the output
 windows(w=16,h=12)
-par(mar=c(4,4,0,0),mfrow=c(1,1))
+par(mar=c(8.5,6,0,0),mfrow=c(1,1))
 plot(xs,col="white")
+sea<-readOGR("D:/ebird/kernels",paste(group,season,"ecsas",sep="_"))
+plot(sea,col=cols_kern,border=NA,add=TRUE)
 plot(land,col="grey95",border="grey75",add=TRUE)
 
-### GAMS
-#cols_gam<-c("darkblue","blue","white")
-#plot(grid[w,],border=NA,col=colo.scale(f(p),cols_gam),add=TRUE,lwd=2)
-#leg<-finv((seq(f(1),f(max(p)),length.out=12)))
-#col<-tail(colo.scale(f(c(p,leg)),cols_gam),length(leg))
-#leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
-#legend("topright",title=paste0("GAM group size\n","quantile ",paste0(100*tau#,"%")),legend=rev(leg),fill=rev(col),cex=1.5,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
-
-### kerns
+### KERNS
 b<-bbox2pol(proj4string=proj4string(coastw))
 #plot(gIntersection(coast,b,byid=TRUE),col=alpha("green",0.15),border=NA,add=TRUE)
-for(i in rev(seq_along(perc))){
-  #plot(kp[[i]],add=TRUE,col=cols[i],border=NA)
-	 plot(gIntersection(coast,kp[[i]],byid=TRUE),add=TRUE,col=alpha(cols_kern[i],0.7),border=NA)
-}
+#plot(kp[[i]],add=TRUE,col=cols[i],border=NA)
+plot(gIntersection(coast,kp,byid=TRUE),add=TRUE,col=alpha(cols_kern,0.7),border=NA)
+mtext(paste(group,paste(month,collapse="_")),side=3,line=-2,font=2,adj=0.95)
 #plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
+#plot(gUnaryUnion(sea),col=alpha("blue",0.2),add=TRUE)
 
-### get an histogram of the size of each record
-h<-lapply(kp,function(i){
-  o<-over(xs,i)
+
+
+
+### HISTOGRAM
+h<-lapply(seq_along(kp),function(i){
+  o<-over(xs,kp[i,])
   res<-xs$nb[!is.na(o)]
   brks<-c(0,10,20,50,100,200,500,1000,2000,5000,10000,20000,50000,100000,200000,500000)
   brks<-brks[brks<=max(xs$nb)]
-  res<-cut(res,breaks=brks)
+  res<-cut(res,breaks=brks,dig.lab=10)
   table(res)
 })
 
-### add the histogram to the plot
-par(new=TRUE,mar=c(8,6,0,0))
 
-barplot(do.call("rbind",h),col=alpha(cols_kern,0.25),beside=TRUE,border=NA,xlab="Abundance class",ylab="Number of records",las=2)
-legend("bottomright",title="Kernel Contours",fill=alpha(cols_kern,0.7),legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
+### PLOT HISTOGRAM
+par(new=TRUE,mar=c(8,6,0,0))
+barplot(do.call("rbind",h),col=alpha(cols_kern,0.25),beside=TRUE,border=NA,xlab="",ylab="",las=2)
+mtext("Number of records",side=2,line=4)
+mtext("Abundance class",side=1,line=6.5)
+legend("bottomright",title="Kernel Contours (risk)",fill=alpha(cols_kern,0.7),legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
 #dev.off()
 
 
-
 ### kp tot disaggregated
-kpc<-lapply(kp,function(i){gIntersection(coast,i,byid=TRUE)})
-test<-sapply(seq_along(kpc),function(i){
-	res<-disaggregate(kpc[[i]])
-	res<-spChFIDs(res, as.character(paste(i,seq_along(res),sep="_")))
-})
+test<-disaggregate(gIntersection(coast,kp,byid=TRUE))
 test<-do.call("rbind",test)
 testp<-SpatialPoints(coordinates(test),proj4string=CRS(proj4string(test)))
 o<-over(testp,g)
@@ -347,14 +343,15 @@ pk<-ifelse(pk<0,0,pk)
 
 ### GAMS predictions in KERNELS
 windows(w=16,h=12)
-par(mar=c(4,4,0,0),mfrow=c(1,1))
+par(mar=c(8.5,6,0,0),mfrow=c(1,1))
 plot(xs,col="white")
 plot(land,col="grey95",border="grey75",add=TRUE)
 plot(test,border=NA,col=colo.scale(f(pk),cols_gam),add=TRUE,lwd=2)
+mtext(paste(group,paste(month,collapse="_")),side=3,line=-2,font=2,adj=0.95)
 leg<-finv((seq(f(1),f(max(pk)),length.out=12)))
 col<-tail(colo.scale(f(c(pk,leg)),cols_gam),length(leg))
 leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
-legend("bottomright",title=paste0("GAM group size\nin kernels\n","quantile ",paste0(100*tau,"%")),legend=rev(leg),fill=rev(col),cex=1,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
+legend("bottomright",title=paste0("GAM group size at\n",paste0(100*tau,"%")," quantile predicted\n","in kernel polygons"),legend=rev(leg),fill=rev(col),cex=1,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0.00))
 
 
 
@@ -363,13 +360,13 @@ legend("bottomright",title=paste0("GAM group size\nin kernels\n","quantile ",pas
 
 
 ### LEAFLET
-kpc<-lapply(kp,function(i){gIntersection(coast,i,byid=TRUE)})
+kpc<-gIntersection(coast,kp,byid=TRUE)
 leaflet() %>%
 	addProviderTiles("Esri.WorldImagery",options = providerTileOptions(noWrap = TRUE)) %>%
-	addPolygons(data=spTransform(kpc[[1]],ll),stroke=FALSE,fillColor=cols[1],weight=0,fillOpacity=0.7,opacity=0) %>% 
- addPolygons(data=spTransform(kpc[[2]],ll),stroke=FALSE,fillColor=cols[2],weight=0,fillOpacity=0.7,opacity=0) %>% 
- addPolygons(data=spTransform(kpc[[3]],ll),stroke=FALSE,fillColor=cols[3],weight=0,fillOpacity=0.7,opacity=0) %>% 
- addPolygons(data=spTransform(kpc[[4]],ll),stroke=FALSE,fillColor=cols[4],weight=0,fillOpacity=0.7,opacity=0)
+	addPolygons(data=spTransform(kpc[1,],ll),stroke=FALSE,fillColor=cols[1],weight=0,fillOpacity=0.7,opacity=0) %>% 
+ addPolygons(data=spTransform(kpc[2,],ll),stroke=FALSE,fillColor=cols[2],weight=0,fillOpacity=0.7,opacity=0) %>% 
+ addPolygons(data=spTransform(kpc[3,],ll),stroke=FALSE,fillColor=cols[3],weight=0,fillOpacity=0.7,opacity=0) %>% 
+ addPolygons(data=spTransform(kpc[4,],ll),stroke=FALSE,fillColor=cols[4],weight=0,fillOpacity=0.7,opacity=0)
 	#addPolygons(data=na,stroke=FALSE,fillColor="white",weight=0,fillOpacity=0.5,opacity=0)
  #addPolylines(data=co)
 	#addCircleMarkers(data=spTransform(xs[1:1000,],ll),stroke=FALSE,fillColor=cols[4],weight=0,fillOpacity=0.7,opacity=0)
