@@ -1,4 +1,3 @@
-library(ff)
 library(data.table)
 library(sp)
 library(rgdal)
@@ -153,7 +152,7 @@ legend("bottomright",fill=col_eff,legend=paste(perc,"%"),border=NA,cex=1,box.lwd
 ### grouping
 #################################
 
-group<-"seabirds_alcids"
+group<-"waterfowl_diving"
 #sp<-"Glaucous-winged Gull"
 sp<-unique(x$sp[x$group%in%group])
 month<-c("04","05","06","07")
@@ -296,8 +295,13 @@ axis(2)
 #par(mar=c(8.5,6,0,0),mfrow=c(1,1))
 par(mar=c(0,0,0,0),mfrow=c(1,1))
 plot(xs,col="white")
-#sea<-readOGR("D:/ebird/kernels",paste(group,season,"ecsas",sep="_"))
-plot(gIntersection(bbox2pol(proj4string=CRS(prj)),sea,byid=TRUE),col=alpha(cols_kern,0.6),border=NA,add=TRUE)
+shp<-list.files("D:/ebird/kernels",pattern=".shp")
+layer<-paste(group,season,"ecsas",sep="_")
+layer<-if(any(shp==layer)){layer}else{NULL}
+if(!is.null(layer)){
+  sea<-readOGR("D:/ebird/kernels",layer=layer)
+  plot(gIntersection(bbox2pol(proj4string=CRS(prj)),sea,byid=TRUE),col=alpha(cols_kern,0.6),border=NA,add=TRUE)
+}
 plot(land,col="grey95",border="grey75",add=TRUE,lwd=0.5)
 
 ### KERNS
@@ -355,10 +359,6 @@ legend("bottomright",title=paste0("GAM group size at\n",paste0(100*tau,"%")," qu
 
 ### write shapefile
 writeOGR(kp,dsn="D:/ebird/kernels",layer=paste(group,season,"ebird",sep="_"),driver="ESRI Shapefile",overwrite_layer=TRUE)
-
-lapply(seq_along(kp),function(i){
-  
-})
 
 test<-gUnion(kp[1,],sea[1,])
 
