@@ -31,7 +31,7 @@ kde2pol<-function(k,perc="5%",proj=NULL){
 }
 
 ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-prj<-"+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"
+prj<-"+proj=utm +zone=18 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 laea<-"+proj=laea +lat_0=50 +lon_0=-65"
 
 ### GET BIRD GROUPS
@@ -50,8 +50,8 @@ land<-land[land$name%in%c("Manitoba","Virginia","Delaware","Ontario","Nunavut","
 
 land<-spTransform(land,CRS(prj))
 
-g1<-gBuffer(gUnaryUnion(land),width=-5000)
-g2<-gBuffer(gUnaryUnion(land),width=5000)
+g1<-gBuffer(gUnaryUnion(gBuffer(land,width=1)),width=-5000)
+g2<-gBuffer(gUnaryUnion(gBuffer(land,width=1)),width=5000)
 coast<-gDifference(g2,g1)
 coastw<-gDifference(coast,land)
 
@@ -196,7 +196,7 @@ nb<-c(nb,addnb)
 #####################################
 ### RQSS
 #####################################
-windows(w=16,h=12)
+windows(w=21,h=12)
 
 tau<-0.90
 fit<-rqss(nb~qss(cbind(lon,lat),lambda=0.05),tau=tau)
@@ -290,25 +290,27 @@ axis(2)
 ### FINAL KERNEL OUTPUT
 ####################################################################
 
-#png("D:/ebird/ksoutput.png",width=12,height=8,units="in",res=500)
+#png(paste0("D:/ebird/",paste0(group,season),"_2.png"),width=12,height=8,units="in",res=600,pointsize=14)
 
-windows(w=16,h=12)
-par(mar=c(8.5,6,0,0),mfrow=c(1,1))
+#windows(w=21,h=12)
+#par(mar=c(8.5,6,0,0),mfrow=c(1,1))
+par(mar=c(0,0,0,0),mfrow=c(1,1))
 plot(xs,col="white")
-sea<-readOGR("D:/ebird/kernels",paste(group,season,"ecsas",sep="_"))
-plot(sea,col=cols_kern,border=NA,add=TRUE)
-plot(land,col="grey95",border="grey75",add=TRUE)
+#sea<-readOGR("D:/ebird/kernels",paste(group,season,"ecsas",sep="_"))
+plot(gIntersection(bbox2pol(proj4string=CRS(prj)),sea,byid=TRUE),col=alpha(cols_kern,0.6),border=NA,add=TRUE)
+plot(land,col="grey95",border="grey75",add=TRUE,lwd=0.5)
 
 ### KERNS
 b<-bbox2pol(proj4string=proj4string(coastw))
 #plot(gIntersection(coast,b,byid=TRUE),col=alpha("green",0.15),border=NA,add=TRUE)
 #plot(kp[[i]],add=TRUE,col=cols[i],border=NA)
-plot(gIntersection(coast,kp,byid=TRUE),add=TRUE,col=alpha(cols_kern,0.7),border=NA)
-mtext(paste(group,paste(month,collapse="_")),side=3,line=-2,font=2,adj=0.95)
+plot(gIntersection(coast,kp,byid=TRUE),add=TRUE,col=alpha(cols_kern,0.6),border=NA)
+info<-paste0("group: ",group,"\nmonths: ",paste(month,collapse="_"),"\ndata source: EBIRD, ECSAS","\ncoast buffer: 5km")
+mtext(info,side=3,line=-4,font=2,adj=0.05)
 #plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
 #plot(gUnaryUnion(sea),col=alpha("blue",0.2),add=TRUE)
-
-
+legend("topleft",title="Kernel Contours (risk)",fill=alpha(cols_kern,0.6),legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,,bg="grey90",box.lwd=NA,inset=c(0.05,0.2))
+dev.off()
 
 
 ### HISTOGRAM
@@ -321,14 +323,12 @@ h<-lapply(seq_along(kp),function(i){
   table(res)
 })
 
-
 ### PLOT HISTOGRAM
 par(new=TRUE,mar=c(8,6,0,0))
 barplot(do.call("rbind",h),col=alpha(cols_kern,0.25),beside=TRUE,border=NA,xlab="",ylab="",las=2)
 mtext("Number of records",side=2,line=4)
 mtext("Abundance class",side=1,line=6.5)
-legend("bottomright",title="Kernel Contours (risk)",fill=alpha(cols_kern,0.7),legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,,bg="grey90",box.lwd=NA,inset=c(0.05,0.1))
-#dev.off()
+
 
 
 ### kp tot disaggregated
@@ -340,9 +340,8 @@ test<-test[!is.na(o),]
 pk<-predict(fit,data.frame(lon=coordinates(test)[,1],lat=coordinates(test)[,2],stringsAsFactors=FALSE))[,1]
 pk<-ifelse(pk<0,0,pk)
 
-
 ### GAMS predictions in KERNELS
-windows(w=16,h=12)
+windows(w=21,h=12)
 par(mar=c(8.5,6,0,0),mfrow=c(1,1))
 plot(xs,col="white")
 plot(land,col="grey95",border="grey75",add=TRUE)
@@ -354,9 +353,14 @@ leg<-paste0(c("\u2264",rep("",length(leg)-1)),round(leg,0))
 legend("bottomright",title=paste0("GAM group size at\n",paste0(100*tau,"%")," quantile predicted\n","in kernel polygons"),legend=rev(leg),fill=rev(col),cex=1,border=NA,bg="grey90",box.lwd=NA,inset=c(0.05,0.00))
 
 
+### write shapefile
+writeOGR(kp,dsn="D:/ebird/kernels",layer=paste(group,season,"ebird",sep="_"),driver="ESRI Shapefile",overwrite_layer=TRUE)
 
+lapply(seq_along(kp),function(i){
+  
+})
 
-
+test<-gUnion(kp[1,],sea[1,])
 
 
 ### LEAFLET
