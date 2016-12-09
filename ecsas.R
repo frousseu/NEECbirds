@@ -54,35 +54,45 @@ x<-obs[,c("sp","group","season","date","month","year","lat","lon","nb")]
 
 
 
-#######################################    
-### get effort NEED SEASONAL EFFORT!!!! for both y and x object
-#######################################
+#################################################################    
+### get seasonal effort and evaluate at each observation location
+#################################################################
 
 watch<-watch[substr(watch$Date,1,4)>="2000",]
 watch$month<-substr(watch$Date,6,7)
 watch$season<-names(month_comb)[match(watch$month,month_comb)]
-ys<-watch[watch$season==season,]
-xx<-x[x$season==season,]
-xx<-SpatialPoints(matrix(as.numeric(c(xx$lon,xx$lat)),ncol=2),proj4string=CRS(ll))
-xx<-spTransform(xx,CRS(prj))
+ys<-watch
+xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon,x$lat)),ncol=2),proj4string=CRS(ll),data=data.frame(id=row.names(x),season=x$season,stringsAsFactors=FALSE))
+xs<-spTransform(xs,CRS(prj))
 ys$lat<-ys$LatStart
 ys$lon<-ys$LongStart
 ys<-ys[ys$lon>=(-100) & ys$lon<=30,]
 ys<-ys[ys$lat>=(40) & ys$lat<=75,]
-ys<-SpatialPoints(matrix(as.numeric(c(ys$lon,ys$lat)),ncol=2),proj4string=CRS(ll))
+ys<-SpatialPointsDataFrame(matrix(as.numeric(c(ys$lon,ys$lat)),ncol=2),proj4string=CRS(ll),data=data.frame(season=ys$season))
 ys<-spTransform(ys,CRS(prj))
 
-H1<-matrix(c(200000000,0,0,200000000),nrow=2) 
-ke<-kde(x=coordinates(ys[sample(1:length(ys),1000)]),eval.points=coordinates(xx),compute.cont=FALSE,H=H1)
+weights<-unlist(lapply(unique(names(month_comb)),function(i){
+  xxs<-xs[xs$season==i,]	
+  yys<-ys[ys$season==i,]	
+  H1<-matrix(c(200000000,0,0,200000000),nrow=2)  
+  ke<-kde(x=coordinates(yys),binned=TRUE,eval.points=coordinates(xxs),compute.cont=FALSE,H=H1) # binned accélère BEAUCOUP le calcul et ne semb<le pas changer grand chose
+  res<-ke$estimate
+  names(res)<-xxs$id
+  res
+}))
 
-x$we[x$season==season]<-1-ke$estimate/max(ke$estimate)
-
+weights<-weights[match(xs$id,names(weights))]
+x$we<-1-(weights/max(weights))
 
 
 
 #################################
 ### grouping
 #################################
+
+### transform weights
+f<-function(x){log(x+1)}
+#f<-function(x){x}
 
 case<-ddply(x,.(group,season),nrow)
 case<-case[!case$group%in%c("passerines","raptors",NA) & case$V1>=100,]
@@ -107,7 +117,7 @@ for(j in seq_len(nrow(case))){
   H1<-matrix(c(200000000,0,0,200000000),nrow=2) 
 
   ### GET KERNELS POLYGONS
-  k<-kde(x=coordinates(xs),gridsize=c(500,500),compute.cont=TRUE,H=H1,w=log(xs$nb+1))
+  k<-kde(x=coordinates(xs),binned=FALSE,gridsize=c(500,500),compute.cont=TRUE,H=H1,w=f(xs$nb)*xs$we)
   kp<-list()
   perc<-c(25,50,75,95)
   percw<-c("very high","high","medium","low")
