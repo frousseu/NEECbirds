@@ -12,7 +12,7 @@ library(raster)
 library(OpenStreetMap)
 library(ks)
 library(FRutils)
-library(yarrr)
+
 
 kde2pol<-function(k,perc="5%",proj=NULL){
 	co<-with(k,contourLines(x=eval.points[[1]],y=eval.points[[2]],z=estimate,levels=cont[perc]))
@@ -47,12 +47,16 @@ land<-na[na$admin%in%c("Canada","United States of America","Greenland"),]
 land<-land[land$name%in%c("Manitoba","Virginia","Delaware","Ontario","Nunavut","Quebec","Nova Scotia","Vermont","New York","New Hampshire","QuÃ©bec","Prince Edward Island","New Brunswick","Newfoundland and Labrador","Maine","Massachusetts","Maryland","Pennsylvania","Connecticut","New Jersey","Rhode Island","Ohio","Kentuchy","West Virginia","Greenland") | land$admin%in%"Greenland",]
 #na<-na[na$name%in%c("British Columbia"),]
 
-land<-spTransform(land,CRS(prj))
+qcmaritimes<-na[na$admin%in%c("Canada","United States of America"),]
+qcmaritimes<-qcmaritimes[qcmaritimes$name%in%c("Ontario","Quebec","Nova Scotia","Vermont","New York","New Hampshire","QuÃ©bec","Prince Edward Island","New Brunswick","Newfoundland and Labrador","Maine"),]
 
-g1<-gBuffer(gUnaryUnion(gBuffer(land,width=1)),width=-5000)
-g2<-gBuffer(gUnaryUnion(gBuffer(land,width=1)),width=5000)
+land<-spTransform(land,CRS(prj))
+qcmaritimes<-spTransform(qcmaritimes,CRS(prj)) # smaller subset to make the coast cause it's faster
+
+g1<-gBuffer(gUnaryUnion(gBuffer(qcmaritimes,width=1)),width=-5000)
+g2<-gBuffer(gUnaryUnion(gBuffer(qcmaritimes,width=1)),width=5000)
 coast<-gDifference(g2,g1)
-coastw<-gDifference(coast,land)
+coastw<-gDifference(coast,qcmaritimes)
 
 
 keep<-c("COMMON NAME","TAXONOMIC ORDER","STATE","LATITUDE","LONGITUDE","OBSERVATION DATE","OBSERVATION COUNT","CATEGORY","SAMPLING EVENT IDENTIFIER")
@@ -115,6 +119,9 @@ x<-x[lon>=(-74),] #on garde ce qui est à partir de mtl
 ### EFFORT
 #################################
 
+xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon,x$lat)),ncol=2),proj4string=CRS(ll),data=data.frame(id=row.names(x),season=x$season,stringsAsFactors=FALSE))
+xs<-spTransform(xs,CRS(prj))
+
 y<-unique(x[,c("sample","lat","lon")])
 ys<-SpatialPoints(matrix(as.numeric(c(y$lon,y$lat)),ncol=2),proj4string=CRS(ll))
 ys<-spTransform(ys,CRS(prj))
@@ -124,7 +131,23 @@ ys<-ys[!is.na(o),]
 H1<-matrix(c(6000000,0,0,6000000),nrow=2) 
 
 ### GET POLYGONS
-k<-kde(x=coordinates(ys),gridsize=c(500,500),compute.cont=TRUE,H=H1)
+#k<-kde(x=coordinates(ys),binned=TRUE,bgridsize=c(200,200),compute.cont=TRUE,H=H1)
+
+weights<-unlist(lapply(unique(names(month_comb)),function(i){
+	xxs<-xs[xs$season==i,]	
+	yys<-ys[ys$season==i,]	
+	H1<-matrix(c(200000000,0,0,200000000),nrow=2)  
+	ke<-kde(x=coordinates(yys),binned=TRUE,eval.points=coordinates(xxs),compute.cont=FALSE,H=H1) # binned accélère BEAUCOUP le calcul et ne semb<le pas changer grand chose
+	res<-ke$estimate
+	names(res)<-xxs$id
+	res
+}))
+
+weights<-weights[match(xs$id,names(weights))]
+x$we<-1-(weights/max(weights))
+
+
+
 kp<-list()
 perc<-c(seq(5,95,by=10),99)
 trans<-rev(seq(0.15,1,length.out=length(perc)))
@@ -152,7 +175,7 @@ legend("bottomright",fill=col_eff,legend=paste(perc,"%"),border=NA,cex=1,box.lwd
 ### grouping
 #################################
 
-group<-"waterfowl_diving"
+group<-"seabirds_alcids"
 #sp<-"Glaucous-winged Gull"
 sp<-unique(x$sp[x$group%in%group])
 month<-c("04","05","06","07")
@@ -239,8 +262,12 @@ plot(land,border="grey75",add=TRUE)
 #H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
 H1<-matrix(c(6000000,0,0,6000000),nrow=2) 
 
+### get weights from effort
+ke<-kde(x=coordinates(ys),binned=TRUE,eval.points=coordinates(xs),compute.cont=FALSE,H=H1)
+xs$we<-1-(ke$estimate/max(ke$estimate))
+
 ### GET POLYGONS
-k<-kde(x=coordinates(xs),gridsize=c(500,500),compute.cont=TRUE,H=H1,w=xs$nb)
+k<-kde(x=coordinates(xs),binned=TRUE,bgridsize=c(500,500),compute.cont=TRUE,H=H1,w=xs$nb*xs$we)
 kp<-list()
 perc<-c(25,50,75,95)
 percw<-c("very high","high","medium","low")
@@ -291,7 +318,7 @@ axis(2)
 
 #png(paste0("D:/ebird/",paste0(group,season),"_2.png"),width=12,height=8,units="in",res=600,pointsize=14)
 
-#windows(w=21,h=12)
+windows(w=21,h=12)
 #par(mar=c(8.5,6,0,0),mfrow=c(1,1))
 par(mar=c(0,0,0,0),mfrow=c(1,1))
 plot(xs,col="white")
@@ -314,7 +341,7 @@ mtext(info,side=3,line=-4,font=2,adj=0.05)
 #plot(xs,add=TRUE,pch=1,col=alpha("black",0.25),cex=15*nb/max(nb))
 #plot(gUnaryUnion(sea),col=alpha("blue",0.2),add=TRUE)
 legend("topleft",title="Kernel Contours (risk)",fill=alpha(cols_kern,0.6),legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,,bg="grey90",box.lwd=NA,inset=c(0.05,0.2))
-dev.off()
+#dev.off()
 
 
 ### HISTOGRAM
