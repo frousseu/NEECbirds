@@ -101,7 +101,7 @@ for(j in seq_len(nrow(case))){
 
   group<-case$group[j]
   season<-case$season[j]
-  sp<-"Northern Gannet"
+  sp<-"Dovekie"
   m<-x$sp%in%sp & x$season%in%season
   xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
   xs<-spTransform(xs,CRS(prj))
