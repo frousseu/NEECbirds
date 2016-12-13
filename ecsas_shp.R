@@ -123,20 +123,9 @@ for(j in seq_len(nrow(case))){
 	percw<-c("very high","high","medium","low")
 	trans<-c(0.8,0.6,0.4,0.2)
 	cols_kern<-c("darkred","red","orange","yellow")
-	for(i in seq_along(perc)){
-		kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(xs)) # extract polygons
-	}
-	for(i in rev(seq_along(kp))){
-		if(i==1){ #make sure a single polygon for each contour
-			kp[[i]]<-gUnaryUnion(kp[[i]])
-		}else{	
-			kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
-		}
-		id<-paste0("k",perc[i])
-		res<-SpatialPolygonsDataFrame(kp[[i]],data=data.frame(id=id,group=group,season=season,stringsAsFactors=FALSE),match.ID=FALSE)
-		kp[[i]]<-spChFIDs(res,id) # give unique ID
-	}
-	kp<-do.call("rbind",kp)
+	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs)) # extract polygons
+ kp$group<-group
+ kp$season<-season
 	
 	### PLOT POLYGONS
 	par(mar=c(1,0,0,0))

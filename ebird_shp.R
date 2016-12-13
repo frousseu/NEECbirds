@@ -12,22 +12,6 @@ library(ks)
 library(FRutils)
 library(svMisc)
 
-
-kde2pol<-function(k,perc="5%",proj=NULL){
-	co<-with(k,contourLines(x=eval.points[[1]],y=eval.points[[2]],z=estimate,levels=cont[perc]))
-	poly<-lapply(co,function(i){
-		x<-data.frame(i$x,i$y)
-		x<-rbind(x,x[1,]) 
-		x<-SpatialPolygons(list(Polygons(list(Polygon(x)),ID=1)))
-	})
-	poly<-lapply(seq_along(poly),function(i){
-		spChFIDs(poly[[i]], as.character(i))
-	})
-	poly<-do.call("rbind",poly)
-	proj4string(poly)<-CRS(proj)
-	poly
-}
-
 ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 prj<-"+proj=utm +zone=18 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 laea<-"+proj=laea +lat_0=50 +lon_0=-65"
@@ -107,21 +91,9 @@ kp<-lapply(unique(names(month_comb)),function(j){
 	perc<-c(seq(5,95,by=10),99)
 	trans<-rev(seq(0.15,1,length.out=length(perc)))
 	col_eff<-c(colo.scale(perc[-length(perc)],cols_EFF),alpha("blue",0.5))
-	for(i in seq_along(perc)){
-		 kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(xs)) # extract polygons
-	}
-	for(i in rev(seq_along(kp))){
-		 if(i==1){ #make sure a single polygon for each contour
-			  kp[[i]]<-gUnaryUnion(kp[[i]])
-		 }else{	
-			  kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
-	 	}
-		 id<-paste0("k",perc[i])
-		 res<-SpatialPolygonsDataFrame(kp[[i]],data=data.frame(id=id,season=j,stringsAsFactors=FALSE),match.ID=FALSE)
-		 kp[[i]]<-spChFIDs(res,id) # give unique ID
-	}
-	kp<-do.call("rbind",kp)
-	kp
+	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs)) # extract polygons
+ kp$season<-j
+ kp
 })
 names(kp)<-unique(names(month_comb))
 
@@ -189,21 +161,9 @@ for(j in seq_len(nrow(case))[1:2]){
   percw<-c("very high","high","medium","low")
   trans<-c(0.9,0.7,0.5,0.3)
   cols_kern<-c("darkred","red","orange","yellow")
-  for(i in seq_along(perc)){
- 	  kp[[i]]<-kde2pol(k,perc=paste0(100-perc[i],"%"),proj=proj4string(xs)) # extract polygons
-  }
-  for(i in rev(seq_along(kp))){
-	   if(i==1){ #make sure a single polygon for each contour
-		    kp[[i]]<-gUnaryUnion(kp[[i]])
-	   }else{	
-		    kp[[i]]<-gSymdifference(kp[[i]],kp[[i-1]],byid=FALSE) # keep non overlapping parts
-	   }
-	   id<-paste0("k",perc[i])
-	   res<-SpatialPolygonsDataFrame(kp[[i]],data=data.frame(id=id,group=group,season=season,stringsAsFactors=FALSE),match.ID=FALSE)
-	   kp[[i]]<-spChFIDs(res,id) # give unique ID
-  }
-  kp<-do.call("rbind",kp)
-
+ 	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs)) # extract 
+  kp$group<-group
+  kp$season<-season
 
   ####################################################################
   ### PLOT PNG
