@@ -175,10 +175,10 @@ legend("bottomright",fill=col_eff,legend=paste(perc,"%"),border=NA,cex=1,box.lwd
 ### grouping
 #################################
 
-group<-"seabirds_alcids"
+group<-"seabirds_larids"
 #sp<-"Glaucous-winged Gull"
 sp<-unique(x$sp[x$group%in%group])
-month<-c("04","05","06","07")
+month<-c("08","09","10","11")
 season<-paste(month,collapse="")
 m<-x$sp%in%sp & substr(x$date,6,7)%in%month
 xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
