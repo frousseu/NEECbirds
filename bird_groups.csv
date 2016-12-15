@@ -1395,7 +1395,7 @@ bird sp.;34000;
 Aleutian Tern;;seabirds_larids
 American Green-winged Teal;;waterfowl_dabbling
 American/Pacific Golden Plover;;shorebirds_waders
-Baltimore Oriole Northern Oriole;;
+Baltimore Oriole, Northern Oriole;;
 Black & White Warbler;;
 Black Storm-petrel;;seabirds_pelagics
 Black-crowned Night Heron;;shorebirds_waders
@@ -1412,7 +1412,7 @@ Family: Cormorants and Shags;;waterfowl_diving
 Family: Crows and Jays;;
 Family: Cuckoos;;
 Family: Doves and Pigeons;;
-Family: Ducks Geese and Swans;;waterfowl_dabbling
+Family: Ducks, Geese and Swans;;waterfowl_dabbling
 Family: Falcons;;
 Family: Finches;;
 Family: Gannets, Boobies;;seabirds_pelagics
