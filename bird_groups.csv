@@ -259,30 +259,30 @@ Short-tailed Albatross,1712,seabirds_pelagics,,
 Northern Fulmar,1716,seabirds_pelagics,Shearwaters,Shearwaters
 Northern Fulmar,1717,seabirds_pelagics,Shearwaters,Shearwaters
 Northern Fulmar,1719,seabirds_pelagics,Shearwaters,Shearwaters
-Murphy's Petrel,1739,seabirds_pelagics,,
-Fea's Petrel,1743,seabirds_pelagics,,
-Mottled Petrel,1755,seabirds_pelagics,,
-Bermuda Petrel,1756,seabirds_pelagics,,
-Black-capped Petrel,1757,seabirds_pelagics,,
-Black-capped Petrel,1758,seabirds_pelagics,,
-Hawaiian Petrel,1763,seabirds_pelagics,,
-Cook's Petrel,1769,seabirds_pelagics,,
-Pterodroma sp.,1780,seabirds_pelagics,,
-Cory's Shearwater,1806,seabirds_pelagics,,
-Cory's Shearwater,1807,seabirds_pelagics,,
-Cory's Shearwater,1808,seabirds_pelagics,,
-Pink-footed Shearwater,1810,seabirds_pelagics,,
-Flesh-footed Shearwater,1811,seabirds_pelagics,,
+Murphy's Petrel,1739,seabirds_pelagics,Shearwaters,Shearwaters
+Fea's Petrel,1743,seabirds_pelagics,Shearwaters,Shearwaters
+Mottled Petrel,1755,seabirds_pelagics,Shearwaters,Shearwaters
+Bermuda Petrel,1756,seabirds_pelagics,Shearwaters,Shearwaters
+Black-capped Petrel,1757,seabirds_pelagics,Shearwaters,Shearwaters
+Black-capped Petrel,1758,seabirds_pelagics,Shearwaters,Shearwaters
+Hawaiian Petrel,1763,seabirds_pelagics,Shearwaters,Shearwaters
+Cook's Petrel,1769,seabirds_pelagics,Shearwaters,Shearwaters
+Pterodroma sp.,1780,seabirds_pelagics,Shearwaters,Shearwaters
+Cory's Shearwater,1806,seabirds_pelagics,Shearwaters,Shearwaters
+Cory's Shearwater,1807,seabirds_pelagics,Shearwaters,Shearwaters
+Cory's Shearwater,1808,seabirds_pelagics,Shearwaters,Shearwaters
+Pink-footed Shearwater,1810,seabirds_pelagics,Shearwaters,Shearwaters
+Flesh-footed Shearwater,1811,seabirds_pelagics,Shearwaters,Shearwaters
 Great Shearwater,1812,seabirds_pelagics,Shearwaters,Shearwaters
-Cory's/Great Shearwater,1813,seabirds_pelagics,,
-Buller's Shearwater,1815,seabirds_pelagics,,
+Cory's/Great Shearwater,1813,seabirds_pelagics,Shearwaters,Shearwaters
+Buller's Shearwater,1815,seabirds_pelagics,Shearwaters,Shearwaters
 Sooty Shearwater,1816,seabirds_pelagics,Shearwaters,Shearwaters
-Short-tailed Shearwater,1817,seabirds_pelagics,,
-Sooty/Short-tailed Shearwater,1818,seabirds_pelagics,,
+Short-tailed Shearwater,1817,seabirds_pelagics,Shearwaters,Shearwaters
+Sooty/Short-tailed Shearwater,1818,seabirds_pelagics,Shearwaters,Shearwaters
 Manx Shearwater,1821,seabirds_pelagics,Shearwaters,Shearwaters
-Barolo Shearwater,1838,seabirds_pelagics,,
-Audubon's Shearwater,1840,seabirds_pelagics,,
-black-and-white shearwater sp.,1854,seabirds_pelagics,,
+Barolo Shearwater,1838,seabirds_pelagics,Shearwaters,Shearwaters
+Audubon's Shearwater,1840,seabirds_pelagics,Shearwaters,Shearwaters
+black-and-white shearwater sp.,1854,seabirds_pelagics,Shearwaters,Shearwaters
 shearwater sp.,1855,seabirds_pelagics,Shearwaters,Shearwaters
 Procellariid sp.,1856.75,seabirds_pelagics,,
 Wilson's Storm-Petrel,1857,seabirds_pelagics,Storm-Petrels,Storm-Petrels
@@ -1469,7 +1469,7 @@ Genus: Godwits,,shorebirds_waders,,
 Genus: Goldeneye and Bufflehead,,waterfowl_diving,Waterfowl,Diving Waterfowl
 Genus: Guillemots,,seabirds_alcids,Alcids,Alcids
 Genus: Gulls (Larus),,seabirds_larids,Gulls,Gulls
-Genus: Gulls (Larus,,,Gulls,Gulls
+Genus: Gulls,,,Gulls,Gulls
 Genus: Gulls white-winged (Iceland or Glaucous),,seabirds_larids,Gulls,Gulls
 Genus: Hawks (Buteos),,,,
 Genus: Jaegers,,seabirds_larids,Jaegers,Jaegers
@@ -1496,7 +1496,7 @@ Genus: Shearwaters (Puffinus or Calonectris),,seabirds_pelagics,Shearwaters,Shea
 Genus: Shearwaters (Puffinus),,seabirds_pelagics,Shearwaters,Shearwaters
 Genus: Shorebirds (Tringa) Yellowlegs,,shorebirds_waders,,
 Genus: Shorebirds (Whimbrel and Curlews),,shorebirds_waders,,
-Genus: Skuas,,seabirds_larids,,
+Genus: Skuas,,seabirds_larids,Jaegers,Jaegers
 Genus: Small gull,,,Gulls,Gulls
 Genus: Snipes,,shorebirds_waders,,
 Genus: Storm-Petrels (Fregetta),,seabirds_pelagics,Storm-Petrels,Storm-Petrels
