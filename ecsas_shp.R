@@ -5,7 +5,7 @@ library(RODBC)
 library(plyr)
 library(svMisc)
 
-db<-odbcConnectAccess("D:/ebird/Master ECSAS v 3.46.mdb")
+db<-odbcConnectAccess("D:/ebird/Master ECSAS v 3.51.mdb")
 obs<-sqlFetch(db,"tblSighting",as.is=TRUE)
 sp<-sqlFetch(db,"tblSpeciesInfo",as.is=TRUE)
 watch<-sqlFetch(db,"tblWatch",as.is=TRUE)
