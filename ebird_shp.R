@@ -1,4 +1,4 @@
-library(data.table)
+library(data.table) #need development version 1.9.7 on github for fread to work on ebird
 library(sp)
 library(rgdal)
 library(rgeos)
