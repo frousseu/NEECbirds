@@ -1,9 +1,16 @@
 
 ### NEED TO GET OBJECTS FROM EBIRD!
 
+library(RCurl)
 library(RODBC)
 library(plyr)
 library(svMisc)
+library(FRutils)
+library(scales)
+
+ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+prj<-"+proj=utm +zone=18 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+laea<-"+proj=laea +lat_0=50 +lon_0=-65"
 
 db<-odbcConnectAccess("D:/ebird/Master ECSAS v 3.51.mdb")
 obs<-sqlFetch(db,"tblSighting",as.is=TRUE)
@@ -11,7 +18,7 @@ sp<-sqlFetch(db,"tblSpeciesInfo",as.is=TRUE)
 watch<-sqlFetch(db,"tblWatch",as.is=TRUE)
 odbcClose(db)
 
-load("D:/ebird/odbcECSAS.RData") #load session instead of running on 32bit all the time
+#load("D:/ebird/odbcECSAS.RData") #load session instead of running on 32bit all the time
 
 obs$Alpha<-sp$Alpha[match(obs$SpecInfoID,sp$SpecInfoID)]
 obs$sp<-sp$English[match(obs$SpecInfoID,sp$SpecInfoID)]
@@ -39,20 +46,18 @@ names(month_comb)<-substr(names(month_comb),1,8)
 obs$season<-names(month_comb)[match(obs$month,month_comb)]
 
 ### GET BIRD GROUPS
-g<-fread("bird_groups.csv",sep=";",na.strings=c("","NA")) #ce fichier est sur mon github
-g<-g[!is.na(group),]
-g<-unique(g[,c("sp","group")])
-obs$group<-g$group[match(obs$sp,g$sp)]
+g<-getURL("https://raw.githubusercontent.com/frousseu/NEECbirds/master/bird_groups.csv") # Ce fichier est sur mon github
+g<-read.csv(text=g,header=TRUE,stringsAsFactors=FALSE)
+g<-g[!is.na(g$group_kernels),]
+g<-unique(g[,c("sp","group_kernels")])
+obs$group<-g$group_kernels[match(obs$sp,g$sp)]
 
 ### keep only on water obs for waterfowl
 nofly<-c("waterfowl_diving","waterfowl_dabbling")
 w<-which(obs$group%in%nofly & obs$FlySwim=="F")
 obs<-obs[-w,]
 
-
 x<-obs[,c("sp","group","season","date","month","year","lat","lon","nb")]
-
-
 
 #################################################################    
 ### get seasonal effort and evaluate at each observation location
@@ -101,8 +106,8 @@ for(j in seq_len(nrow(case))){
 	
 	group<-case$group[j]
 	season<-case$season[j]
-	sp<-"Dovekie"
-	m<-x$sp%in%sp & x$season%in%season
+	#sp<-"Dovekie"
+	m<-x$group%in%group & x$season%in%season
 	xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon[m],x$lat[m])),ncol=2),proj4string=CRS(ll),data=x[m,])
 	xs<-spTransform(xs,CRS(prj))
 	
@@ -123,16 +128,23 @@ for(j in seq_len(nrow(case))){
 	percw<-c("very high","high","medium","low")
 	trans<-c(0.8,0.6,0.4,0.2)
 	cols_kern<-c("darkred","red","orange","yellow")
-	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs)) # extract polygons
+	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs),cut=FALSE) # extract polygons
  kp$group<-group
  kp$season<-season
 	
-	### PLOT POLYGONS
+ png(paste0("D:/ebird/kernels/",paste(group,season,sep="_"),"_ecsas.png"),width=12,height=8,units="in",res=500,pointsize=14)
+	
+ ### PLOT POLYGONS
 	par(mar=c(1,0,0,0))
 	plot(xs,col="white")
 	plot(kp,add=TRUE,col=alpha(cols_kern,0.6),border=NA)
 	plot(land,col="grey95",border="grey75",add=TRUE)
 	legend("bottomright",fill=alpha(cols_kern,0.6),legend=paste(perc,"%"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
+	
+	dev.off()
+	
+	kp$data_type<-"ecsas"
+	kp$risk_level<-percw
 	
 	### write shapefile
 	writeOGR(kp,dsn="D:/ebird/kernels",layer=paste(group,season,"ecsas",sep="_"),driver="ESRI Shapefile",overwrite_layer=TRUE)
