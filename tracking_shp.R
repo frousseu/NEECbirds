@@ -181,7 +181,7 @@ for(j in seq_along(d)){
   percw<-c("very high","high","medium","low")
   trans<-c(0.9,0.7,0.5,0.3)
   cols_kern<-c("darkred","red","orange","yellow")
-  kp<-kde2pol(k,levels=perc,proj4string=prj) # extract polygons
+  kp<-kde2pol(k,levels=perc,proj4string=prj,cut=FALSE) # extract polygons
   kp$group<-names(d)[j]
   kp$season<-season
   
