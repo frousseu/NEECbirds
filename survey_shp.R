@@ -12,9 +12,9 @@ library(maptools)
 library(rgdal)
 library(svMisc)
 
-
-
-
+ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+prj<-"+proj=utm +zone=18 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+laea<-"+proj=laea +lat_0=50 +lon_0=-65"
 
 ### GET BIRD GROUPS
 g<-getURL("https://raw.githubusercontent.com/frousseu/NEECbirds/master/bird_groups.csv") # Ce fichier est sur mon github
@@ -62,7 +62,8 @@ m<-match(gsub(" sp"," sp.",tolower(x$sp)),g$sp)
 x$sp<-ifelse(is.na(m),x$sp,g$sp[m])
 x$group<-g$group[match(x$sp,g$sp)]
 
-#!!!!!!! CHECK FOR MISSING DATA IN NUMBERS!!!!!!!!!!!!!!
+### scrap zeros or missing numbers
+x<-x[!is.na(x$nb) & x$nb>0,]
 
 
 #################################
@@ -93,18 +94,20 @@ for(j in seq_len(nrow(case))){
 	#H<-Hpi.diag(coordinates(xs))
 	#H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
 	#H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
-	H1<-matrix(c(100000000,0,0,100000000),nrow=2) 
+	H1<-matrix(c(50000000,0,0,50000000),nrow=2) 
 	
 	### GET KERNELS POLYGONS
-	k<-kde(x=jitter(coordinates(xs)),binned=TRUE,gridsize=c(500,500),compute.cont=TRUE,H=H1,w=f(xs$nb)) ##!!!!!!!! COMPUTE EFFORT WEIGHTHS??????
+	k<-kde(x=coordinates(xs),binned=TRUE,gridsize=c(500,500),compute.cont=TRUE,H=H1,w=f(xs$nb)) ##!!!!!!!! COMPUTE EFFORT WEIGHTHS??????
 	kp<-list()
 	perc<-c(25,50,75,95)
 	percw<-c("very high","high","medium","low")
 	trans<-c(0.8,0.6,0.4,0.2)
 	cols_kern<-c("darkred","red","orange","yellow")
-	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs)) # extract polygons
+	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs),cut=FALSE) # extract polygons
 	kp$group<-group
 	kp$season<-season
+	
+	png(paste0("D:/ebird/kernels/",paste(group,season,sep="_"),"_survey.png"),width=12,height=8,units="in",res=500,pointsize=14)
 	
 	### PLOT POLYGONS
 	par(mar=c(1,0,0,0))
@@ -112,6 +115,13 @@ for(j in seq_len(nrow(case))){
 	plot(kp,add=TRUE,col=alpha(cols_kern,0.6),border=NA)
 	plot(land,col="grey95",border="grey75",add=TRUE)
 	legend("bottomright",fill=alpha(cols_kern,0.6),legend=paste(perc,"%"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
+	info<-paste0("group: ",group,"\nseason: ",season,"\ndata source: SURVEYS","\ncoast buffer:")
+	mtext(info,side=3,line=-4,font=2,adj=0.05)
+	
+	dev.off()
+	
+	kp$data_type<-"survey"
+	kp$risk_level<-percw
 	
 	### write shapefile
 	writeOGR(kp,dsn="D:/ebird/kernels",layer=paste(group,season,"survey",sep="_"),driver="ESRI Shapefile",overwrite_layer=TRUE)
@@ -119,7 +129,6 @@ for(j in seq_len(nrow(case))){
 	progress(j,nrow(case))
 	
 }
-
 
 
 
