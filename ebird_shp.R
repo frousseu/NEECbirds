@@ -11,15 +11,21 @@ library(raster)
 library(ks)
 library(FRutils)
 library(svMisc)
+library(RCurl)
+
+### RUN THIS SCRIPT WITH 64 BIT FOR fread FUNCTION
 
 ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 prj<-"+proj=utm +zone=18 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 laea<-"+proj=laea +lat_0=50 +lon_0=-65"
 
 ### GET BIRD GROUPS
-g<-fread("bird_groups.csv",sep=";",na.strings=c("","NA")) #ce fichier est sur mon github
-g<-g[!is.na(group),]
-g<-unique(g[,c("sp","group")])
+g<-getURL("https://raw.githubusercontent.com/frousseu/NEECbirds/master/bird_groups.csv") # Ce fichier est sur mon github
+g<-read.csv(text=g,header=TRUE,stringsAsFactors=FALSE)
+g<-g[!is.na(g$group_kernels),]
+g<-unique(g[,c("sp","group_kernels")])
+g<-g[!duplicated(g$sp),]
+names(g)<-c("sp","group")
 
 na<-readOGR(dsn="D:/ebird/ebd_CA_relAug-2016.txt",layer="ne_10m_admin_1_states_provinces",encoding="UTF-8")
 land<-na[na$admin%in%c("Canada","United States of America","Greenland"),]
@@ -81,6 +87,7 @@ o<-over(ys,coast)
 ys<-ys[!is.na(o),]
 
 cols_EFF<-c("blue","violet","magenta","yellow")
+perc<-c(seq(5,95,by=10),99)
 
 ### GET POLYGONS
 kp<-lapply(unique(names(month_comb)),function(j){
@@ -88,10 +95,9 @@ kp<-lapply(unique(names(month_comb)),function(j){
 	H1<-matrix(c(20000000,0,0,20000000),nrow=2)  
 	k<-kde(x=coordinates(yys),binned=TRUE,bgridsize=c(500,500),compute.cont=TRUE,H=H1)
 	kp<-list()
-	perc<-c(seq(5,95,by=10),99)
 	trans<-rev(seq(0.15,1,length.out=length(perc)))
 	col_eff<-c(colo.scale(perc[-length(perc)],cols_EFF),alpha("blue",0.5))
-	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs)) # extract polygons
+	kp<-kde2pol(k,levels=perc,proj4string=prj) # extract polygons
  kp$season<-j
  kp
 })
@@ -107,13 +113,12 @@ for(i in seq_along(kp)){
   plot(land,border="grey75",add=TRUE)
   for(j in seq_along(kp[[i]])){
 	   #plot(kp[[i]],add=TRUE,col=alpha("red",trans[i]),border=NA)
-	   plot(gIntersection(coast,kp[[i]][j,]),add=TRUE,col=col_eff[j],border=NA)
+	   plot(gIntersection(coast,kp[[i]][j,]),add=TRUE,col=cols_EFF[j],border=NA)
   }
-  legend("bottomright",fill=col_eff,legend=paste(perc,"%"),border=NA,cex=1,box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
+  legend("bottomright",fill=cols_EFF,legend=paste(perc,"%"),border=NA,cex=1,box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
   mtext(paste("season:",names(kp)[i]),side=3,line=-2,font=2,adj=0.9)
 }
 #dev.off()
-
 
 
 
@@ -126,9 +131,9 @@ f<-function(x){log(x+1)}
 #f<-function(x){x}
 
 case<-x[,.(n=.N),by=.(group,season)]
-case<-case[case$n>=100 & !is.na(case$group),] # does not seem to have such a case with under 100
+case<-case[case$n>=100 & !case$group%in%c("",NA),] # does not seem to have such a case with under 100
 
-for(j in seq_len(nrow(case))[1:2]){
+for(j in seq_len(nrow(case))){
 
   group<-case$group[j]
   #sp<-"Glaucous-winged Gull"
@@ -161,7 +166,7 @@ for(j in seq_len(nrow(case))[1:2]){
   percw<-c("very high","high","medium","low")
   trans<-c(0.9,0.7,0.5,0.3)
   cols_kern<-c("darkred","red","orange","yellow")
- 	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs)) # extract 
+ 	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs),cut=FALSE) # extract 
   kp$group<-group
   kp$season<-season
 
