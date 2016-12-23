@@ -18,7 +18,8 @@ sp<-sqlFetch(db,"tblSpeciesInfo",as.is=TRUE)
 watch<-sqlFetch(db,"tblWatch",as.is=TRUE)
 odbcClose(db)
 
-#load("D:/ebird/odbcECSAS.RData") #load session instead of running on 32bit all the time
+load("D:/ebird/odbcECSAS.RData") #load session instead of running on 32bit all the time
+rm(kde2pol)
 
 obs$Alpha<-sp$Alpha[match(obs$SpecInfoID,sp$SpecInfoID)]
 obs$sp<-sp$English[match(obs$SpecInfoID,sp$SpecInfoID)]
