@@ -1,0 +1,157 @@
+\documentclass[a4paper,12pt,notitlepage]{article}
+%\documentclass[a4paper,12pt,notitlepage]{article}
+\usepackage[tmargin=0.75in,bmargin=0.75in,lmargin=0.75in,rmargin=0.75in]{geometry}
+\usepackage[belowskip=10pt,aboveskip=0pt]{caption}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\renewcommand{\indexname}{SPECIES INDEX}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\graphicspath{{D:/ebird/kernels/}{D:/ebird/kernels/}}
+\newcolumntype{C}{ >{\centering\arraybackslash} m }
+\newcolumntype{I}{ >{\itshape\arraybackslash}{l} }
+\usepackage{longtable}
+\usepackage{calc}
+\usepackage{xcolor}
+\captionsetup[table]{aboveskip=3pt}
+\captionsetup[table]{belowskip=10pt}
+\setlength{\intextsep}{5pt plus 2pt minus 2pt}
+%\setlength{\textfloatsep}{50pt plus 2pt minus 4pt}
+\renewcommand\floatpagefraction{.9}
+\renewcommand\topfraction{.9}
+\renewcommand\bottomfraction{.9}
+\renewcommand\textfraction{.1}   
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+\setcounter{tocdepth}{7}
+\setcounter{secnumdepth}{7}
+\raggedbottom
+
+\usepackage[toc]{multitoc}
+\renewcommand*{\multicolumntoc}{2}
+\setlength{\columnseprule}{0.25pt}
+\renewcommand{\contentsname}{\LARGE SPECIES ACCOUNTS}
+
+%\pagestyle{headings}
+\usepackage{fancyhdr}
+%\pagestyle{fancy}
+%\lhead{\color{black!100}\leftmark}
+%\chead{}
+%\rhead{\color{black!100}\rightmark}
+%\lfoot{}
+%\cfoot{\thepage}
+%\rfoot{}
+%\renewcommand{\headrulewidth}{0.1pt}
+%\renewcommand{\footrulewidth}{0.0pt}
+%\renewcommand{\headrule}{\hbox to\headwidth{%
+	%    \color{black!100}\leaders\hrule height \headrulewidth\hfill}}
+\title{\vspace{3cm}\LARGE{\textbf{Kernel\newline Images}}\vspace{5cm}}
+\author{\textbf{Francois Rousseu} and \textbf{Francois Bolduc\footnote{Environnement et changement climatique Canada, Canadian Wildlife Service, 801-1550, avenue d'Estimauville, Québec, Québec, G1J 0C3. \href{mailto:francois.bolduc@canada.ca}{francois.bolduc@canada.ca}}}\vspace{5cm}}
+	%\date{\today}
+	\date{}
+	%\usepackage{subfig}
+	\usepackage{rotating}
+	\usepackage[unicode=true,pdfusetitle,
+	bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+	breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true,linkcolor=blue,urlcolor=blue]
+	{hyperref}
+	\usepackage[latin1]{inputenc}
+	\usepackage[T1]{fontenc}
+	
+	\usepackage{tocloft}
+	
+	% set the custom list of figures
+	\newcommand{\listfigsname}{\normalsize{LIST OF FIGURES}}
+	\newlistof{figs}{figsex}{\listfigsname}
+	\newcommand{\figs}[1]{
+	\refstepcounter{figs}
+	\par\noindent\textnormal{#1}
+	\addcontentsline{figsex}{figs}
+	{\protect\numberline{\thesection.\thefigs}#1}\par}
+	
+	% set the custom list of tables
+	\newcommand{\listtabsname}{\normalsize{LIST OF TABLES}}
+	\newlistof{tabs}{tabsex}{\listtabsname}
+	\newcommand{\tabs}[1]{
+	\refstepcounter{tabs}
+	\par\noindent\textnormal{#1}
+	\addcontentsline{tabsex}{tabs}
+	{\protect\numberline{\thesection.\thetabs}#1}\par}
+	
+	% set the custom list of appendices
+	\newcommand{\listappsname}{\normalsize{LIST OF APPENDICES}}
+	\newlistof{apps}{appsex}{\listappsname}
+	\newcommand{\apps}[1]{
+	\refstepcounter{apps}
+	\par\noindent\textnormal{#1}
+	\addcontentsline{appsex}{apps}
+	{\protect\numberline{\thesection.\theapps}#1}\par}
+	
+	
+	\parindent=0in
+	\parskip=10pt % this is variable, choose the number you want
+	\makeindex
+	
+	%\usepackage{array}
+	
+	%\newcolumntype{R}{@{\extracolsep{3cm}}r@{\extracolsep{0pt}}}%
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% preamble
+	
+	\begin{document}
+	\maketitle
+	\clearpage
+	
+	\tableofcontents
+	
+
+	
+	
+
+	
+	%\subsection{2nd panel}
+	
+	%\subsection{3th panel}
+	
+	%\section{Warning}
+	
+	%\section{Code description}
+	
+	<<packages, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE>>=
+
+
+@	
+
+
+	\clearpage
+	\section{Species Accounts}
+	<<png, cache=FALSE, eval=TRUE, include=TRUE, echo=FALSE, message=FALSE, fig.height=4.5,fig.width=6.5, results='asis'>>=
+	
+	
+	x<-list.files("D:/ebird/kernels",pattern=".png")
+	x<-x[-grep("raptors|passerines",x)]
+	x2<-gsub("\\.png|_","",x)
+	
+	#m<-order(match(substr(x,1,4),sg$Species_ID))
+	#x<-x[m]
+	pos<-1
+	for(i in seq_along(x)){  
+	  cat(paste0("\\subsubsection*{",x2[i],"}\n"))
+	  cat(paste0("\\addcontentsline{toc}{subsubsection}{",x2[i],"}\n"))
+	  cat("\\vspace{-1.3cm}\n")
+	  cat(paste0("\\label{",x2[i],"}\n"))
+	  cat(paste0("\\index{",x2[i],"}\n")) 
+	  cat(paste0("\\includegraphics[width=\\textwidth, scale=1, trim=0 0 0 0, clip]{D:/ebird/kernels/",gsub(".png","",x[i]),"}\n"))  
+	pos<-pos+1
+	}
+	
+
+	
+	@
+	
+	\clearpage
+	\phantomsection
+	\addcontentsline{toc}{part}{\indexname}
+	\printindex
+	\end{document}
