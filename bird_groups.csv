@@ -256,9 +256,9 @@ Black-browed Albatross,1692,seabirds_pelagics,,
 Laysan Albatross,1709,seabirds_pelagics,,
 Black-footed Albatross,1711,seabirds_pelagics,,
 Short-tailed Albatross,1712,seabirds_pelagics,,
-Northern Fulmar,1716,seabirds_pelagics,Shearwaters,Shearwaters
-Northern Fulmar,1717,seabirds_pelagics,Shearwaters,Shearwaters
-Northern Fulmar,1719,seabirds_pelagics,Shearwaters,Shearwaters
+Northern Fulmar,1716,seabirds_pelagics,Fulmars,Fulmars
+Northern Fulmar,1717,seabirds_pelagics,Fulmars,Fulmars
+Northern Fulmar,1719,seabirds_pelagics,Fulmars,Fulmars
 Murphy's Petrel,1739,seabirds_pelagics,Shearwaters,Shearwaters
 Fea's Petrel,1743,seabirds_pelagics,Shearwaters,Shearwaters
 Mottled Petrel,1755,seabirds_pelagics,Shearwaters,Shearwaters
@@ -554,9 +554,9 @@ Tringa sp.,4139.24,shorebirds_waders,,
 Scolopacidae sp.,4139.3,shorebirds_waders,,
 large shorebird sp.,4139.6,shorebirds_waders,,
 shorebird sp.,4262,shorebirds_waders,,
-Great Skua,4262.01,seabirds_larids,Jaegers,Jaegers
-South Polar Skua,4262.03,seabirds_larids,Jaegers,Jaegers
-skua sp.,4262.08,seabirds_larids,Jaegers,Jaegers
+Great Skua,4262.01,seabirds_larids,Jaegers,Skuas
+South Polar Skua,4262.03,seabirds_larids,Jaegers,Skuas
+skua sp.,4262.08,seabirds_larids,Jaegers,Skuas
 Pomarine Jaeger,4262.09,seabirds_larids,Jaegers,Jaegers
 Parasitic Jaeger,4262.1,seabirds_larids,Jaegers,Jaegers
 Pomarine/Parasitic Jaeger,4262.11,seabirds_larids,Jaegers,Jaegers
@@ -564,7 +564,7 @@ Long-tailed Jaeger,4262.12,seabirds_larids,Jaegers,Jaegers
 Parasitic/Long-tailed Jaeger,4262.16,seabirds_larids,Jaegers,Jaegers
 jaeger sp.,4262.17,seabirds_larids,Jaegers,Jaegers
 jaeger/skua sp.,4262.18,seabirds_larids,Jaegers,Jaegers
-Dovekie,4262.19,seabirds_alcids,Alcids,Alcids
+Dovekie,4262.19,seabirds_alcids,Dovekie,Alcids
 Common Murre,4262.22,seabirds_alcids,Alcids,Alcids
 Thick-billed Murre,4262.27,seabirds_alcids,Alcids,Alcids
 Common/Thick-billed Murre,4262.32,seabirds_alcids,Alcids,Alcids
@@ -1480,7 +1480,7 @@ Genus: Murrelets (Synthliboramphus and Brachyramphus ),,seabirds_alcids,Alcids,A
 Genus: Murres,,seabirds_alcids,Alcids,Alcids
 Genus: Noddies,,seabirds_pelagics,Terns,Terns
 Genus: Oystercatchers,,shorebirds_waders,,
-Genus: Petrels (Pterodroma),,seabirds_pelagics,Storm-Petrels,Strom-Petrels
+Genus: Petrels (Pterodroma),,seabirds_pelagics,,
 Genus: Phalaropes,,shorebirds_waders,Phalaropes,Phalaropes
 Genus: Plovers (Charadrius),,shorebirds_waders,,
 Genus: Plovers (Pluvialis),,shorebirds_waders,,
