@@ -6,6 +6,9 @@ path<-"D:/ebird/kernels"
 ### subset on certain shapefiles here
 x<-list.files(path,pattern=".shp")
 #x<-x[grep("_ebird",x)]
+if(any(grep("NEEC",x))){
+  x<-x[-grep("NEEC",x)]
+}
 x<-gsub("\\.shp","",x)
 x<-x[seq_along(x)]
 
@@ -24,6 +27,7 @@ lshp<-lapply(seq_along(lshp),function(i){
 })
 
 res<-do.call("rbind",lshp)
+res<-res[!is.na(res$group),]
 
 
 
@@ -40,5 +44,19 @@ slot(res,"data")<-cbind(res@data,mtable)
 
 boxcut<-bbox2pol(c(460826,2406881,4478758,5945517),proj4string=proj4string(res))
 plot(gIntersection(boxcut,res[res$id=="k50",],byid=TRUE),col=alpha("red",0.15),border=NA)
+
+
+### write shapefile
+writeOGR(res,dsn="D:/ebird/kernels",layer="NEECkernels",driver="ESRI Shapefile",overwrite_layer=TRUE)
+
+
+
+
+
+
+
+
+
+
 
 
