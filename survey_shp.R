@@ -77,10 +77,11 @@ x$sp<-ifelse(is.na(m),x$sp,g$sp[m])
 m<-match(gsub(" sp"," sp.",tolower(x$sp)),g$sp)
 x$sp<-ifelse(is.na(m),x$sp,g$sp[m])
 x$group<-g$group[match(x$sp,g$sp)]
+x$group[x$sp=="Phalarope"]<-"shorebirds_waders"
 
 ### scrap zeros or missing numbers
 x<-x[!is.na(x$nb) & x$nb>0,]
-
+ddply(x[x$group%in%c("",NA),],.(sp,group),nrow)
 
 #################################
 ### grouping
