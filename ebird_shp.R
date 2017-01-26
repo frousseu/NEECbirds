@@ -74,7 +74,7 @@ x$lon<-as.numeric(x$lon)
 x$lat<-as.numeric(x$lat)
 x<-x[lat<=52,] #on garde ce qui est en bas
 x<-x[lon>=(-74),] #on garde ce qui est à partir de mtl
-
+ddply(x[x$group%in%c("",NA),],.(sp,group),nrow)
 
 #################################################
 ### SEASONAL EFFORT FROM CHECKLIST LOCATIONS

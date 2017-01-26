@@ -59,6 +59,8 @@ w<-which(obs$group%in%nofly & obs$FlySwim=="F")
 obs<-obs[-w,]
 
 x<-obs[,c("sp","group","season","date","month","year","lat","lon","nb")]
+ddply(x[x$group%in%c("",NA),],.(sp,group),nrow)
+
 
 #################################################################    
 ### get seasonal effort and evaluate at each observation location
