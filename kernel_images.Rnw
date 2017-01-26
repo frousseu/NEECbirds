@@ -130,7 +130,7 @@
 	
 	
 	x<-list.files("D:/ebird/kernels",pattern=".png")
-	x<-x[-grep("raptors|passerines",x)]
+	#x<-x[-grep("raptors|passerines",x)]
 	x2<-gsub("\\.png|_","",x)
 	
 	#m<-order(match(substr(x,1,4),sg$Species_ID))
