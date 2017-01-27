@@ -70,6 +70,8 @@ names(month_comb)<-substr(names(month_comb),1,8)
 x<-join(d,s,type="full")
 x$season<-names(month_comb)[match(x$month,month_comb)]
 
+
+
 m<-match(x$sp,g$sp)
 x$sp<-ifelse(is.na(m),x$sp,g$sp[m])
 m<-match(tolower(x$sp),g$sp)
@@ -82,6 +84,8 @@ x$group[x$sp=="Phalarope"]<-"shorebirds_waders"
 ### scrap zeros or missing numbers
 x<-x[!is.na(x$nb) & x$nb>0,]
 ddply(x[x$group%in%c("",NA),],.(sp,group),nrow)
+ddply(x[x$sp%in%"Common Eider",],.(sp,season,month,region),nrow)
+
 
 #################################
 ### grouping
