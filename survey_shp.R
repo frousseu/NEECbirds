@@ -44,6 +44,8 @@ ddply(d,.(sp,spFR,spEN),nrow) # check which species are missing
 d<-d[!is.na(d$sp),] # Certains noms sp ne se retrouve pas dans les tables
 d$month<-ifelse(d$month=="00","09",d$month) #there is a bug in the data for SAUVFLEUVE dealing with months and the original excel file not read correctly by read_excel
 d$region<-"QC"
+x<-d[d$sp%in%"Common Eider" & d$source%in%"EIDERS_HIVER",] ### tests what's left from eiders
+x<-d[d$Nom_FR%in%"Eider à duvet" & d$Base%in%"EIDERS_HIVER",] ### tests what's left from eiders
 
 ### ATLANTIC DATA (from Rob Ronconi)
 s<-as.data.frame(read_excel(path="D:/ebird/Sightings_data_20161213.xlsx",sheet=1),stringsAsFactors=FALSE)
@@ -58,6 +60,29 @@ s$sp<-ifelse(is.na(m),s$sp,sp$English[m])
 s$sp[grep("HARD",s$sp)]<-"Harlequin Duck"
 s$sp[grep("UNPH",s$sp)]<-"Phalarope"
 s$region<-"AT"
+
+### WINTER EIDERS
+# que fait-on avec les inconnus?
+# on additionne les bruns et blancs
+e1<-as.data.frame(read_excel(path="D:/ebird/COEIObsNBNS.xlsx",sheet=1),stringsAsFactors=FALSE)
+e2<-as.data.frame(read_excel(path="D:/ebird/COEIObsQCNL.xlsx",sheet=1),stringsAsFactors=FALSE)
+e1$region<-"AT"
+e2$region<-"QC"
+keep<-c("Mois","visuelblancs","visuelbruns","LatDec","LongDec","region")
+e<-rbind(e1[,keep],e2[,keep])
+
+#check wrong lats
+tmp <- obs[(order(obs$LatDec)),]
+#some lat-long reversed - wrong column
+tmp$lat <- tmp$LatDec
+tmp$lon <- tmp$LongDec
+tmp$LongDec <- ifelse(tmp$LatDec<0,tmp$LatDec,tmp$LongDec)
+tmp$LatDec <- ifelse(tmp$LatDec<0,tmp$lon,tmp$LatDec)
+tmp <- tmp[(order(tmp$LatDec)),]
+obs <- tmp
+obs$lat <- NULL
+obs$lon <- NULL
+
 
 
 ### BUIDL SEASONS
