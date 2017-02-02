@@ -68,34 +68,33 @@ e1<-as.data.frame(read_excel(path="D:/ebird/COEIObsNBNS.xlsx",sheet=1),stringsAs
 e2<-as.data.frame(read_excel(path="D:/ebird/COEIObsQCNL.xlsx",sheet=1),stringsAsFactors=FALSE)
 e1$region<-"AT"
 e2$region<-"QC"
-keep<-c("Mois","visuelblancs","visuelbruns","LatDec","LongDec","region")
+keep<-c("Mois","visuelblancs","visuelbruns","LatDec","LongDec","region","An","Mois","Jour","region")
 e<-rbind(e1[,keep],e2[,keep])
-
+e$nb<-e$visuelblancs+e$visuelbruns
 #check wrong lats
-tmp <- obs[(order(obs$LatDec)),]
+e <- e[order(e$LatDec),]
 #some lat-long reversed - wrong column
-tmp$lat <- tmp$LatDec
-tmp$lon <- tmp$LongDec
-tmp$LongDec <- ifelse(tmp$LatDec<0,tmp$LatDec,tmp$LongDec)
-tmp$LatDec <- ifelse(tmp$LatDec<0,tmp$lon,tmp$LatDec)
-tmp <- tmp[(order(tmp$LatDec)),]
-obs <- tmp
-obs$lat <- NULL
-obs$lon <- NULL
+e$lat <- e$LatDec
+e$lon <- e$LongDec
+e$LongDec <- ifelse(e$LatDec<0,e$LatDec,e$LongDec)
+e$LatDec <- ifelse(e$LatDec<0,e$lon,e$LatDec)
+e<-e[(order(e$LatDec)),]
+e$lat <- e$LatDec
+e$lon <- e$LongDec
+e$month<-formatC(e$Mois,width=2,flag=0)
+e$date<-paste(e$An,e$mois,formatC(e$Jour,width=2,flag=0),sep="-")
+e$sp<-"Common Eider"
+e$source<-"Winter_Eiders"
+e<-e[,c("sp","date","month","lat","lon","nb","source","region")]
 
-
-
-### BUIDL SEASONS
+### BUILD SEASONS
 month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
 names(month_comb)<-substr(names(month_comb),1,8)
 
-
-
 ### JOIN BOTH
 x<-join(d,s,type="full")
+x<-join(x,e,type="full")
 x$season<-names(month_comb)[match(x$month,month_comb)]
-
-
 
 m<-match(x$sp,g$sp)
 x$sp<-ifelse(is.na(m),x$sp,g$sp[m])
