@@ -55,4 +55,16 @@
 
 - Integrate ECSAS, tracking and ebird data within the same kernel output
 
+##TODO
+
+- Winter Eiders, check email for using whites and adding browns which are in % ?
+- Take out groups and observations flagged red in FB dynamic excel file (in downloads)
+- Add EPOQ data, but only what is older than 2012 (?) to reduce overlap with EBIRD data
+- Verify which seasons to use
+- Add data from SOMEC (2012 and over ?) to the ECSAS data
+- Use 50-70-90% kernels
+- Shanti wants tracking data? (email 01-27)
+- BIOMQ never was included in the kernel output (email 01-27)
+- Adjust seasons according to (email 01-27)
+- Check list of things left to do on google drive
 
