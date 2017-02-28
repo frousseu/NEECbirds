@@ -12,6 +12,20 @@ library(maptools)
 library(rgdal)
 library(svMisc)
 
+get_season<-function(x){
+	s1<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
+	s3<-unlist(list("12010203"=c("12","01","02","03"),"0405"=c("04","05"),"0607"=c("06","07"),"08091011"=c("08","09","10","11")))
+	names(s1)<-substr(names(s1),1,nchar(names(s1))-1)
+	names(s3)<-substr(names(s3),1,nchar(names(s3))-1)
+	g<-grep("seabirds",x$group)	
+	temp<-rep("not",nrow(x))
+	if(any(g)){
+		temp[g]<-"seabirds"
+	}
+	season<-ifelse(temp=="seabirds",names(s1)[match(x$month,s1)],names(s3)[match(x$month,s3)])
+	season
+}
+
 ### DATA FROM QC AND ATL ARE SEPARATED BECAUSE QC HAS 4 TIMES MORE DATA
 
 ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
@@ -91,19 +105,7 @@ e<-e[,c("sp","date","month","lat","lon","nb","source","region")]
 #month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
 #names(month_comb)<-substr(names(month_comb),1,8)
 
-get_season<-function(x){
-	s1<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
-	s3<-unlist(list("12010203"=c("12","01","02","03"),"0405"=c("04","05"),"0607"=c("06","07"),"08091011"=c("08","09","10","11")))
-	names(s1)<-substr(names(s1),1,nchar(names(s1))-1)
-	names(s3)<-substr(names(s3),1,nchar(names(s3))-1)
-	g<-grep("seabirds",x$group)	
-	temp<-rep("not",nrow(x))
-	if(any(g)){
-	  temp[g]<-"seabirds"
-	}
- season<-ifelse(temp=="seabirds",names(s1)[match(x$month,s1)],names(s3)[match(x$month,s3)])
- season
-}
+
 
 ### JOIN BOTH
 x<-join(d,s,type="full")
