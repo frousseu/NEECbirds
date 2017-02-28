@@ -59,8 +59,6 @@ w<-which(obs$group%in%nofly & obs$FlySwim=="F")
 obs<-obs[-w,]
 
 x<-obs[,c("sp","group","season","date","month","year","lat","lon","nb")]
-ddply(x[x$group%in%c("",NA),],.(sp,group),nrow)
-
 
 #################################################################    
 ### get seasonal effort and evaluate at each observation location
@@ -143,8 +141,6 @@ for(j in seq_len(nrow(case))){
 	plot(kp,add=TRUE,col=alpha(cols_kern,0.6),border=NA)
 	plot(land,col="grey95",border="grey75",add=TRUE)
 	legend("bottomright",fill=alpha(cols_kern,0.6),legend=paste(perc,"%"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.1),title="Kernel Contours")
-	info<-paste0("group: ",group,"\nseason: ",season,"\ndata source: ECSAS","\ncoast buffer:")
-	mtext(info,side=3,line=-4,font=2,adj=0.05)
 	
 	dev.off()
 	
