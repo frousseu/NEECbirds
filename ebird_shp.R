@@ -13,6 +13,20 @@ library(FRutils)
 library(svMisc)
 library(RCurl)
 
+get_season<-function(x){
+	s1<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
+	s3<-unlist(list("12010203"=c("12","01","02","03"),"0405"=c("04","05"),"0607"=c("06","07"),"08091011"=c("08","09","10","11")))
+	names(s1)<-substr(names(s1),1,nchar(names(s1))-1)
+	names(s3)<-substr(names(s3),1,nchar(names(s3))-1)
+	g<-grep("seabirds",x$group)	
+	temp<-rep("not",nrow(x))
+	if(any(g)){
+		temp[g]<-"seabirds"
+	}
+	season<-ifelse(temp=="seabirds",names(s1)[match(x$month,s1)],names(s3)[match(x$month,s3)])
+	season
+}
+
 ### RUN THIS SCRIPT WITH 64 BIT FOR fread FUNCTION
 
 ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
@@ -57,10 +71,10 @@ e<-e[e$category%in%c("species"),] #on perd des formes et qques taxons/formes
 e$month<-substr(e$date,6,7)
 #e<-as.data.table(e)
 
-month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
-names(month_comb)<-substr(names(month_comb),1,8)
+#month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
+#names(month_comb)<-substr(names(month_comb),1,8)
 
-e$season<-names(month_comb)[match(e$month,month_comb)]
+e$season<-get_season(e)
 
 x<-e[state%in%c("Quebec","Nova Scotia","New Brunswick","Prince Edward Island","Newfoundland and Labrador"),]
 #x<-e[state%in%c("British Columbia"),]
@@ -80,7 +94,7 @@ ddply(x[x$group%in%c("",NA),],.(sp,group),nrow)
 ### SEASONAL EFFORT FROM CHECKLIST LOCATIONS
 #################################################
 
-y<-unique(x[,c("sample","lat","lon","season")])
+y<-unique(x[,c("sample","lat","lon","month","season")])
 ys<-SpatialPointsDataFrame(matrix(as.numeric(c(y$lon,y$lat)),ncol=2),proj4string=CRS(ll),data=y,match.ID=FALSE)
 ys<-spTransform(ys,CRS(prj))
 o<-over(ys,coast)
@@ -90,8 +104,9 @@ cols_EFF<-c("blue","violet","magenta","yellow")
 perc<-c(seq(5,95,by=10),99)
 
 ### GET POLYGONS
-kp<-lapply(unique(names(month_comb)),function(j){
-	yys<-ys[ys$season==j,]	
+kp<-lapply(unique(get_season(x)),function(j){
+	mm<-unlist(strsplit(gsub("(.{2})", "\\1 ",j)," "))
+	yys<-ys[ys$month%in%mm,]	
 	H1<-matrix(c(20000000,0,0,20000000),nrow=2)  
 	k<-kde(x=coordinates(yys),binned=TRUE,bgridsize=c(500,500),compute.cont=TRUE,H=H1)
 	kp<-list()
@@ -101,7 +116,7 @@ kp<-lapply(unique(names(month_comb)),function(j){
  kp$season<-j
  kp
 })
-names(kp)<-unique(names(month_comb))
+names(kp)<-unique(get_season(x))
 
 
 ### PLOT IMAGES
@@ -156,7 +171,8 @@ for(j in seq_len(nrow(case))){
   H1<-matrix(c(6000000,0,0,6000000),nrow=2) 
 
   ### get weights from effort kernel
-  ke<-kde(x=coordinates(ys),binned=TRUE,eval.points=coordinates(xs),compute.cont=FALSE,H=H1)
+  mm<-unlist(strsplit(gsub("(.{2})", "\\1 ",season)," "))
+  ke<-kde(x=coordinates(ys[ys$month%in%mm,]),binned=TRUE,eval.points=coordinates(xs),compute.cont=FALSE,H=H1)
   xs$we<-1-(ke$estimate/max(ke$estimate))
 
   ### GET POLYGONS
