@@ -8,6 +8,20 @@ library(svMisc)
 library(FRutils)
 library(scales)
 
+get_season<-function(x){
+	s1<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
+	s3<-unlist(list("12010203"=c("12","01","02","03"),"0405"=c("04","05"),"0607"=c("06","07"),"08091011"=c("08","09","10","11")))
+	names(s1)<-substr(names(s1),1,nchar(names(s1))-1)
+	names(s3)<-substr(names(s3),1,nchar(names(s3))-1)
+	g<-grep("seabirds",x$group)	
+	temp<-rep("not",nrow(x))
+	if(any(g)){
+		temp[g]<-"seabirds"
+	}
+	season<-ifelse(temp=="seabirds",names(s1)[match(x$month,s1)],names(s3)[match(x$month,s3)])
+	season
+}
+
 ll<-"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 prj<-"+proj=utm +zone=18 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 laea<-"+proj=laea +lat_0=50 +lon_0=-65"
@@ -42,9 +56,9 @@ obs$year<-substr(obs$date,1,4)
 obs<-obs[obs$year>="2000",]
 obs$nb<-obs$Count
 
-month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
-names(month_comb)<-substr(names(month_comb),1,8)
-obs$season<-names(month_comb)[match(obs$month,month_comb)]
+#month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
+#names(month_comb)<-substr(names(month_comb),1,8)
+#obs$season<-names(month_comb)[match(obs$month,month_comb)]
 
 ### GET BIRD GROUPS
 g<-getURL("https://raw.githubusercontent.com/frousseu/NEECbirds/master/bird_groups.csv") # Ce fichier est sur mon github
@@ -52,6 +66,7 @@ g<-read.csv(text=g,header=TRUE,stringsAsFactors=FALSE)
 g<-g[!is.na(g$group_kernels),]
 g<-unique(g[,c("sp","group_kernels")])
 obs$group<-g$group_kernels[match(obs$sp,g$sp)]
+obs$season<-get_season(obs)
 
 ### keep only on water obs for waterfowl
 nofly<-c("waterfowl_diving","waterfowl_dabbling")
@@ -66,20 +81,21 @@ x<-obs[,c("sp","group","season","date","month","year","lat","lon","nb")]
 
 watch<-watch[substr(watch$Date,1,4)>="2000",]
 watch$month<-substr(watch$Date,6,7)
-watch$season<-names(month_comb)[match(watch$month,month_comb)]
+#watch$season<-names(month_comb)[match(watch$month,month_comb)]
 ys<-watch
-xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon,x$lat)),ncol=2),proj4string=CRS(ll),data=data.frame(id=row.names(x),season=x$season,stringsAsFactors=FALSE))
+xs<-SpatialPointsDataFrame(matrix(as.numeric(c(x$lon,x$lat)),ncol=2),proj4string=CRS(ll),data=data.frame(id=row.names(x),month=x$month,stringsAsFactors=FALSE))
 xs<-spTransform(xs,CRS(prj))
 ys$lat<-ys$LatStart
 ys$lon<-ys$LongStart
 ys<-ys[ys$lon>=(-100) & ys$lon<=30,]
 ys<-ys[ys$lat>=(40) & ys$lat<=75,]
-ys<-SpatialPointsDataFrame(matrix(as.numeric(c(ys$lon,ys$lat)),ncol=2),proj4string=CRS(ll),data=data.frame(season=ys$season))
+ys<-SpatialPointsDataFrame(matrix(as.numeric(c(ys$lon,ys$lat)),ncol=2),proj4string=CRS(ll),data=data.frame(month=ys$month))
 ys<-spTransform(ys,CRS(prj))
 
-weights<-unlist(lapply(unique(names(month_comb)),function(i){
-	xxs<-xs[xs$season==i,]	
-	yys<-ys[ys$season==i,]	
+weights<-unlist(lapply(unique(get_season(x)),function(i){
+	mm<-unlist(strsplit(gsub("(.{2})", "\\1 ",i)," "))
+	xxs<-xs[xs$month%in%mm,]	
+	yys<-ys[ys$month%in%mm,]	
 	H1<-matrix(c(200000000,0,0,200000000),nrow=2)  
 	ke<-kde(x=coordinates(yys),binned=TRUE,eval.points=coordinates(xxs),compute.cont=FALSE,H=H1) # binned accélère BEAUCOUP le calcul et ne semb<le pas changer grand chose
 	res<-ke$estimate
