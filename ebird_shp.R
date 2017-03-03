@@ -64,21 +64,46 @@ keepn<-c("sp","taxo","state","lat","lon","date","nb","category","sample")
 # 29 409 415 rows in there
 e<-fread("D:/ebird/ebd_CA_relAug-2016.txt/ebd_CA_relAug-2016.txt",encoding = "UTF-8", na.strings = "",header = TRUE, sep = "\t",colClasses = rep("character", 44),verbose = TRUE,select=keep,nrows=29409415)
 names(e)<-keepn[match(names(e),keep)]
+e$source<-"ebird"
+e<-e[state%in%c("Quebec","Nova Scotia","New Brunswick","Prince Edward Island","Newfoundland and Labrador"),]
 
+### GET SPECIES CODES
+sp<-getURL("https://raw.githubusercontent.com/frousseu/ECSASatlas/master/EC_AVIAN_CORE_20161216.csv",.encoding="LATIN1") # Ce fichier est sur mon github
+sp<-read.csv(text=sp,header=TRUE,stringsAsFactors=FALSE)
 
-e<-merge(e,g,all=TRUE)
-e<-e[e$category%in%c("species"),] #on perd des formes et qques taxons/formes
-e$month<-substr(e$date,6,7)
+### ADD EPOQ DATA
+load("D:/ebird/urgencesapp.RData")
+rm(biomq_shp,rtlo_shp,wl,h,he,municip.shp,noga_shp,peril,razo_shp,biomq,epoqxy,perilp)
+d<-d[d$Base%in%c("EPOQ"),]
+l<-list(table(substr(e$date[e$state=="Quebec" & !e$group%in%c("","raptors","passerines")],1,4)),table(substr(d$Date,1,4)))
+# keep all of epoq 2010 and older, based on when ebird seems to be getting more important, but there might be some overlap
+d<-d[substr(d$Date,1,4)<="2010",]
+d<-d@data[,c("Nom_FR","Nom_EN","Date","Month","Abundance","Long","Lat","Base","Feuillet")]
+names(d)<-c("spFR","spEN","date","month","nb","lon","lat","source","sample")
+m<-match(d$spFR,sp$French_Name)
+d$sp<-ifelse(!is.na(m),sp$English_Name[m],NA)
+d$sp<-ifelse(is.na(d$sp),d$spEN,d$sp)
+d<-d[,c("spEN","date","month","nb","lon","lat","source","sample")]
+names(d)<-c("sp","date","month","nb","lon","lat","source","sample")
+ddply(d,.(sp),nrow) # check which species are missing
+d<-d[!is.na(d$sp),] # Certains noms sp ne se retrouve pas dans les tables
+d$state<-"Quebec"
+d$taxo<-NA
+d$date<-gsub("/","-",d$date)
+d$category<-"species"
+d$source<-"epoq"
+
+### ADD BOTH DATA
+x<-rbind(e,d[,names(e)])
+x<-merge(x,g,all=TRUE)
+x<-x[x$category%in%c("species"),] #on perd des formes et qques taxons/formes
+x$month<-substr(x$date,6,7)
 #e<-as.data.table(e)
 
 #month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
 #names(month_comb)<-substr(names(month_comb),1,8)
 
-e$season<-get_season(e)
-
-x<-e[state%in%c("Quebec","Nova Scotia","New Brunswick","Prince Edward Island","Newfoundland and Labrador"),]
-#x<-e[state%in%c("British Columbia"),]
-
+x$season<-get_season(x)
 x$taxo<-as.numeric(x$taxo)
 temp<-unique(x[,c("sp","taxo")])
 temp<-temp[order(temp$taxo),]
@@ -90,11 +115,14 @@ x<-x[lat<=52,] #on garde ce qui est en bas
 x<-x[lon>=(-74),] #on garde ce qui est à partir de mtl
 ddply(x[x$group%in%c("",NA),],.(sp,group),nrow)
 
+
+
+
 #################################################
 ### SEASONAL EFFORT FROM CHECKLIST LOCATIONS
 #################################################
 
-y<-unique(x[,c("sample","lat","lon","month","season")])
+y<-unique(x[,c("sample","lat","lon","month")])
 ys<-SpatialPointsDataFrame(matrix(as.numeric(c(y$lon,y$lat)),ncol=2),proj4string=CRS(ll),data=y,match.ID=FALSE)
 ys<-spTransform(ys,CRS(prj))
 o<-over(ys,coast)
@@ -120,10 +148,10 @@ names(kp)<-unique(get_season(x))
 
 
 ### PLOT IMAGES
-
+# something not plotting right in the effort images
 #png("D:/ebird/ebird_effort.png",width=12,height=8,units="in",res=600,pointsize=14)
-par(mar=c(0,0,0,0),mfrow=c(3,1))
-for(i in seq_along(kp)){
+par(mar=c(0,0,0,0),mfrow=c(3,2))
+for(i in seq_along(kp)[1]){
   plot(bbox2pol(kp[[length(kp)]]),col="white",border="white")
   plot(land,border="grey75",add=TRUE)
   for(j in seq_along(kp[[i]])){
