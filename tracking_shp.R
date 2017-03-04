@@ -32,6 +32,15 @@ d<-list()
 month_comb<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
 names(month_comb)<-substr(names(month_comb),1,8)
 
+### GET BIRD GROUPS
+g<-getURL("https://raw.githubusercontent.com/frousseu/NEECbirds/master/bird_groups.csv") # Ce fichier est sur mon github
+g<-read.csv(text=g,header=TRUE,stringsAsFactors=FALSE)
+g<-g[!is.na(g$group_kernels),]
+g<-unique(g[,c("sp","group_kernels")])
+
+### GET SPECIES CODES
+sp<-getURL("https://raw.githubusercontent.com/frousseu/ECSASatlas/master/EC_AVIAN_CORE_20161216.csv",.encoding="LATIN1") # Ce fichier est sur mon github
+sp<-read.csv(text=sp,header=TRUE,stringsAsFactors=FALSE)
 
 ######################################
 ### NOGA
@@ -59,7 +68,7 @@ x$y<-as.numeric(x$Latitude)
 x$x<-as.numeric(x$Longitude)
 x$id2<-1
 coordinates(x)<-~x+y
-proj4string(x)<-CRS("+proj=longlat +datum=NAD83")
+proj4string(x)<-CRS("+proj=longlat +datum=WGS84")
 x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 x<-x[,c("id","Date","Latitude","Longitude")]
 names(x)<-c("id","date","lat","lon")
@@ -84,7 +93,7 @@ x$y<-x$latitude
 x$id<-x$animal
 x$id2<-1
 coordinates(x)<-~x+y
-proj4string(x)<-CRS("+proj=longlat +datum=NAD83")
+proj4string(x)<-CRS("+proj=longlat +datum=WGS84")
 x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 x<-x[,c("animal","date","latitude","longitud")]
 names(x)<-c("id","date","lat","lon")
@@ -119,7 +128,7 @@ x$y<-as.numeric(x$Latitude)
 x$id<-x$LoggerID
 x$id2<-1
 coordinates(x)<-~x+y
-proj4string(x)<-CRS("+proj=longlat +datum=NAD83")
+proj4string(x)<-CRS("+proj=longlat +datum=WGS84")
 x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 x<-x[x$id%in%names(table(x$id)[table(x$id)>2]),]
 x<-x[,c("LoggerID","date","Latitude","Longitude")]
@@ -133,7 +142,7 @@ x$month<-substr(x$date,6,7)
 x$group<-"seabirds_alcids"
 #x$season<-names(month_comb)[match(x$month,month_comb)]
 x$season<-get_season(x)
-d[["RAZO"]]<-x
+d[["RAZOQC"]]<-x
 
 
 #############################################
@@ -147,7 +156,7 @@ x<-x[x$lon>(-77),]
 x$x<-x$lon
 x$y<-x$lat
 coordinates(x)<-~x+y
-proj4string(x)<-CRS("+proj=longlat +datum=NAD83")
+proj4string(x)<-CRS("+proj=longlat +datum=WGS84")
 x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 x<-x[,c("band","date","lat","lon")]
 names(x)<-c("id","date","lat","lon")
@@ -162,14 +171,45 @@ x$season<-get_season(x)
 d[["GSGO"]]<-x
 
 
+#############################################
+### Atlantic tracking
+#############################################
+
+x<-as.data.frame(fread("D:/Télémétrie/TRACKING_atlantic_20170228.csv",stringsAsFactors=FALSE))
+x$x<-x$lon
+x$y<-x$lat
+x<-x[,c("species","site","bird.id","date","lat","lon","x","y")]
+names(x)<-c("sp","site","id","date","lat","lon","x","y")
+x$sp<-toupper(x$sp)
+n<-ddply(x,.(id),nrow)
+n$val<-1/(n$V1/max(n$V1))
+x$we<-n$val[match(x$id,n$id)]
+x$month<-substr(x$date,6,7)
+x$group<-g$group_kernels[match(sp$English_Name[match(x$sp,sp$Species_ID)],g$sp)]
+#x$season<-names(month_comb)[match(x$month,month_comb)]
+x$season<-get_season(x)
+x$sp<-ifelse(x$sp=="RAZO","RAZOAT",x$sp)
+x2<-dlply(x,.(sp),function(i){
+	coordinates(i)<-~x+y
+	proj4string(i)<-CRS("+proj=longlat +datum=WGS84")
+	i<-spTransform(i,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))  	
+})
+for(i in seq_along(x2)){
+	d[[names(x2)[i]]]<-x2[[i]]
+}
+
+
+sapply(d,function(i){length(unique(i$id))})
+
 #####################################
 ### BUILD SEASONAL SUBSETS
 #####################################
 
-season<-unique(names(month_comb))
+season<-unique(x$season)
 d<-unlist(lapply(d,function(i){
      res<-lapply(season,function(j){
-    	  ans<-i[i$season==j,]
+     	 mm<-unlist(strsplit(gsub("(.{2})", "\\1 ",j)," "))
+    	  ans<-i[i$month%in%mm,]
     	  if(nrow(ans)==0){
     	    "empty"
     	  }else{
