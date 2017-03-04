@@ -62,9 +62,9 @@ x<-d[d$sp%in%"Common Eider" & d$source%in%"EIDERS_HIVER",] ### tests what's left
 x<-d[d$Nom_FR%in%"Eider à duvet" & d$Base%in%"EIDERS_HIVER",] ### tests what's left from eiders
 
 ### ATLANTIC DATA (from Rob Ronconi)
-s<-as.data.frame(read_excel(path="D:/ebird/Sightings_data_20161213.xlsx",sheet=1),stringsAsFactors=FALSE)
-source.id<-read_excel(path="D:/ebird/Sightings_data_20161213.xlsx",sheet=2)
-s<-s[apply(s,1,function(i){!all(is.na(i))}),] # des lignes vides sont présentes à la fin dans le fichier excel de base
+s<-as.data.frame(read_excel(path="D:/ebird/Sightings_data_20170228.xlsx",sheet=1),stringsAsFactors=FALSE)
+source.id<-read_excel(path="D:/ebird/Sightings_data_20170228.xlsx",sheet=2)
+#s<-s[apply(s,1,function(i){!all(is.na(i))}),] # des lignes vides sont présentes à la fin dans le vieux fichier excel de base
 s<-s[,c("species","date","month","lat","lon","count","source.id")]
 names(s)<-c("sp","date","month","lat","lon","nb","source")
 s$month<-formatC(s$month,width=2,flag=0) # some missing dates so use month instead
