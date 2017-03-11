@@ -168,6 +168,7 @@ for(j in seq_len(nrow(case))){
 	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs),cut=FALSE) # extract polygons
 	kp$group<-group
 	kp$season<-season
+	kp$site<-NA
 	
 	png(paste0("D:/ebird/kernels/",paste(group,season,sep="_"),paste0("_survey",region),".png"),width=12,height=8,units="in",res=500,pointsize=14)
 	

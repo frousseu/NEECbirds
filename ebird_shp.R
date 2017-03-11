@@ -213,6 +213,7 @@ for(j in seq_len(nrow(case))){
  	kp<-kde2pol(k,levels=perc,proj4string=proj4string(xs),cut=FALSE) # extract 
   kp$group<-group
   kp$season<-season
+  kp$site<-NA
 
   ####################################################################
   ### PLOT PNG
