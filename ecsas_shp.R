@@ -160,7 +160,7 @@ for(j in seq_len(nrow(case))){
 	### GET KERNELS POLYGON
 	k<-kde(x=coordinates(xs),binned=FALSE,gridsize=c(500,500),compute.cont=TRUE,H=H1,w=f(xs$nb)*xs$we)
 	kp<-list()
-	perc<-c(25,50,75,95)
+	perc<-c(30,50,70,90)
 	percw<-c("very high","high","medium","low")
 	trans<-c(0.8,0.6,0.4,0.2)
 	cols_kern<-c("darkred","red","orange","yellow")

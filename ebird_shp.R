@@ -206,7 +206,7 @@ for(j in seq_len(nrow(case))){
   ### GET POLYGONS
   k<-kde(x=coordinates(xs),binned=TRUE,bgridsize=c(500,500),compute.cont=TRUE,H=H1,w=xs$nb*xs$we)
   kp<-list()
-  perc<-c(25,50,75,95)
+  perc<-c(30,50,70,90)
   percw<-c("very high","high","medium","low")
   trans<-c(0.9,0.7,0.5,0.3)
   cols_kern<-c("darkred","red","orange","yellow")
