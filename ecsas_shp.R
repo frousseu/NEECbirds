@@ -168,6 +168,7 @@ for(j in seq_len(nrow(case))){
  kp$group<-group
  kp$season<-season
  kp$site<-NA
+ kp$sp<-NA
 	
  png(paste0("D:/ebird/kernels/",paste(group,season,sep="_"),"_ecsas.png"),width=12,height=8,units="in",res=500,pointsize=14)
 	

@@ -214,6 +214,7 @@ for(j in seq_len(nrow(case))){
   kp$group<-group
   kp$season<-season
   kp$site<-NA
+  kp$sp<-NA
 
   ####################################################################
   ### PLOT PNG
