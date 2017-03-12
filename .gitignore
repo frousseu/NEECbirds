@@ -3,3 +3,12 @@
 .RData
 .Ruserdata
 kernel_images.pdf
+kernel_images.idx
+kernel_images.ilg
+kernel_images.ind
+kernel_images.log
+kernel_images.synctex.gz
+kernel_images.tex
+kernel_images.toc
+kernel_images-concordance.tex
+framed.sty
