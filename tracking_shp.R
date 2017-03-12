@@ -13,6 +13,7 @@ library(svMisc)
 library(RODBC)
 library(readxl)
 library(plyr)
+library(RCurl)
 
 get_season<-function(x){
 	s1<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
@@ -67,20 +68,18 @@ x$year<-substr(x$Date,1,4)
 x$y<-as.numeric(x$Latitude)
 x$x<-as.numeric(x$Longitude)
 x$id2<-1
-coordinates(x)<-~x+y
-proj4string(x)<-CRS("+proj=longlat +datum=WGS84")
-x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 x<-x[,c("id","Date","Latitude","Longitude")]
 names(x)<-c("id","date","lat","lon")
 x$sp<-"NOGA"
-n<-ddply(x@data,.(id),nrow)
+n<-ddply(x,.(id),nrow)
 n$val<-1/(n$V1/max(n$V1))
 x$we<-n$val[match(x$id,n$id)]
 x$month<-substr(x$date,6,7)
 x$group<-"seabirds_pelagics"
 #x$season<-names(month_comb)[match(x$month,month_comb)]
 x$season<-get_season(x)
-d[["NOGA"]]<-x
+x$site<-"Forillon"
+d[["NOGA_Forillon"]]<-x
 
 
 ##############################################
@@ -92,21 +91,19 @@ x$x<-x$longitud
 x$y<-x$latitude
 x$id<-x$animal
 x$id2<-1
-coordinates(x)<-~x+y
-proj4string(x)<-CRS("+proj=longlat +datum=WGS84")
-x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 x<-x[,c("animal","date","latitude","longitud")]
 names(x)<-c("id","date","lat","lon")
 x$date<-substr(strptime(x$date,"%m/%d/%Y %H:%M:%S"),1,10)
 x$sp<-"RTLO"
-n<-ddply(x@data,.(id),nrow)
+n<-ddply(x,.(id),nrow)
 n$val<-1/(n$V1/max(n$V1))
 x$we<-n$val[match(x$id,n$id)]
 x$month<-substr(x$date,6,7)
 x$group<-"waterfowl_diving"
 #x$season<-names(month_comb)[match(x$month,month_comb)]
 x$season<-get_season(x)
-d[["RTLO"]]<-x
+x$site<-"Unknown"
+d[["RTLO_Unknown"]]<-x
 
 
 
@@ -123,26 +120,26 @@ d2016<-as.data.frame(fread("D:/Télémétrie/Donnees_2016_RAZO.txt",stringsAsFac
 names(d2015)[which(names(d2015)=="Longtitude")]<-"Longitude"
 x<-full_join(d2015,d2016)
 x<-x[!is.na(x$Latitude),]
-x$x<-as.numeric(x$Longitude)
-x$y<-as.numeric(x$Latitude)
+x$Longitude<-as.numeric(x$Longitude)
+x$Latitude<-as.numeric(x$Latitude)
+x$x<-x$Longitude
+x$y<-x$Latitude
 x$id<-x$LoggerID
 x$id2<-1
-coordinates(x)<-~x+y
-proj4string(x)<-CRS("+proj=longlat +datum=WGS84")
-x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 x<-x[x$id%in%names(table(x$id)[table(x$id)>2]),]
 x<-x[,c("LoggerID","date","Latitude","Longitude")]
 names(x)<-c("id","date","lat","lon")
 x$date<-substr(strptime(x$date,"%m/%d/%Y %H:%M:%S"),1,10)
 x$sp<-"RAZO"
-n<-ddply(x@data,.(id),nrow)
+n<-ddply(x,.(id),nrow)
 n$val<-1/(n$V1/max(n$V1))
 x$we<-n$val[match(x$id,n$id)]
 x$month<-substr(x$date,6,7)
 x$group<-"seabirds_alcids"
 #x$season<-names(month_comb)[match(x$month,month_comb)]
 x$season<-get_season(x)
-d[["RAZOQC"]]<-x
+x$site<-"Pèlerin"
+d[["RAZO_Pèlerin"]]<-x
 
 
 #############################################
@@ -155,20 +152,18 @@ x<-x[x$lat>45 & x$lat<50,]
 x<-x[x$lon>(-77),]
 x$x<-x$lon
 x$y<-x$lat
-coordinates(x)<-~x+y
-proj4string(x)<-CRS("+proj=longlat +datum=WGS84")
-x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
 x<-x[,c("band","date","lat","lon")]
 names(x)<-c("id","date","lat","lon")
 x$sp<-"GSGO"
-n<-ddply(x@data,.(id),nrow)
+n<-ddply(x,.(id),nrow)
 n$val<-1/(n$V1/max(n$V1))
 x$we<-n$val[match(x$id,n$id)]
 x$month<-substr(x$date,6,7)
 x$group<-"waterfowl_dabbling"
 #x$season<-names(month_comb)[match(x$month,month_comb)]
 x$season<-get_season(x)
-d[["GSGO"]]<-x
+x$site<-"Québec"
+d[["GSGO_Québec"]]<-x
 
 
 #############################################
@@ -176,29 +171,28 @@ d[["GSGO"]]<-x
 #############################################
 
 x<-as.data.frame(fread("D:/Télémétrie/TRACKING_atlantic_20170228.csv",stringsAsFactors=FALSE))
-x$x<-x$lon
-x$y<-x$lat
-x<-x[,c("species","site","bird.id","date","lat","lon","x","y")]
-names(x)<-c("sp","site","id","date","lat","lon","x","y")
+x<-x[,c("bird.id","date","lat","lon","species","site")]
+names(x)<-c("id","date","lat","lon","sp","site")
 x$sp<-toupper(x$sp)
-n<-ddply(x,.(id),nrow)
-n$val<-1/(n$V1/max(n$V1))
-x$we<-n$val[match(x$id,n$id)]
 x$month<-substr(x$date,6,7)
 x$group<-g$group_kernels[match(sp$English_Name[match(x$sp,sp$Species_ID)],g$sp)]
 #x$season<-names(month_comb)[match(x$month,month_comb)]
 x$season<-get_season(x)
-x$sp<-ifelse(x$sp=="RAZO","RAZOAT",x$sp)
-x2<-dlply(x,.(sp),function(i){
-	coordinates(i)<-~x+y
-	proj4string(i)<-CRS("+proj=longlat +datum=WGS84")
-	i<-spTransform(i,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))  	
+#x$sp<-ifelse(x$sp=="RAZO","RAZOAT",x$sp)
+x2<-dlply(x,.(sp,site),function(i){
+	n<-ddply(i,.(id),nrow)
+	n$val<-1/(n$V1/max(n$V1))
+	i$we<-n$val[match(i$id,n$id)]
+	i<-i[,names(d[[1]])]
+	i
 })
+names(x2)<-gsub("\\.","_",names(x2))
 for(i in seq_along(x2)){
 	d[[names(x2)[i]]]<-x2[[i]]
 }
 
-
+ddply(x,.(sp,site),function(i){length(unique(i$id))})
+ddply(x,.(sp,site,id),nrow)
 sapply(d,function(i){length(unique(i$id))})
 
 #####################################
@@ -218,11 +212,52 @@ d<-unlist(lapply(d,function(i){
      })
      names(res)<-season
      res
-}))
+}),recursive=FALSE)
 names(d)<-gsub("\\.","_",names(d))
 d<-d[sapply(d,function(i){!identical(i,"empty")})]
 
+count<-ldply(d,function(x){
+	data.frame(nb_ind=length(unique(x$id)),nb_loc=nrow(x))
+})
 
+# take out any population with fewer than 5 ids and 50 locations
+keep<-count$.id[count$nb_ind>=5 & count$nb_loc>=50]
+d<-d[keep]
+
+# take out combinations that appear in 0607 and 04050607 and keep tha good one
+temp<-do.call("rbind",d)
+temp$season<-get_season(temp)
+comb1<-apply(unique(temp[,c("sp","season")]),1,function(i){paste(i[1],i[2],sep="_")})
+comb2<-sapply(strsplit(names(d),"_"),function(i){paste(i[1],i[3],sep="_")})
+keep<-comb2%in%comb1
+d<-d[keep]
+
+#####################################
+### BUILD SPECIES Subsets
+#####################################
+
+d2<-list()
+spec<-sapply(strsplit(names(d),"_"),"[",1)
+seas<-sapply(strsplit(names(d),"_"),"[",3)
+case<-unique(data.frame(spec=spec,seas=seas))
+for(j in seq_len(nrow(case))){
+  w<-which(spec==case$spec[j] & seas==case$seas[j]) 
+  d2[[paste(case$spec[j],case$seas[j],sep="_")]]<-do.call("rbind",d[w])
+}
+d<-d2
+
+d<-lapply(d,function(x){
+	 x$x<-x$lon
+	 x$y<-x$lat
+	 coordinates(x)<-~x+y
+  proj4string(x)<-CRS("+proj=longlat +datum=WGS84")
+  x<-spTransform(x,CRS("+proj=utm +zone=18 +datum=NAD83 +ellps=GRS80"))
+  x
+})
+
+ldply(d,function(x){
+	data.frame(nb_ind=length(unique(x$id)),nb_loc=nrow(x))
+})
 
 
 ####################################################
@@ -238,14 +273,22 @@ for(j in seq_along(d)){
 	 #H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
 	 #H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
 	 H1<-matrix(c(20000000,0,0,20000000),nrow=2) 
-  k<-kde(x=coordinates(x),binned=TRUE,bgridsize=c(500,500),compute.cont=TRUE,H=H1,w=x$we)
-  perc<-c(25,50,75,95)
-  percw<-c("very high","high","medium","low")
-  trans<-c(0.9,0.7,0.5,0.3)
-  cols_kern<-c("darkred","red","orange","yellow")
-  kp<-kde2pol(k,levels=perc,proj4string=prj,cut=FALSE) # extract polygons
-  kp$group<-names(d)[j]
+	 perc<-c(25,50,75,95)
+	 percw<-c("very high","high","medium","low")
+	 trans<-c(0.9,0.7,0.5,0.3)
+	 cols_kern<-c("darkred","red","orange","yellow")
+	 site<-unique(x$site)
+	 l<-lapply(site,function(i){
+	 	 xx<-x[x$site==i,]
+    k<-kde(x=coordinates(xx),binned=TRUE,bgridsize=c(500,500),compute.cont=TRUE,H=H1,w=xx$we)
+    kp<-kde2pol(k,levels=perc,proj4string=prj,cut=FALSE) # extract polygons
+    kp<-spChFIDs(kp,paste(row.names(kp),i,sep="_"))
+    kp
+	 })
+  kp<-do.call("rbind",l)  
+  kp$group<-group
   kp$season<-season
+  kp$site<-sapply(strsplit(row.names(kp),"_"),"[",2)
   
   
   ####################################################################
@@ -256,15 +299,19 @@ for(j in seq_along(d)){
   
   #par(mar=c(8.5,6,0,0),mfrow=c(1,1))
   par(mar=c(0,0,0,0),mfrow=c(1,1))
-  plot(bbox2pol(x),border="white")
-  plot(land,col="grey95",border="grey75",add=TRUE,lwd=0.5)
-  
+  if(gArea(bbox2pol(kp))>=(100000*100000)){
+  	plot(bbox2pol(kp),border="white") 
+  }else{
+  	b<-bbox2pol(as.vector(bbox(kp))[c(1,3,2,4)]+c(-100000,100000,-100000,100000))
+  	plot(b,border="white")
+  }
+  plot(land,col="grey95",border="grey75",lwd=0.5,add=TRUE)
   ### KERNS
-  plot(kp,add=TRUE,col=alpha(cols_kern,0.6),border=NA)
+  plot(kp,add=TRUE,col=cols_kern,border=NA)
   #plot(gIntersection(coast,kp,byid=TRUE),add=TRUE,col=alpha(cols_kern,0.6),border=NA)
   info<-paste0("group: ",group,"\nseason: ",season,"\ndata source: tracking")
   mtext(info,side=3,line=-4,font=2,adj=0.05)
-  legend("topleft",title="Kernel Contours (risk)",fill=alpha(cols_kern,0.6),legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,,bg="grey90",box.lwd=NA,inset=c(0.05,0.2))
+  legend("topleft",title="Kernel Contours (risk)",fill=cols_kern,legend=paste(perc,"%","(",percw,")"),border=NA,cex=1,bg="grey90",box.lwd=NA,inset=c(0.05,0.2))
   
   dev.off()
   
