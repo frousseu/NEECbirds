@@ -12,6 +12,12 @@ library(maptools)
 library(rgdal)
 library(svMisc)
 
+### GET ECSAS Alpha codes
+
+load("D:/ebird/odbcECSAS.RData") #load session instead of running odbcConnect on 32bit all the time
+alpha<-sp
+rm(list=ls()[ls()!="alpha"])
+
 get_season<-function(x){
 	s1<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
 	s3<-unlist(list("12010203"=c("12","01","02","03"),"0405"=c("04","05"),"0607"=c("06","07"),"08091011"=c("08","09","10","11")))
@@ -46,7 +52,7 @@ sp<-read.csv(text=sp,header=TRUE,stringsAsFactors=FALSE)
 ### QUEBEC DATA (using the data in the UrgencesAviR workspace)
 load("D:/ebird/urgencesapp.RData")
 rm(biomq_shp,rtlo_shp,wl,h,he,municip.shp,noga_shp,peril,razo_shp,biomq,epoqxy,perilp)
-d<-d[d$Base%in%c("CANARDS_MER","EIDERS_HIVER","GARROTS_HIVER","LIMICOLES_IDLM","MACREUSES","OIES","REKN_BBPL_YT","SAUVAGINE","SRIV","SAUVFLEUVE"),]
+d<-d[d$Base%in%c("CANARDS_MER","EIDERS_HIVER","GARROTS_HIVER","LIMICOLES_IDLM","MACREUSES","OIES","REKN_BBPL_YT","SRIV","SAUVFLEUVE"),]
 d<-d@data[,c("Nom_FR","Nom_EN","Date","Month","Abundance","Long","Lat","Base")]
 names(d)<-c("spFR","spEN","date","month","nb","lon","lat","source")
 m<-match(d$spFR,sp$French_Name)
@@ -60,6 +66,7 @@ d$month<-ifelse(d$month=="00","09",d$month) #there is a bug in the data for SAUV
 d$region<-"QC"
 x<-d[d$sp%in%"Common Eider" & d$source%in%"EIDERS_HIVER",] ### tests what's left from eiders
 x<-d[d$Nom_FR%in%"Eider à duvet" & d$Base%in%"EIDERS_HIVER",] ### tests what's left from eiders
+
 
 ### ATLANTIC DATA (from Rob Ronconi)
 s<-as.data.frame(read_excel(path="D:/ebird/Sightings_data_20170228.xlsx",sheet=1),stringsAsFactors=FALSE)
@@ -117,9 +124,22 @@ m<-match(tolower(x$sp),g$sp)
 x$sp<-ifelse(is.na(m),x$sp,g$sp[m])
 m<-match(gsub(" sp"," sp.",tolower(x$sp)),g$sp)
 x$sp<-ifelse(is.na(m),x$sp,g$sp[m])
+w<-which(x$group%in%c("",NA))
+x$sp[w]<-alpha$English[match(x$sp[w],alpha$Alpha)]
+x$sp<-gsub(" (Larus, Xema, Rissa, Pagophila, Rhodostethia)","",x$sp)
+#table(test[is.na(match(x$sp,g$sp))])
+
+
 x$group<-g$group[match(x$sp,g$sp)]
 x$group[x$sp=="Phalarope"]<-"shorebirds_waders"
 x$season<-get_season(x)
+
+### take out what is in FB eliminate file
+w1<-which(x$group%in%c("passerines","raptors","seabirds_alcids") & x$source%in%c("GARROTS_HIVER","MACREUSES","SAUVFLEUVE","SRIV","CANARDS_MER"))
+w2<-which(x$group%in%c("seabirds_larids") & x$source%in%c("GARROTS_HIVER"))
+w3<-which(x$group%in%c("seabirds_pelagics") & x$source%in%c("MACREUSES","SRIV","CANARDS_MER"))
+w4<-which(x$group%in%c("shorebirds_waders") & x$source%in%c("CANARDS_MER"))
+d<-d[-c(w1,w2,w3,w4),]
 
 ### scrap zeros or missing numbers
 x<-x[!is.na(x$nb) & x$nb>0,]
