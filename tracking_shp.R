@@ -273,7 +273,7 @@ for(j in seq_along(d)){
 	 #H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
 	 #H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
 	 H1<-matrix(c(20000000,0,0,20000000),nrow=2) 
-	 perc<-c(25,50,75,95)
+	 perc<-c(30,50,70,90)
 	 percw<-c("very high","high","medium","low")
 	 trans<-c(0.9,0.7,0.5,0.3)
 	 cols_kern<-c("darkred","red","orange","yellow")
@@ -286,9 +286,10 @@ for(j in seq_along(d)){
     kp
 	 })
   kp<-do.call("rbind",l)  
-  kp$group<-group
+  kp$group<-x$group[1]
   kp$season<-season
   kp$site<-sapply(strsplit(row.names(kp),"_"),"[",2)
+  kp$sp<-group
   
   
   ####################################################################
