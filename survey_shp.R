@@ -127,11 +127,14 @@ x$sp<-ifelse(is.na(m),x$sp,g$sp[m])
 w<-which(x$group%in%c("",NA))
 x$sp[w]<-alpha$English[match(x$sp[w],alpha$Alpha)]
 x$sp<-gsub(" (Larus, Xema, Rissa, Pagophila, Rhodostethia)","",x$sp)
-#table(test[is.na(match(x$sp,g$sp))])
-
-
+#table(x$sp[is.na(match(x$sp,g$sp))])
 x$group<-g$group[match(x$sp,g$sp)]
-x$group[x$sp=="Phalarope"]<-"shorebirds_waders"
+x$group[which(x$sp%in%c("Phalarope"))]<-"shorebirds_waders"
+x$group[which(x$sp%in%c("ALCI","MURA","UNMU"))]<-"seabirds_alcids"
+x$group[which(x$sp%in%c("UNSH","UNSK"))]<-"seabirds_pelagics"
+x$group[which(x$sp%in%c("UNLA","UNGU"))]<-"seabirds_larids"
+x$group[which(x$sp%in%c("UNME","UNLO","UNSC"))]<-"waterfowl_diving"
+table(x$sp[x$group%in%c("",NA)])
 x$season<-get_season(x)
 
 ### take out what is in FB eliminate file
