@@ -67,4 +67,6 @@
 - BIOMQ never was included in the kernel output (email 01-27)
 - Adjust seasons according to (email 01-27)
 - Check list of things left to do on google drive
+- Make sure last version of ECSASconnect is used to produce RData with ECSAS data
+- Check FB commentary on putting seabird survey data with ECSAS and shorebird data with ebird
 
