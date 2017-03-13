@@ -132,19 +132,19 @@ x$group<-g$group[match(x$sp,g$sp)]
 x$group[which(x$sp%in%c("Phalarope"))]<-"shorebirds_waders"
 x$group[which(x$sp%in%c("ALCI","MURA","UNMU"))]<-"seabirds_alcids"
 x$group[which(x$sp%in%c("UNSH","UNSK"))]<-"seabirds_pelagics"
-x$group[which(x$sp%in%c("UNLA","UNGU"))]<-"seabirds_larids"
+x$group[which(x$sp%in%c("UNLA","UNGU","UNTE"))]<-"seabirds_larids"
 x$group[which(x$sp%in%c("UNME","UNLO","UNSC"))]<-"waterfowl_diving"
 table(x$sp[x$group%in%c("",NA)])
 x$season<-get_season(x)
 
 ### take out what is in FB eliminate file
 w1<-which(x$group%in%c("passerines","raptors") & x$source%in%c("GARROTS_HIVER","MACREUSES","SAUVFLEUVE","SRIV","CANARDS_MER"))
-w2<-which(x$group%in%c("seabirds_alcids") & x$source%in%c("GARROTS_HIVER","MACREUSES","SRIV","CANARDS_MER"))
+w2<-which(x$group%in%c("seabirds_alcids") & x$source%in%c("MACREUSES","SRIV"))
 w3<-which(x$group%in%c("seabirds_alcids") & x$source%in%c("GARROTS_HIVER","CANARDS_MER") & !x$season%in%c("12010203"))
 w4<-which(x$group%in%c("seabirds_larids") & x$source%in%c("GARROTS_HIVER"))
 w5<-which(x$group%in%c("seabirds_pelagics") & x$source%in%c("MACREUSES","SRIV","CANARDS_MER"))
 w6<-which(x$group%in%c("shorebirds_waders") & x$source%in%c("CANARDS_MER"))
-d<-d[-c(w1,w2,w3,w4,w5,w6),]
+x<-x[-c(w1,w2,w3,w4,w5,w6),]
 
 ### scrap zeros or missing numbers
 x<-x[!is.na(x$nb) & x$nb>0,]
@@ -152,6 +152,8 @@ ddply(x[x$group%in%c("",NA),],.(sp,group),nrow)
 ddply(x[x$sp%in%"Common Eider",],.(sp,season,month,region),nrow)
 # check if alcids in CANARDS_MER and GARROTS_HIVER are to include
 wa<-x[x$group=="seabirds_alcids" & x$source%in%c("CANARDS_MER","GARROTS_HIVER") & x$season=="12010203",]
+ddply(x,.(group,source),function(i){sum(i$nb)})
+
 
 #################################
 ### grouping
