@@ -16,7 +16,7 @@ library(svMisc)
 
 load("D:/ebird/odbcECSAS.RData") #load session instead of running odbcConnect on 32bit all the time
 alpha<-sp
-rm(list=ls()[ls()!="alpha"])
+rm(list=ls()[!ls()%in%c("alpha","land","prj","ll")])
 
 get_season<-function(x){
 	s1<-unlist(list("12010203"=c("12","01","02","03"),"04050607"=c("04","05","06","07"),"08091011"=c("08","09","10","11")))
@@ -146,8 +146,9 @@ w5<-which(x$group%in%c("seabirds_pelagics") & x$source%in%c("MACREUSES","SRIV","
 w6<-which(x$group%in%c("shorebirds_waders") & x$source%in%c("CANARDS_MER"))
 x<-x[-c(w1,w2,w3,w4,w5,w6),]
 
-### scrap zeros or missing numbers
+### scrap zeros or missing numbers and NA lat lon
 x<-x[!is.na(x$nb) & x$nb>0,]
+x<-x[!is.na(x$lat) & !is.na(x$lon),] #just a couple MURA cases
 ddply(x[x$group%in%c("",NA),],.(sp,group),nrow)
 ddply(x[x$sp%in%"Common Eider",],.(sp,season,month,region),nrow)
 # check if alcids in CANARDS_MER and GARROTS_HIVER are to include
@@ -185,9 +186,9 @@ for(j in seq_len(nrow(case))){
 	#H[H>0]<-min(H[H>0]) #this thing assumes the same variability in both directions (isotropic) and imposes the smallest value
 	#H1<-H*matrix(c(0.02,0,0,0.02),nrow=2) 
 	H1<-matrix(c(50000000,0,0,50000000),nrow=2) 
-	
+	b<-ifelse(group%in%"shorebirds_waders" & region%in%"QC",0.25,1) #Bandwidth appear to big for QC shorebird data
 	### GET KERNELS POLYGONS
-	k<-kde(x=coordinates(xs),binned=TRUE,gridsize=c(500,500),compute.cont=TRUE,H=H1,w=f(xs$nb))
+	k<-kde(x=coordinates(xs),binned=TRUE,gridsize=c(500,500),compute.cont=TRUE,H=H1*b,w=f(xs$nb))
 	kp<-list()
 	perc<-c(20,50,70,90)
 	percw<-c("very high","high","medium","low")
