@@ -81,7 +81,10 @@ g<-getURL("https://raw.githubusercontent.com/frousseu/NEECbirds/master/bird_grou
 g<-read.csv(text=g,header=TRUE,stringsAsFactors=FALSE)
 g<-g[!is.na(g$group_kernels),]
 g<-unique(g[,c("sp","group_kernels")])
+obs$sp[obs$sp=="Genus: Gulls (Larus, Xema, Rissa, Pagophila, Rhodostethia)"]<-"Gulls"
 obs$group<-g$group_kernels[match(obs$sp,g$sp)]
+obs$group[obs$sp=="Gulls"]<-"seabirds_larids"
+
 obs$season<-get_season(obs)
 
 
@@ -91,7 +94,8 @@ w<-which(obs$group%in%nofly & obs$FlySwim=="F")
 obs<-obs[-w,]
 
 x<-obs[,c("sp","group","season","date","month","year","lat","lon","nb")]
-
+rev(sort(table(x$sp[x$group%in%c("",NA)])))
+x<-x[!x$group%in%c("",NA),]
 
 #################################################################    
 ### get seasonal effort and evaluate at each observation location
@@ -126,7 +130,7 @@ weights<-unlist(lapply(unique(get_season(x)),function(i){
 weights<-weights[match(xs$id,names(weights))]
 x$we<-1-(weights/max(weights))
 
-
+table(x$sp[x$group%in%c("",NA)])
 
 #################################
 ### grouping
