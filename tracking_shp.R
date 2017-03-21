@@ -216,13 +216,6 @@ d<-unlist(lapply(d,function(i){
 names(d)<-gsub("\\.","_",names(d))
 d<-d[sapply(d,function(i){!identical(i,"empty")})]
 
-count<-ldply(d,function(x){
-	data.frame(nb_ind=length(unique(x$id)),nb_loc=nrow(x))
-})
-
-# take out any population with fewer than 5 ids and 50 locations
-keep<-count$.id[count$nb_ind>=5 & count$nb_loc>=50]
-d<-d[keep]
 
 # take out combinations that appear in 0607 and 04050607 and keep tha good one
 temp<-do.call("rbind",d)
@@ -230,6 +223,14 @@ temp$season<-get_season(temp)
 comb1<-apply(unique(temp[,c("sp","season")]),1,function(i){paste(i[1],i[2],sep="_")})
 comb2<-sapply(strsplit(names(d),"_"),function(i){paste(i[1],i[3],sep="_")})
 keep<-comb2%in%comb1
+d<-d[keep]
+
+# take out any population with fewer than 5 ids and 50 locations
+count<-ldply(d,function(x){
+	data.frame(nb_ind=length(unique(x$id)),nb_loc=nrow(x))
+})
+
+keep<-count$.id[count$nb_ind>=5 & count$nb_loc>=50]
 d<-d[keep]
 
 #####################################
